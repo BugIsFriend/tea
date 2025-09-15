@@ -1,17 +1,22 @@
 import { _decorator, Component, log, Node } from 'cc'
-import { Emitter } from '../tea/emitter'
+import { emmiter } from '../tea/emitter'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
 @executeInEditMode
 export class TestCode extends Component {
     start() {
-        Emitter.instance().on('code.test', this.testCode, this)
+        let { timer } = emmiter.delay(2).emit('code.test', 'delay')
 
-        Emitter.instance().emitter('code.test', 'testing')
+        setTimeout(() => {
+            emmiter.clearDelay(timer)
+        }, 1000)
 
-        setTimeout(() => Emitter.instance().emitter('code.test', 'test start'), 200)
-        Emitter.instance().emitter('code.test', 'test over')
+        emmiter.on('code.test', this.testCode, this)
+
+        emmiter.emit('code.test', 'testing')
+
+        emmiter.emit('code.test', 'test over')
 
         let arr = _.orderBy([{ id: 1 }, { id: 12 }, { id: 2 }, { id: 55 }], ['id'], ['asc'])
         console.log(arr)

@@ -20,12 +20,40 @@ export class Emitter {
      * @param id
      * @param params
      */
-    public emitter(id: string, ...params: any) {
+    public emit(id: string, ...params: any) {
         this.msgOnce.forEach((item) => item.handler.apply(item.context, params))
         this.msgOnce = this.msgOnce.filter((item) => item.id != id)
 
         let handlers = this.msgMap.get(id)
         handlers?.forEach((item) => item.handler.apply(item.context, params))
+    }
+
+    /**
+     * 延迟发送消息
+     * @param dt: 延迟时间间隔
+     * @returns emit: (id:string, param)=> {timer: any }
+     */
+    public delay(dt: number): { emit: (id: string, ...param: any) => { timer: any } } {
+        return {
+            emit: function (id: string, ...param: any) {
+                let timer = null
+                new Promise((resolve, reject) => {
+                    timer = setTimeout(() => {
+                        resolve(true)
+                        Emitter.instance().emit(id, param)
+                    }, dt * 1000)
+                })
+                return { timer }
+            }
+        }
+    }
+
+    /**
+     * 清理延迟发送的消息
+     * @param timer
+     */
+    public offDelay(timer: any) {
+        clearTimeout(timer)
     }
 
     /**
@@ -68,19 +96,16 @@ export class Emitter {
     }
 
     /**
-     * @param id:T  取消监听某个事件
-     * @param context:object
+     * @param target:{id?: string; context?: object}  删除指定监听器
      */
-    public off<T>(id: T, context?: object) {
-        if (typeof id == 'string') {
+    public off(target: { id?: string; context?: object }) {
+        if (!!target?.id && !!target.context) {
             // 删除摸个对象摸个事件
-            let tarHandlers = this.msgMap.get(id) || []
-            _.remove(tarHandlers, (emmitees) => emmitees.context == context)
-        } else if (typeof id == 'object') {
+            let tarHandlers = this.msgMap.get(target.id) || []
+            _.remove(tarHandlers, (emmitees) => emmitees.context == target.context)
+        } else if (!!target.context) {
             for (const [key, handlers] of this.msgMap) {
-                if (handlers.findIndex((item) => item.context == id) != -1) {
-                    _.remove(handlers, (item) => item.context != id)
-                }
+                _.remove(handlers || [], (item) => item.context != target.context)
             }
         }
     }
@@ -92,3 +117,5 @@ export class Emitter {
         Emitter._instance = null
     }
 }
+
+export const emmiter: Emitter = Emitter.instance()
