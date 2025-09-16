@@ -1,3 +1,5 @@
+import { warn } from 'cc'
+
 export interface IEmitter {
     id: string
     handler: Function
@@ -15,17 +17,32 @@ export class Emitter {
         return Emitter._instance
     }
 
+    private checkEmmit(item: IEmitter) {
+        let success = true
+        // @ts-ignore
+        if (item.context.isValid && !item.context.isValid()) {
+            // @ts-ignore
+            warn(`object:${item.context.name} is invalid,  msg: ${item.id}`)
+            success = false
+        }
+        return success
+    }
+
     /**
      * 触发事件
      * @param id
      * @param params
      */
     public emit(id: string, ...params: any) {
-        this.msgOnce.forEach((item) => item.handler.apply(item.context, params))
+        this.msgOnce.forEach((item) => {
+            if (this.checkEmmit(item)) item.handler.apply(item.context, params)
+        })
         this.msgOnce = this.msgOnce.filter((item) => item.id != id)
 
         let handlers = this.msgMap.get(id)
-        handlers?.forEach((item) => item.handler.apply(item.context, params))
+        handlers?.forEach((item) => {
+            if (this.checkEmmit(item)) item.handler.apply(item.context, params)
+        })
     }
 
     /**
@@ -40,7 +57,7 @@ export class Emitter {
                 new Promise((resolve, reject) => {
                     timer = setTimeout(() => {
                         resolve(true)
-                        Emitter.instance().emit(id, param)
+                        emmiter.emit(id, param)
                     }, dt * 1000)
                 })
                 return { timer }
