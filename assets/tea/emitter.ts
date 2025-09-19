@@ -1,4 +1,5 @@
 import { warn } from 'cc'
+import { storage } from './storage'
 
 export interface IEmitter {
     id: string
