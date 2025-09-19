@@ -9,12 +9,18 @@ export namespace storage {
         expireAt: number // 过期时间的时间戳（毫秒）
     }
 
-    export function set<T>(key: string, value: T, expireDate: Date) {
+    export function set<T>(key: string, value: T, expireDate?: Dayjs) {
         const data: StorageValue<T> = {
             value,
-            expireAt: expireDate.getTime()
+            expireAt: expireDate?.valueOf()
         }
         localStorage.setItem(key, JSON.stringify(data))
+
+        let values = localStorage.getItem('ALL_KEY') || ''
+        if (!values.includes(key)) {
+            values += `,${key}`
+            localStorage.setItem('ALL_KEY', values)
+        }
     }
 
     export function get<T>(key: string): T | null {
@@ -22,7 +28,7 @@ export namespace storage {
         if (!item) return null
         try {
             const data: StorageValue<T> = JSON.parse(item)
-            if (data.expireAt && Date.now() > data.expireAt) {
+            if (!!data.expireAt && Date.now() > data.expireAt) {
                 localStorage.removeItem(key)
                 return null
             }
@@ -35,5 +41,11 @@ export namespace storage {
 
     export function remove(key: string) {
         localStorage.removeItem(key)
+    }
+
+    // 清除所有
+    export function clear() {
+        let allKeys: string = localStorage.getItem('ALL_KEY')
+        if (!!allKeys) allKeys.split(',').forEach((key) => storage.remove(key))
     }
 }

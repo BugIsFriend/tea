@@ -5,6 +5,6 @@
   /* Add your custom configuration here. */
   "compilerOptions": {
     "strict": false,
-    "types": ["./dts/lodash","./dts/lodash.d.ts"]
+    "types": ["./dts/global.d.ts"]
   }
 }

@@ -1,41 +1,13 @@
-/// <reference path="./locale/index.d.ts" />
+import * as dayjs from './dayjs/dayjs'
+import { LoDashStatic } from './lodash/index'
 
-export = dayjs
+// 声明全局变量
+declare global {
+    const _: LoDashStatic
+    var dayjs: (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean) => dayjs.Dayjs
 
-declare function dayjs(date?: dayjs.ConfigType): dayjs.Dayjs
-
-declare function dayjs(date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs
-
-declare function dayjs(date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean): dayjs.Dayjs
-
-declare namespace dayjs {
-    interface ConfigTypeMap {
-        default: string | number | Date | Dayjs | null | undefined
-    }
-
-    export type ConfigType = ConfigTypeMap[keyof ConfigTypeMap]
-
-    export interface FormatObject {
-        locale?: string
-        format?: string
-        utc?: boolean
-    }
-
-    export type OptionType = FormatObject | string | string[]
-
-    export type UnitTypeShort = 'd' | 'D' | 'M' | 'y' | 'h' | 'm' | 's' | 'ms'
-
-    export type UnitTypeLong = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year' | 'date'
-
-    export type UnitTypeLongPlural = 'milliseconds' | 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years' | 'dates'
-
-    export type UnitType = UnitTypeLong | UnitTypeLongPlural | UnitTypeShort
-
-    export type OpUnitType = UnitType | 'week' | 'weeks' | 'w'
-    export type QUnitType = UnitType | 'quarter' | 'quarters' | 'Q'
-    export type ManipulateType = Exclude<OpUnitType, 'date' | 'dates'>
     class Dayjs {
-        constructor(config?: ConfigType)
+        constructor(config?: dayjs.ConfigType)
         /**
          * All Day.js objects are immutable. Still, `dayjs#clone` can create a clone of the current object if you need one.
          * ```
@@ -215,7 +187,7 @@ declare namespace dayjs {
          * ```
          * Docs: https://day.js.org/docs/en/get-set/set
          */
-        set(unit: UnitType, value: number): Dayjs
+        set(unit: dayjs.UnitType, value: number): Dayjs
         /**
          * String getter, returns the corresponding information getting from Day.js object.
          *
@@ -231,7 +203,7 @@ declare namespace dayjs {
          * ```
          * Docs: https://day.js.org/docs/en/get-set/get
          */
-        get(unit: UnitType): number
+        get(unit: dayjs.UnitType): number
         /**
          * Returns a cloned Day.js object with a specified amount of time added.
          * ```
@@ -241,7 +213,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/manipulate/add
          */
-        add(value: number, unit?: ManipulateType): Dayjs
+        add(value: number, unit?: dayjs.ManipulateType): Dayjs
         /**
          * Returns a cloned Day.js object with a specified amount of time subtracted.
          * ```
@@ -251,7 +223,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/manipulate/subtract
          */
-        subtract(value: number, unit?: ManipulateType): Dayjs
+        subtract(value: number, unit?: dayjs.ManipulateType): Dayjs
         /**
          * Returns a cloned Day.js object and set it to the start of a unit of time.
          * ```
@@ -261,7 +233,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/manipulate/start-of
          */
-        startOf(unit: OpUnitType): Dayjs
+        startOf(unit: dayjs.OpUnitType): Dayjs
         /**
          * Returns a cloned Day.js object and set it to the end of a unit of time.
          * ```
@@ -271,7 +243,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/manipulate/end-of
          */
-        endOf(unit: OpUnitType): Dayjs
+        endOf(unit: dayjs.OpUnitType): Dayjs
         /**
          * Get the formatted date according to the string of tokens passed in.
          *
@@ -304,7 +276,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/display/difference
          */
-        diff(date?: ConfigType, unit?: QUnitType | OpUnitType, float?: boolean): number
+        diff(date?: dayjs.ConfigType, unit?: dayjs.QUnitType | dayjs.OpUnitType, float?: boolean): number
         /**
          * This returns the number of **milliseconds** since the Unix Epoch of the Day.js object.
          * ```
@@ -386,7 +358,7 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/query/is-before
          */
-        isBefore(date?: ConfigType, unit?: OpUnitType): boolean
+        isBefore(date?: dayjs.ConfigType, unit?: dayjs.OpUnitType): boolean
         /**
          * This indicates whether the Day.js object is the same as the other supplied date-time.
          * ```
@@ -398,7 +370,7 @@ declare namespace dayjs {
          * ```
          * Docs: https://day.js.org/docs/en/query/is-same
          */
-        isSame(date?: ConfigType, unit?: OpUnitType): boolean
+        isSame(date?: dayjs.ConfigType, unit?: dayjs.OpUnitType): boolean
         /**
          * This indicates whether the Day.js object is after the other supplied date-time.
          * ```
@@ -412,22 +384,10 @@ declare namespace dayjs {
          *
          * Docs: https://day.js.org/docs/en/query/is-after
          */
-        isAfter(date?: ConfigType, unit?: OpUnitType): boolean
+        isAfter(date?: dayjs.ConfigType, unit?: dayjs.OpUnitType): boolean
 
         locale(): string
 
         locale(preset: string | ILocale, object?: Partial<ILocale>): Dayjs
     }
-
-    export type PluginFunc<T = unknown> = (option: T, c: typeof Dayjs, d: typeof dayjs) => void
-
-    export function extend<T = unknown>(plugin: PluginFunc<T>, option?: T): Dayjs
-
-    export function locale(preset?: string | ILocale, object?: Partial<ILocale>, isLocal?: boolean): string
-
-    export function isDayjs(d: any): d is Dayjs
-
-    export function unix(t: number): Dayjs
-
-    const Ls: { [key: string]: ILocale }
 }

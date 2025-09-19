@@ -1,4 +1,4 @@
-import { warn } from 'cc'
+import { Component, js, warn } from 'cc'
 import { storage } from './storage'
 
 export interface IEmitter {
@@ -20,8 +20,9 @@ export class Emitter {
 
     private checkEmmit(item: IEmitter) {
         let success = true
+        let _class = item.context.constructor
         // @ts-ignore
-        if (item.context.isValid && !item.context.isValid()) {
+        if (js.isChildClassOf(_class, Node) || (js.isChildClassOf(_class, Component) && !item.context.isValid)) {
             // @ts-ignore
             warn(`object:${item.context.name} is invalid,  msg: ${item.id}`)
             success = false
