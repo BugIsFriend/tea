@@ -23,10 +23,13 @@ export class Emitter {
     private checkEmmit(item: IEmitter) {
         let success = true
         let _class = item.context.constructor
-        // @ts-ignore
-        if (js.isChildClassOf(_class, Node) || (js.isChildClassOf(_class, Component) && !item.context.isValid)) {
+        if (js.isChildClassOf(_class, Node) || js.isChildClassOf(_class, Component)) {
             // @ts-ignore
-            warn(`object:${item.context.name} is invalid,  msg: ${item.id}`)
+            if (!item.context.isValid) {
+                this.off({ context: item.context })
+                // @ts-ignore
+                warn(`object:${item.context.name} is invalid, clear all ${item.id} callbacks`)
+            }
             success = false
         }
         return success
@@ -80,7 +83,7 @@ export class Emitter {
      * 清理延迟发送的消息
      * @param timer
      */
-    public offDelay(timer: any) {
+    public clearDelay(timer: any) {
         clearTimeout(timer)
     }
 
@@ -134,17 +137,17 @@ export class Emitter {
             _.remove(tarHandlers, (emmitees) => emmitees.context == target.context)
         } else if (!!target.context) {
             for (const [key, handlers] of this.msgMap) {
-                _.remove(handlers || [], (item) => item.context != target.context)
+                _.remove(handlers || [], (item) => item.context == target.context)
             }
         }
     }
 
-    /**
-     * 销毁所有对象
-     */
-    public destory() {
-        Emitter._instance = null
-    }
+    // /**
+    //  * 销毁所有对象
+    //  */
+    // public destory() {
+    //     Emitter._instance = null
+    // }
 }
 
 export const emmiter: Emitter = Emitter.instance()
