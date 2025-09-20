@@ -3,6 +3,7 @@ import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/decorator'
 import { View } from '../tea/ui/view'
+import { ui } from '../tea/ui'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
@@ -19,10 +20,13 @@ export class TestCode extends Component {
 
         this.seekTest()
 
-        // this.scheduleOnce(() => {
-        //     this.view.actived = true
-        //     this.view.updateBgView()
-        // }, 1)
+        ui.init()
+        this.scheduleOnce(() => {
+            ui.load('TestPopView').then((value) => value.show({ param: { actived: true } }))
+        }, 1)
+        this.scheduleOnce(() => {
+            ui.closeTop()
+        }, 2)
     }
 
     seekTest() {

@@ -5,8 +5,8 @@
 import { EDITOR } from 'cc/env'
 import { loadAsync } from '../load'
 import { ui } from '../ui'
-import { BgView } from './bg'
-import { ViewAction, ViewState, ViewCategory } from './const'
+import { Background } from './background'
+import { ViewAction, ViewState, ViewCategory, BackgroudParam } from './const'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
 import { _decorator, CCBoolean, Color, Component, Enum, EventHandler, Node, UITransform, Vec3, tween, Prefab, instantiate } from 'cc'
@@ -24,6 +24,8 @@ export class View extends Component {
     @property({ type: Enum(ViewAction), tooltip: '弹出动作' })
     action: number = ViewAction.Scale
 
+    @property({ type: BackgroudParam, tooltip: '背景参数' }) backgroundParam: BackgroudParam = new BackgroudParam()
+
     @property({ type: [EventHandler], tooltip: '显示时: 回调xx组件的xx方法' })
     showHandler: EventHandler[] = []
 
@@ -33,6 +35,7 @@ export class View extends Component {
     private onShowCbs: Function[] = []
     private onCloseCbs: Function[] = []
 
+    public background: Background
     public state: ViewState = ViewState.None // 窗口状态
 
     /**
@@ -61,6 +64,18 @@ export class View extends Component {
         this.runEditor()
     }
 
+    setBackgroundParam(param: BackgroudParam) {
+        Object.assign(this.backgroundParam, param)
+        this.background?.setParam(this.backgroundParam)
+    }
+
+    addBackground() {
+        if (this.backgroundParam.actived && !this.background) {
+            this.background = this.addComponent(Background)
+        }
+        this.background.setParam(this.backgroundParam)
+    }
+
     /**
      * 在编辑器中定时调用 update;
      */
@@ -70,10 +85,6 @@ export class View extends Component {
             this.unschedule(this.updateView)
             this.schedule(this.updateView, 0.2)
         }
-    }
-
-    getBgView(): BgView {
-        return this.getComponent(BgView)
     }
 
     updateView() {}

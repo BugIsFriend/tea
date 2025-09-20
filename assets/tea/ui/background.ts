@@ -4,14 +4,10 @@
  * @Last Modified by: myerse.lee
  * @Last Modified time: 2024-10-09 22:07:30
  */
-const { ccclass, property, executionOrder, executeInEditMode } = _decorator
-
 import {
     _decorator,
     assetManager,
     BlockInputEvents,
-    CCBoolean,
-    Color,
     Component,
     Node,
     Sprite,
@@ -23,22 +19,18 @@ import {
     isValid,
     Size,
     Tween,
-    input,
     Input,
-    EventHandler,
-    log
+    EventHandler
 } from 'cc'
 import { EDITOR } from 'cc/env'
+import { BackgroudParam } from './const'
+const { ccclass, property, executionOrder, executeInEditMode } = _decorator
 
-@ccclass('BgView')
+@ccclass('Background')
 @executionOrder(-1)
 @executeInEditMode
-export class BgView extends Component {
-    @property(CCBoolean) actived: boolean // 激活
-    @property(CCBoolean) toucheable: boolean //触摸
-    @property(CCBoolean) intercept: boolean // 拦截触摸
-
-    @property(Color) color: Color = new Color(0, 0, 0, 128)
+export class Background extends Component {
+    @property(BackgroudParam) param: BackgroudParam = new BackgroudParam({})
 
     @property({ type: [EventHandler], tooltip: '显示时: 回调xx组件的xx方法' })
     touchHandler: EventHandler[] = []
@@ -51,7 +43,7 @@ export class BgView extends Component {
 
     protected onLoad(): void {
         this.addBgNode()
-        this.onInputEvent({ intercept: this.intercept, toucheable: this.toucheable })
+        this.onInputEvent({ ...this.param })
     }
 
     updateUITransform(size: Size) {
@@ -72,13 +64,14 @@ export class BgView extends Component {
     addBgNode() {
         // 添加默认背景颜色
         this.bgNode = this.node.getChildByName('#bgNode')
-        if (!this.bgNode && (EDITOR || this.actived)) {
+        if (!this.bgNode) {
             if (!this.bgNode) {
                 // 添加背景节点
                 this.bgNode = new Node('#bgNode')
                 this.node.addChild(this.bgNode)
                 this.bgNode.layer = this.node.layer
                 this.bgNode.setSiblingIndex(0)
+                this.bgNode.active = this.param.actived
 
                 // 背景 给节点添加 UITransform
 
@@ -112,7 +105,8 @@ export class BgView extends Component {
         }
     }
 
-    onInputEvent(param: { toucheable?: boolean; intercept?: boolean }) {
+    onInputEvent(param: BackgroudParam) {
+        this.addBgNode()
         let { toucheable, intercept } = param
         let touchBlock = this.bgNode.getComponent(BlockInputEvents)
         if (this._onTouch !== toucheable) {
@@ -127,16 +121,13 @@ export class BgView extends Component {
             touchBlock.enabled = intercept
         }
 
-        this.intercept = intercept
-        this.toucheable = toucheable
+        this.param.intercept = intercept
+        this.param.toucheable = toucheable
     }
 
-    setParam(actived: boolean, color: Color, intercept: boolean, toucheable: boolean) {
-        this.actived = actived
-        this.color = color
-        this.color = color.clone()
-
-        this.onInputEvent({ toucheable, intercept })
+    setParam(param: BackgroudParam) {
+        this.onInputEvent(param)
+        Object.assign(this.param, param)
         this.updateView()
     }
 
@@ -148,20 +139,20 @@ export class BgView extends Component {
 
             // 修改颜色
             let sprite = this.bgNode.getComponent(Sprite)
-            sprite.color = this.color
+            sprite.color = this.param.color
 
-            this.onInputEvent({ intercept: this.intercept, toucheable: this.toucheable })
+            this.onInputEvent({ ...this.param })
         }
     }
 
     onTouch() {
         console.log('sssss  ', this.name)
-        this.toucheable && this.touchHandler.forEach((item) => item.emit(null))
+        this.param.toucheable && this.touchHandler.forEach((item) => item.emit(null))
         return true
     }
 
     setBgEnabled(actived: boolean) {
-        this.actived = actived
+        this.param.actived = actived
         this.updateView()
     }
 
@@ -169,7 +160,7 @@ export class BgView extends Component {
         this.node.active = true
         let [openDt] = [0.2, 0.15]
         let sprite = this.bgNode.getComponent(Sprite)
-        let tarColor = this.color.clone()
+        let tarColor = this.param.color.clone()
         let startColor = tarColor.clone()
         startColor.a = 0
         this.updateView()
@@ -180,7 +171,7 @@ export class BgView extends Component {
         this.node.active = true
         let [openDt] = [0.2, 0.15]
         let sprite = this.bgNode.getComponent(Sprite)
-        let tarColor = this.color.clone()
+        let tarColor = this.param.color.clone()
         tarColor.a = 0
         tween(sprite)
             .to(openDt, { color: tarColor })

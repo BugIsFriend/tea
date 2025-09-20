@@ -5,10 +5,10 @@
  */
 
 import { loadAsync } from './load'
-import { ViewState } from './ui/const'
+import { BackgroudParam, ViewState } from './ui/const'
 import { View } from './ui/view'
-import { BgView } from './ui/bg'
-import { director, find, instantiate, js, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
+import { Background } from './ui/background'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
 
 export class UI {
     static _instance: UI = null
@@ -22,7 +22,9 @@ export class UI {
     private _root: Node = null
     private uiViews: Array<View> = []
 
-    private bgView: BgView = null // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
+    private background: Background = null // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
+
+    private bgColor: Color = new Color(255, 0, 0, Math.floor(255 * 0.6))
 
     /**
      * 切换场景，要把所有的UI 都删除
@@ -58,27 +60,27 @@ export class UI {
             this._root.getComponent(UITransform).setContentSize(size_canvas)
             uitransfor.setContentSize(canvas.getComponent(UITransform).contentSize)
 
-            this.bgView = new Node().addComponent(BgView)
-            this.bgView.node.name = 'CommonBgView'
-            this.bgView.node.active = false
-            this.bgView.node.layer = Layers.BitMask.UI_2D
-            this.bgView.node.parent = this._root
+            this.background = new Node().addComponent(Background)
+            this.background.node.layer = Layers.BitMask.UI_2D
+            this._root.addChild(this.background.node)
+            this.background.node.name = 'CommonBgView'
+            this.background.node.active = false
 
-            this.bgView.setParam(true, new Color(0, 0, 0, 0), false, false)
-            this.bgView.updateUITransform(size_canvas.clone())
+            this.background.setParam({ actived: true, toucheable: true, intercept: true, color: this.bgColor })
+            this.background.updateUITransform(size_canvas.clone())
+        } else {
+            this.background = this._root.getChildByName('CommonBgView').getComponent(Background)
         }
     }
 
     /**
-     *
-     * @param tag: 用于标记view,用于获取ViewCom
-     * @param asset  asset Path|Prefab|Node，则需要 bundle
-     * @param bundle  则需要bundleName 默认 resources
-     * @returns View 对象，负责管理该弹框, 还没有加入队列中；
+     *  加载资源或者实例为节点
+     * @param asset
+     * @param bundle : 默认为 'resources'
+     * @param tag
+     * @returns
      */
-    async show(viewInfo: { asset: string | Prefab | Node; bundle?: string; tag?: string; closeCb?: Function }): Promise<View> {
-        let { asset, bundle = 'resources', tag, closeCb } = viewInfo
-
+    async load(asset: string | Prefab | Node, bundle?: string, tag?: string) {
         if (!asset) return null
 
         let node: Node = null
@@ -88,34 +90,34 @@ export class UI {
             node = instantiate(asset)
         } else if (typeof asset == 'string') {
             tag = tag || asset.split('/')[asset.split('/').length - 1]
-            let prefab = (await loadAsync(asset, bundle)) as any
+            let prefab = (await loadAsync(asset, bundle || 'resources')) as any
             if (!prefab) {
-                warn(`did't find prefab: ${asset}`)
-                return null
+                throw new Error(`did't find prefab: ${asset}`)
             }
             node = instantiate(prefab)
         }
-
         let viewcom = node.getComponent(View) || node.addComponent(View)
-        // 这里没有加队里，因为异步的所以游戏弹框先调用可能后弹出；
-        this.initViewCom(viewcom, tag, closeCb)
-        return viewcom
-    }
-
-    initViewCom(viewcom: View, tag: string, closeCb: Function) {
         viewcom.tag = tag || ''
-        closeCb && viewcom.appendClosedCb(closeCb)
-        this.handleShow(viewcom)
+
+        return {
+            show: (param?: { param?: BackgroudParam; closeCB?: Function }) => ui.handleShow({ viewcom, ...param })
+        }
     }
 
-    public handleShow(viewcom: View) {
+    setBackgroundParam(param: BackgroudParam) {
+        this.background.setParam(param)
+    }
+
+    public handleShow(showParam: { viewcom?: View; closeCb?: Function; param?: BackgroudParam }) {
+        let { closeCb, viewcom, param } = showParam
+        closeCb && viewcom.appendClosedCb(closeCb)
         viewcom.node.active = true
         this._root.addChild(viewcom.node)
         this.uiViews.push(viewcom)
 
-        viewcom.show()
-
+        viewcom.setBackgroundParam({ ...param })
         this.showBgAni(true, viewcom)
+        viewcom.show()
     }
 
     /**
@@ -124,18 +126,17 @@ export class UI {
      * @param curViewCom
      */
     public showBgAni(show: boolean, curViewCom: View) {
-        // if (curViewCom) {
-        //     let { blockTouch, actived, color, touch } = curViewCom
-        //     this.bgView.setParam(actived, color, blockTouch, touch)
-        //     this.bgView.node.setSiblingIndex(this.uiViews.length - 1)
-        //     curViewCom.getBgView()?.setParam(false, Color.TRANSPARENT.clone(), false, false)
-        // }
+        if (curViewCom) {
+            curViewCom.background = this.background
+            this.setBackgroundParam(curViewCom.backgroundParam)
+            this.background.node.setSiblingIndex(this.uiViews.length - 1)
+        }
 
-        // show ? this.bgView.node.setSiblingIndex(this.uiViews.length - 1) : this.bgView.node.setSiblingIndex(this.uiViews.length - 2)
+        show ? this.background.node.setSiblingIndex(this.uiViews.length - 1) : this.background.node.setSiblingIndex(this.uiViews.length - 2)
 
         let secondView = this.uiViews[this.uiViews.length - 2]
         if (!secondView) {
-            show ? this.bgView.fadeIn() : this.bgView.fadeOut()
+            show ? this.background.fadeIn() : this.background.fadeOut()
         }
     }
 
@@ -145,7 +146,7 @@ export class UI {
      */
     public handleActCompeleted(viewcom: View) {
         if (viewcom.state == ViewState.Openged) {
-            // this.bgView.touch = viewcom.touch
+            // this.background.touch = viewcom.touch
         } else if (viewcom.state == ViewState.Closed) {
             viewcom.node.destroy()
         }
