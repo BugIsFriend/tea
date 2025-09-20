@@ -50,9 +50,9 @@ export class TestCode extends Component {
     }
 
     emmiterTest() {
-        let { timer } = emmiter.delay(2).emit('code.test', 'delay')
+        let { timer } = emmiter.delay(2).emit('code.test', 'delay 2')
 
-        setTimeout(() => emmiter.offDelay(timer), 1000)
+        setTimeout(() => emmiter.clearDelay(timer), 1000)
 
         emmiter.on('code.test', this.testCode, this)
 
