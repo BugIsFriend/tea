@@ -1,15 +1,33 @@
-import { _decorator, Component, log, Node } from 'cc'
+import { _decorator, Color, color, Component, log, Node, Sprite, tween, v3, Vec2, warn } from 'cc'
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
+import { publish, seek, subscribe } from '../tea/decorator'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
 @executeInEditMode
 export class TestCode extends Component {
+    @seek(Sprite) _sprite: Sprite
+
+    @seek([Sprite]) sprites: Sprite[]
+
     start() {
         this.emmiterTest()
         this.dayjsTest()
         this.storageTest()
+
+        this.seekTest()
+    }
+
+    seekTest() {
+        tween(this._sprite).to(0.5, { color: Color.RED.clone() }).to(0.5, { color: Color.BLUE.clone() }).to(0.5, { color: Color.CYAN.clone() }).start()
+
+        for (const sprite of this.sprites) {
+            let scale = tween(sprite.node)
+                .to(0.5, { scale: v3(0.5, 0.5, 0.5) })
+                .to(0.5, { scale: v3(1, 1, 1) })
+            tween(sprite.node).repeatForever(scale).start()
+        }
     }
 
     storageTest() {
@@ -40,11 +58,26 @@ export class TestCode extends Component {
 
         emmiter.emit('code.test', 'testing')
 
-        emmiter.emit('code.test', 'test over')
+        emmiter.emit('code.test', 'test 1111')
+
+        // emmiter.emit('testSubscritbe', 'test over')
+        this.triggerTestSub('hello world')
+
+        this.triggerTestSub('hardest choice require strongest will')
     }
 
     testCode(msg: string) {
         log(msg)
+    }
+
+    @subscribe('testSubscritbe')
+    testSubscritbe(value) {
+        warn('test subscrib', value)
+    }
+
+    @publish('testSubscritbe')
+    triggerTestSub(data) {
+        return data
     }
 
     update(deltaTime: number) {}

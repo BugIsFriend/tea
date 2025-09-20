@@ -13,6 +13,8 @@ export class Emitter {
     private msgMap = new Map<string, Array<IEmitter>>()
     private msgOnce = new Array<IEmitter>()
 
+    private _onceemmit: boolean = false
+
     static instance() {
         if (!Emitter._instance) Emitter._instance = new Emitter()
         return Emitter._instance
@@ -36,15 +38,22 @@ export class Emitter {
      * @param params
      */
     public emit(id: string, ...params: any) {
-        this.msgOnce.forEach((item) => {
-            if (this.checkEmmit(item)) item.handler.apply(item.context, params)
-        })
-        this.msgOnce = this.msgOnce.filter((item) => item.id != id)
-
         let handlers = this.msgMap.get(id)
         handlers?.forEach((item) => {
             if (this.checkEmmit(item)) item.handler.apply(item.context, params)
         })
+
+        this.msgOnce.forEach((item) => {
+            if (item.id == id && this.checkEmmit(item)) {
+                item.handler.apply(item.context, params)
+                this._onceemmit = true
+            }
+        })
+
+        if (this._onceemmit) {
+            this._onceemmit = false
+            this.msgOnce = this.msgOnce.filter((item) => item.id != id)
+        }
     }
 
     /**
@@ -105,6 +114,7 @@ export class Emitter {
         let handlers = this.msgMap.get(id)
 
         let tarIdx = handlers.findIndex((item) => item.handler == handler && item.context == context)
+        // 防止多次监听
         if (tarIdx == -1) {
             if (!priority) priority = 0
             handlers.push({ id, handler, context, priority })
