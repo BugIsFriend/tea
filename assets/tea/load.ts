@@ -28,7 +28,7 @@ function getAsset<T extends Asset>(url: string, bundle: AssetManager.Bundle, res
  * @param bundleName
  * @returns
  */
-export function asyncLoad<T extends Asset>(url: string, bundleName: string = 'resources'): Promise<T> {
+export function loadAsync<T extends Asset>(url: string, bundleName: string = 'resources'): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         let tarBundle = assetManager.getBundle(bundleName)
         if (!!tarBundle) {

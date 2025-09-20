@@ -27,9 +27,9 @@ function initDecoratorKey(obj: any) {
  *  !不能和property一起使用
  *  获取当前节点的组件(某一类组件列表)
  * @param param: Component|Node|[Component|Node]
- * @param url : 如果 param 是数组，并且param[0] 是 Component, 找到所有拥有该组件的孩子的组件；
- *              如果 param 是数组，并且param[0] 是 Node， 找到所有名字为propNameLenght-1的节点： 如属性golds 前缀为gold
- *              如果 param 非数组，目标节点或者目标组件；
+ * @param url : 如果 param 非数组，目标节点或者目标组件；
+ *              如果 param 是数组，并且param[0] 是 Node，找到所有名字为propNameLenght-1的节点： 如属性golds 前缀为gold
+ *              如果 param 是数组，并且param[0] 是 Component, 找到所有名字为propNameLenght-1的节点, 且节点拥有 param[0]组件；
  * @returns
  */
 export function seek<ParamType>(param: ParamType, url?: string) {
@@ -53,13 +53,18 @@ export function seek<ParamType>(param: ParamType, url?: string) {
                 let result = []
                 //@ts-ignore
                 let tpyeInfo = param[0]
-                let prefix = key.substring(0, key.length - 1)
+
+                let prefix = key.substring(0, key.length - 1).toLowerCase()
                 if (tpyeInfo === Node) {
-                    node.children.forEach((child) => child.name.include(prefix) && result.push(child))
+                    node.children.forEach((child) => {
+                        let name = child.name.toLowerCase()
+                        name.includes(prefix) && result.push(child)
+                    })
                 } else {
                     node.children.forEach((child) => {
+                        let name = child.name.toLowerCase()
                         let com = child.getComponent(tpyeInfo)
-                        com && result.push(com)
+                        name.includes(prefix) && com && result.push(com)
                     })
                 }
                 this.__decoratorkey__[mapKey] = result

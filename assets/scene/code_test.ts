@@ -2,14 +2,15 @@ import { _decorator, Color, color, Component, log, Node, Sprite, tween, v3, Vec2
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/decorator'
+import { View } from '../tea/ui/view'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
 @executeInEditMode
 export class TestCode extends Component {
-    @seek(Sprite) _sprite: Sprite
-
     @seek([Sprite]) sprites: Sprite[]
+
+    // @seek(View) view: View
 
     start() {
         this.emmiterTest()
@@ -17,10 +18,15 @@ export class TestCode extends Component {
         this.storageTest()
 
         this.seekTest()
+
+        // this.scheduleOnce(() => {
+        //     this.view.actived = true
+        //     this.view.updateBgView()
+        // }, 1)
     }
 
     seekTest() {
-        tween(this._sprite).to(0.5, { color: Color.RED.clone() }).to(0.5, { color: Color.BLUE.clone() }).to(0.5, { color: Color.CYAN.clone() }).start()
+        // tween(this._sprite).to(0.5, { color: Color.RED.clone() }).to(0.5, { color: Color.BLUE.clone() }).to(0.5, { color: Color.CYAN.clone() }).start()
 
         for (const sprite of this.sprites) {
             let scale = tween(sprite.node)
