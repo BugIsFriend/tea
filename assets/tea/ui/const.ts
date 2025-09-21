@@ -11,7 +11,7 @@ export enum ViewState {
     None,
     Opening,
     Openged,
-    // TODO: 界面的隐藏状态
+    // TODO 界面的隐藏状态
     Hide, // 隐藏不删除
     Closing, //关闭中
     Closed // 关闭且删除
@@ -53,6 +53,7 @@ export const ViewAction = {
     Bottom: 5 //从底部移到中间
 }
 
+// TODO 完善动画和代码分离
 ActionCreator[ViewAction.Scale] = {
     big: 1.2,
     small: 1,

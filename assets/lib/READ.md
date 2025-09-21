@@ -1,8 +1,6 @@
 # 添加全局变量
 
-## TODO: List  [done]
-
-    引入 dayjs
+## TODO 引入 dayjs  [Done]
 
 ## lodash 库为例
 

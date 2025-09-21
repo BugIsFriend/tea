@@ -1898,7 +1898,6 @@ declare module "../index" {
         merge(...otherArgs: any[]): ObjectChain<any>;
     }
     type MergeWithCustomizer = { bivariantHack(value: any, srcValue: any, key: string, object: any, source: any, stack: any): any; }["bivariantHack"];
-    // TODO: Probably should just put all these methods on Object and forget about it.
     // oh, except for Collection<any> I GUESS
     interface LoDashStatic {
         /**
