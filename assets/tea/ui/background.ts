@@ -167,7 +167,7 @@ export class Background extends Component {
         tween(sprite).to(openDt, { color: tarColor }).start().tag(1000)
     }
 
-    fadeOut() {
+    fadeOut(callFunc?: Function) {
         this.node.active = true
         let [openDt] = [0.2, 0.15]
         let sprite = this.bgNode.getComponent(Sprite)
@@ -175,7 +175,10 @@ export class Background extends Component {
         tarColor.a = 0
         tween(sprite)
             .to(openDt, { color: tarColor })
-            .call(() => this.onInputEvent({}))
+            .call(() => {
+                this.onInputEvent({})
+                callFunc && callFunc()
+            })
             .start()
             .tag(1001)
     }

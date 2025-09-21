@@ -11,8 +11,10 @@ export enum ViewState {
     None,
     Opening,
     Openged,
-    Closing,
-    Closed
+    // TODO: 待实现
+    Hide, // 隐藏不删除
+    Closing, //关闭中
+    Closed // 关闭且删除
 }
 
 export const ViewAction = {

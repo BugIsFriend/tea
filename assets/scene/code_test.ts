@@ -1,4 +1,4 @@
-import { _decorator, Color, color, Component, log, Node, Sprite, tween, v3, Vec2, warn } from 'cc'
+import { _decorator, Component, log, Node, Sprite, tween, v3, warn } from 'cc'
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/decorator'
@@ -21,12 +21,13 @@ export class TestCode extends Component {
         this.seekTest()
 
         ui.init()
+        ui.load('TestPopView').show({ actived: true })
         this.scheduleOnce(() => {
-            ui.load('TestPopView').then((value) => value.show({ param: { actived: true } }))
-        }, 1)
+            ui.load('TestPopView').show({ actived: true })
+        }, 1.5)
         this.scheduleOnce(() => {
             ui.closeTop()
-        }, 2)
+        }, 4)
     }
 
     seekTest() {

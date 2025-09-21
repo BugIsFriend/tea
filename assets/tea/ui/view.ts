@@ -98,16 +98,11 @@ export class View extends Component {
             if (handler && handler.target && handler.handler) handler.emit([handler.customEventData])
         })
 
-        let cbs = []
         if (this.state == ViewState.Openged) {
-            cbs = this.onShowCbs
-            this.onShowCbs = []
+            this.onShowCbs.forEach((func) => func())
         } else if (this.state == ViewState.Closed) {
-            cbs = this.onCloseCbs
-            this.onCloseCbs = []
+            this.onCloseCbs.forEach((func) => func())
         }
-        cbs.forEach((func) => func())
-
         if (this.category == ViewCategory.PopView || this.category == ViewCategory.Window) {
             // todo 通知 ui 对象 做相关处理
             ui.handleActCompeleted(this)
@@ -194,6 +189,4 @@ export class View extends Component {
     appendClosedCb(func: Function) {
         this.onCloseCbs.push(func)
     }
-
-    protected onDestroy(): void {}
 }

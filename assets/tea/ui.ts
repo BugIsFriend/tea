@@ -10,12 +10,14 @@ import { View } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
 
+interface IShow {
+    show: (param?: BackgroudParam, closeCB?: Function) => void
+}
+
 export class UI {
     static _instance: UI = null
     static getInstance() {
-        if (!UI._instance) {
-            UI._instance = new UI()
-        }
+        if (!UI._instance) UI._instance = new UI()
         return UI._instance
     }
 
@@ -73,14 +75,7 @@ export class UI {
         }
     }
 
-    /**
-     *  加载资源或者实例为节点
-     * @param asset
-     * @param bundle : 默认为 'resources'
-     * @param tag
-     * @returns
-     */
-    async load(asset: string | Prefab | Node, bundle?: string, tag?: string) {
+    async _load(asset: string | Prefab | Node, bundle?: string, tag?: string): Promise<View> {
         if (!asset) return null
 
         let node: Node = null
@@ -98,9 +93,23 @@ export class UI {
         }
         let viewcom = node.getComponent(View) || node.addComponent(View)
         viewcom.tag = tag || ''
+        return viewcom
+    }
 
+    /**
+     *  加载资源或者实例为节点
+     * @param asset
+     * @param bundle : 默认为 'resources'
+     * @param tag
+     * @returns
+     */
+    load(asset: string | Prefab | Node, bundle?: string, tag?: string): IShow {
         return {
-            show: (param?: { param?: BackgroudParam; closeCB?: Function }) => ui.handleShow({ viewcom, ...param })
+            show: (param?: BackgroudParam, closeCb?: Function) => {
+                {
+                    ui._load(asset, bundle, tag).then((view) => ui.show({ view, param, closeCb }))
+                }
+            }
         }
     }
 
@@ -108,16 +117,19 @@ export class UI {
         this.background.setParam(param)
     }
 
-    public handleShow(showParam: { viewcom?: View; closeCb?: Function; param?: BackgroudParam }) {
-        let { closeCb, viewcom, param } = showParam
-        closeCb && viewcom.appendClosedCb(closeCb)
-        viewcom.node.active = true
-        this._root.addChild(viewcom.node)
-        this.uiViews.push(viewcom)
+    public show(showParam: { view?: View; closeCb?: Function; param?: BackgroudParam }) {
+        let { closeCb, view, param } = showParam
+        closeCb && view.appendClosedCb(closeCb)
 
-        viewcom.setBackgroundParam({ ...param })
-        this.showBgAni(true, viewcom)
-        viewcom.show()
+        if (this.getViewIdx(view) == -1) {
+            view.node.active = true
+            this._root.addChild(view.node)
+            this.uiViews.push(view)
+        }
+
+        view.setBackgroundParam({ ...param })
+        this.playBackgroundAction(true, view)
+        view.show()
     }
 
     /**
@@ -125,18 +137,18 @@ export class UI {
      * @param show
      * @param curViewCom
      */
-    public showBgAni(show: boolean, curViewCom: View) {
+    public playBackgroundAction(show: boolean, curViewCom: View) {
         if (curViewCom) {
             curViewCom.background = this.background
             this.setBackgroundParam(curViewCom.backgroundParam)
             this.background.node.setSiblingIndex(this.uiViews.length - 1)
         }
 
-        show ? this.background.node.setSiblingIndex(this.uiViews.length - 1) : this.background.node.setSiblingIndex(this.uiViews.length - 2)
-
-        let secondView = this.uiViews[this.uiViews.length - 2]
-        if (!secondView) {
-            show ? this.background.fadeIn() : this.background.fadeOut()
+        if (show) {
+            this.background.fadeIn()
+            this.background.node.setSiblingIndex(this.uiViews.length - 1)
+        } else {
+            this.background.fadeOut()
         }
     }
 
@@ -146,9 +158,13 @@ export class UI {
      */
     public handleActCompeleted(viewcom: View) {
         if (viewcom.state == ViewState.Openged) {
-            // this.background.touch = viewcom.touch
         } else if (viewcom.state == ViewState.Closed) {
             viewcom.node.destroy()
+
+            let view = this.uiViews[this.uiViews.length - 1]
+            if (view) {
+                ui.show({ view, param: view.backgroundParam })
+            }
         }
     }
 
@@ -159,18 +175,18 @@ export class UI {
     }
 
     public close(tag: string | View) {
-        let idx = this.getViewComByIdx(tag)
-        let viewComp = this.uiViews[idx]
-        if (viewComp) {
-            this.showBgAni(false, this.uiViews[idx - 1])
+        let idx = this.getViewIdx(tag)
+        let view = this.uiViews[idx]
+        if (view) {
             this.uiViews.splice(idx, 1)
-            viewComp.closeAction()
+            view.closeAction()
+            this.playBackgroundAction(false, this.uiViews[idx - 1])
         } else {
             warn('没有找到目标弹框')
         }
     }
 
-    public getViewComByIdx(tag: string | View): number {
+    public getViewIdx(tag: string | View): number {
         for (let i = 0; i < this.uiViews.length; i++) {
             if (this.uiViews[i].tag == tag || this.uiViews[i] == tag) {
                 return i
