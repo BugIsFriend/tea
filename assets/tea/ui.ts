@@ -68,7 +68,7 @@ export class UI {
             this.background.node.name = 'CommonBgView'
             this.background.node.active = false
 
-            this.background.setParam({ actived: true, toucheable: true, intercept: true, color: this.bgColor })
+            this.background.setParam({ actived: true, touch: true, intercept: true, color: this.bgColor })
             this.background.updateUITransform(size_canvas.clone())
         } else {
             this.background = this._root.getChildByName('CommonBgView').getComponent(Background)
@@ -156,11 +156,12 @@ export class UI {
      * 打开和关闭播放完的回调
      * @param viewcom
      */
-    public handleActCompeleted(viewcom: View) {
+    public handleActionFinish(viewcom: View) {
         if (viewcom.state == ViewState.Openged) {
         } else if (viewcom.state == ViewState.Closed) {
             viewcom.node.destroy()
 
+            // 最顶层关闭，弹出下一个
             let view = this.uiViews[this.uiViews.length - 1]
             if (view) {
                 ui.show({ view, param: view.backgroundParam })

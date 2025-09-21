@@ -105,7 +105,7 @@ export class View extends Component {
         }
         if (this.category == ViewCategory.PopView || this.category == ViewCategory.Window) {
             // todo 通知 ui 对象 做相关处理
-            ui.handleActCompeleted(this)
+            ui.handleActionFinish(this)
         }
     }
 

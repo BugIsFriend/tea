@@ -31,21 +31,21 @@ export class BackgroudParam {
     constructor(param?: BackgroudParam) {
         this.color = param?.color || this.color
         this.actived = param?.actived
-        this.toucheable = param?.toucheable
+        this.touch = param?.touch
+        this.touchClose = false
         this.intercept = param?.intercept
     }
 
-    /**
-     * 是否激活
-     */
-    @property(CCBoolean) actived?: boolean // 激活
-    /**
-     * 能否触摸
-     */
-    @property(CCBoolean) toucheable?: boolean //触摸
-    /**
-     * 拦截触摸事件
-     */
+    //是否激活
+    @property(CCBoolean) actived?: boolean // 控制显示
+
+    //能否触摸
+    @property(CCBoolean) touch?: boolean //能否触摸
+
+    // TODO 该功能还未实现
+    @property(CCBoolean) touchClose?: boolean //点击关闭
+
+    //拦截触摸事件
     @property(CCBoolean) intercept?: boolean
 
     @property(Color) color?: Color = new Color(0, 0, 0, 128)

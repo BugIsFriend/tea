@@ -25,9 +25,9 @@ export class TestCode extends Component {
         this.scheduleOnce(() => {
             ui.load('TestPopView').show({ actived: true })
         }, 1.5)
-        this.scheduleOnce(() => {
-            ui.closeTop()
-        }, 4)
+        // this.scheduleOnce(() => {
+        //     ui.closeTop()
+        // }, 4)
     }
 
     seekTest() {

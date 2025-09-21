@@ -37,7 +37,8 @@ export function loadAsync<T extends Asset>(url: string, bundleName: string = 're
             else getAsset<T>(url, tarBundle, resolve, reject)
         } else {
             assetManager.loadBundle(bundleName, (error, bundle: AssetManager.Bundle) => {
-                if (!!error) {
+                console.log('ssss   ', url, bundleName, error)
+                if (!error) {
                     getAsset<T>(url, bundle, resolve, reject)
                 } else {
                     reject(null)

@@ -107,14 +107,14 @@ export class Background extends Component {
 
     onInputEvent(param: BackgroudParam) {
         this.addBgNode()
-        let { toucheable, intercept } = param
+        let { touch, intercept } = param
         let touchBlock = this.bgNode.getComponent(BlockInputEvents)
-        if (this._onTouch !== toucheable) {
-            if (!toucheable) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
-            if (toucheable) {
+        if (this._onTouch !== touch) {
+            if (!touch) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
+            if (touch) {
                 this.node.on(Input.EventType.TOUCH_START, this.onTouch, this)
             }
-            this._onTouch = toucheable
+            this._onTouch = touch
         }
 
         if (intercept !== touchBlock.enabled) {
@@ -122,7 +122,7 @@ export class Background extends Component {
         }
 
         this.param.intercept = intercept
-        this.param.toucheable = toucheable
+        this.param.touch = touch
     }
 
     setParam(param: BackgroudParam) {
@@ -147,7 +147,7 @@ export class Background extends Component {
 
     onTouch() {
         console.log('sssss  ', this.name)
-        this.param.toucheable && this.touchHandler.forEach((item) => item.emit(null))
+        this.param.touch && this.touchHandler.forEach((item) => item.emit(null))
         return true
     }
 
