@@ -8,7 +8,7 @@ import { loadAsync } from './load'
 import { BackgroudParam, ViewState } from './ui/const'
 import { View } from './ui/view'
 import { Background } from './ui/background'
-import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Size } from 'cc'
 
 interface IShow {
     show: (param?: BackgroudParam, closeCB?: Function) => void
@@ -24,9 +24,12 @@ export class UI {
     private _root: Node = null
     private uiViews: Array<View> = []
 
-    private background: Background = null // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
+    // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
+    private background_0: Background = null
+    private background_1: Background = null
 
-    private bgColor: Color = new Color(255, 0, 0, Math.floor(255 * 0.6))
+    private color: Color = new Color(0, 0, 0, Math.floor(255 * 0.6))
+    private defaultParam: BackgroudParam = new BackgroudParam({ color: this.color, active: true, touch: true })
 
     /**
      * 切换场景，要把所有的UI 都删除
@@ -62,17 +65,27 @@ export class UI {
             this._root.getComponent(UITransform).setContentSize(size_canvas)
             uitransfor.setContentSize(canvas.getComponent(UITransform).contentSize)
 
-            this.background = new Node().addComponent(Background)
-            this.background.node.layer = Layers.BitMask.UI_2D
-            this._root.addChild(this.background.node)
-            this.background.node.name = 'CommonBgView'
-            this.background.node.active = false
-
-            this.background.setParam({ actived: true, touch: true, intercept: true, color: this.bgColor })
-            this.background.updateUITransform(size_canvas.clone())
+            this.background_0 = this.createBackground(0)
+            this.background_1 = this.createBackground(1)
         } else {
-            this.background = this._root.getChildByName('CommonBgView').getComponent(Background)
+            this.background_0 = this._root.getChildByName('CommonBgView0').getComponent(Background)
+            this.background_1 = this._root.getChildByName('CommonBgView1').getComponent(Background)
         }
+    }
+
+    createBackground(idx: number) {
+        let canvas = find('Canvas', director.getScene())
+        let size_canvas = canvas.getComponent(UITransform).contentSize
+        let background = new Node().addComponent(Background)
+        background.node.layer = Layers.BitMask.UI_2D
+        background.node.name = 'CommonBgView' + idx
+        background.node.active = false
+        background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
+        background.updateUITransform(size_canvas.clone())
+
+        this._root.addChild(background.node)
+
+        return background
     }
 
     async _load(asset: string | Prefab | Node, bundle?: string, tag?: string): Promise<View> {
@@ -114,7 +127,7 @@ export class UI {
     }
 
     setBackgroundParam(param: BackgroudParam) {
-        this.background.setParam(param)
+        this.background_0.setParam(param)
     }
 
     public show(showParam: { view?: View; closeCb?: Function; param?: BackgroudParam }) {
@@ -127,7 +140,9 @@ export class UI {
             this.uiViews.push(view)
         }
 
-        view.setBackgroundParam({ ...param })
+        let param0 = Object.assign(this.defaultParam, param || {})
+
+        view.setBackgroundParam({ ...param0 })
         this.playBackgroundAction(true, view)
         view.show()
     }
@@ -137,18 +152,23 @@ export class UI {
      * @param show
      * @param curViewCom
      */
-    public playBackgroundAction(show: boolean, curViewCom: View) {
-        if (curViewCom) {
-            curViewCom.background = this.background
-            this.setBackgroundParam(curViewCom.backgroundParam)
-            this.background.node.setSiblingIndex(this.uiViews.length - 1)
-        }
-
+    public playBackgroundAction(show: boolean, curView: View) {
         if (show) {
-            this.background.fadeIn()
-            this.background.node.setSiblingIndex(this.uiViews.length - 1)
+            this.setBackgroundParam(curView.param)
+            this.background_0.fadeIn()
+            this.background_0.setSiblingIndex(this.uiViews.length - 1)
         } else {
-            this.background.fadeOut()
+            let prebg = this.background_0
+            prebg.fadeOut(() => prebg.setParam({ active: false }))
+            if (curView) {
+                this.background_1.setSiblingIndex(this.uiViews.length - 1)
+                this.background_1.setParam(curView.param)
+                this.background_1.fadeIn()
+
+                let temp = this.background_1
+                this.background_1 = this.background_0
+                this.background_0 = temp
+            }
         }
     }
 
@@ -162,16 +182,10 @@ export class UI {
             viewcom.node.destroy()
 
             // 最顶层关闭，弹出下一个
-            let view = this.uiViews[this.uiViews.length - 1]
-            if (view) {
-                ui.show({ view, param: view.backgroundParam })
+            let view = this.getTop()
+            if (view && view.state == ViewState.Hide) {
+                ui.show({ view, param: view.param })
             }
-        }
-    }
-
-    public closeTop() {
-        if (this.uiViews.length > 0) {
-            this.close(this.uiViews[this.uiViews.length - 1])
         }
     }
 
@@ -181,9 +195,17 @@ export class UI {
         if (view) {
             this.uiViews.splice(idx, 1)
             view.closeAction()
-            this.playBackgroundAction(false, this.uiViews[idx - 1])
-        } else {
-            warn('没有找到目标弹框')
+            this.playBackgroundAction(false, this.getTop())
+        }
+    }
+
+    getTop() {
+        return this.uiViews[this.uiViews.length - 1]
+    }
+
+    public closeTop() {
+        if (this.uiViews.length > 0) {
+            this.close(this.getTop())
         }
     }
 

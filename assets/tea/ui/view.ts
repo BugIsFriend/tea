@@ -24,7 +24,7 @@ export class View extends Component {
     @property({ type: Enum(ViewAction), tooltip: '弹出动作' })
     action: number = ViewAction.Scale
 
-    @property({ type: BackgroudParam, tooltip: '背景参数' }) backgroundParam: BackgroudParam = new BackgroudParam()
+    @property({ type: BackgroudParam, tooltip: '背景参数' }) param: BackgroudParam = new BackgroudParam()
 
     @property({ type: [EventHandler], tooltip: '显示时: 回调xx组件的xx方法' })
     showHandler: EventHandler[] = []
@@ -65,15 +65,15 @@ export class View extends Component {
     }
 
     setBackgroundParam(param: BackgroudParam) {
-        Object.assign(this.backgroundParam, param)
-        this.background?.setParam(this.backgroundParam)
+        Object.assign(this.param, param)
+        this.background?.setParam(this.param)
     }
 
     addBackground() {
-        if (this.backgroundParam.actived && !this.background) {
+        if (this.param.active && !this.background) {
             this.background = this.addComponent(Background)
         }
-        this.background.setParam(this.backgroundParam)
+        this.background.setParam(this.param)
     }
 
     /**

@@ -71,7 +71,7 @@ export class Background extends Component {
                 this.node.addChild(this.bgNode)
                 this.bgNode.layer = this.node.layer
                 this.bgNode.setSiblingIndex(0)
-                this.bgNode.active = this.param.actived
+                this.bgNode.active = this.param.active
 
                 // 背景 给节点添加 UITransform
 
@@ -126,7 +126,7 @@ export class Background extends Component {
     }
 
     setParam(param: BackgroudParam) {
-        this.onInputEvent(param)
+        // this.onInputEvent(param)
         Object.assign(this.param, param)
         this.updateView()
     }
@@ -141,6 +141,8 @@ export class Background extends Component {
             let sprite = this.bgNode.getComponent(Sprite)
             sprite.color = this.param.color
 
+            this.bgNode.active = this.param.active
+
             this.onInputEvent({ ...this.param })
         }
     }
@@ -151,8 +153,8 @@ export class Background extends Component {
         return true
     }
 
-    setBgEnabled(actived: boolean) {
-        this.param.actived = actived
+    setactive(active: boolean) {
+        this.param.active = active
         this.updateView()
     }
 
@@ -181,6 +183,10 @@ export class Background extends Component {
             })
             .start()
             .tag(1001)
+    }
+
+    setSiblingIndex(idx: number) {
+        this.node.setSiblingIndex(idx)
     }
 
     protected onDestroy(): void {

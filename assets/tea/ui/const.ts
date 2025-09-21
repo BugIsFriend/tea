@@ -11,7 +11,7 @@ export enum ViewState {
     None,
     Opening,
     Openged,
-    // TODO: 待实现
+    // TODO: 界面的隐藏状态
     Hide, // 隐藏不删除
     Closing, //关闭中
     Closed // 关闭且删除
@@ -30,14 +30,14 @@ export const ViewAction = {
 export class BackgroudParam {
     constructor(param?: BackgroudParam) {
         this.color = param?.color || this.color
-        this.actived = param?.actived
+        this.active = param?.active
         this.touch = param?.touch
         this.touchClose = false
         this.intercept = param?.intercept
     }
 
     //是否激活
-    @property(CCBoolean) actived?: boolean // 控制显示
+    @property(CCBoolean) active?: boolean // 控制显示
 
     //能否触摸
     @property(CCBoolean) touch?: boolean //能否触摸

@@ -21,13 +21,18 @@ export class TestCode extends Component {
         this.seekTest()
 
         ui.init()
-        ui.load('TestPopView').show({ actived: true })
+        ui.load('TestPopView').show({ active: true })
+
         this.scheduleOnce(() => {
-            ui.load('TestPopView').show({ actived: true })
-        }, 1.5)
-        // this.scheduleOnce(() => {
-        //     ui.closeTop()
-        // }, 4)
+            ui.load('TestPopView').show({ active: true })
+        }, 1)
+
+        this.scheduleOnce(() => {
+            ui.closeTop()
+        }, 2)
+        this.scheduleOnce(() => {
+            ui.closeTop()
+        }, 3)
     }
 
     seekTest() {
