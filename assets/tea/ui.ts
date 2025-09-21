@@ -80,6 +80,7 @@ export class UI {
         background.node.layer = Layers.BitMask.UI_2D
         background.node.name = 'CommonBgView' + idx
         background.node.active = false
+        background.addComponent(UITransform)
         background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
         background.updateUITransform(size_canvas.clone())
 
@@ -143,16 +144,16 @@ export class UI {
         let param0 = Object.assign(this.defaultParam, param || {})
 
         view.setBackgroundParam({ ...param0 })
-        this.playBackgroundAction(true, view)
+        this.backgroundAnimate(true, view)
         view.show()
     }
 
     /**
-     *  这里可能存在两个 BgView
+     *  播放背景动画
      * @param show
      * @param curViewCom
      */
-    public playBackgroundAction(show: boolean, curView: View) {
+    public backgroundAnimate(show: boolean, curView: View) {
         if (show) {
             this.setBackgroundParam(curView.param)
             this.background_0.fadeIn()
@@ -194,8 +195,8 @@ export class UI {
         let view = this.uiViews[idx]
         if (view) {
             this.uiViews.splice(idx, 1)
-            view.closeAction()
-            this.playBackgroundAction(false, this.getTop())
+            view.closeAnimate()
+            this.backgroundAnimate(false, this.getTop())
         }
     }
 

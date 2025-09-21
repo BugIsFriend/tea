@@ -1,4 +1,4 @@
-import { _decorator, CCBoolean, Color } from 'cc'
+import { _decorator, CCBoolean, Color, Node, Tween, tween, v3, Vec3 } from 'cc'
 const { ccclass, property } = _decorator
 
 export const ViewCategory = {
@@ -15,15 +15,6 @@ export enum ViewState {
     Hide, // 隐藏不删除
     Closing, //关闭中
     Closed // 关闭且删除
-}
-
-export const ViewAction = {
-    None: 0,
-    Scale: 1, // 从中间缩放
-    Left: 2, // 从左移到中间
-    Right: 3, // 从右边移到中间
-    Top: 4, // 从顶部移到中间
-    Bottom: 5 //从底部移到中间
 }
 
 @ccclass('BackgroudParam')
@@ -49,4 +40,65 @@ export class BackgroudParam {
     @property(CCBoolean) intercept?: boolean
 
     @property(Color) color?: Color = new Color(0, 0, 0, 128)
+}
+
+let _dt = 0.2
+export const ActionCreator = {}
+export const ViewAction = {
+    None: 0,
+    Scale: 1, // 从中间缩放
+    Left: 2, // 从左移到中间
+    Right: 3, // 从右边移到中间
+    Top: 4, // 从顶部移到中间
+    Bottom: 5 //从底部移到中间
+}
+
+ActionCreator[ViewAction.Scale] = {
+    big: 1.2,
+    small: 1,
+    show(node: Node, cb: Function): Tween<any> {
+        node.setScale(Vec3.ZERO)
+        let act = tween(node)
+            .to(_dt + 0.05, { scale: v3(this.big, this.big, this.big) }, { easing: 'cubicIn' })
+            .to(_dt, { scale: v3(this.small, this.small, this.small) })
+            .call(() => cb())
+        return act
+    },
+    close: () => {}
+}
+
+ActionCreator[ViewAction.Bottom] = {
+    big: 1.2,
+    small: 1,
+    show(node: Node, cb: Function) {
+        node.setScale(Vec3.ZERO)
+        let act = tween(node)
+            .to(this.dt + 0.05, { scale: v3(this.big, this.big, this.big) }, { easing: 'cubicIn' })
+            .to(this.dt, { scale: v3(this.small, this.small, this.small) })
+            .call(() => cb())
+        return act
+    },
+    close: () => {}
+}
+
+ActionCreator[ViewAction.Top] = {
+    dt: 0.2,
+    big: 1.2,
+    small: 1,
+    show(node: Node, cb: Function) {},
+    close: () => {}
+}
+ActionCreator[ViewAction.Bottom] = {
+    dt: 0.2,
+    big: 1.2,
+    small: 1,
+    show(node: Node, cb: Function) {
+        node.setScale(Vec3.ZERO)
+        let act = tween(node)
+            .to(this.dt + 0.05, { scale: v3(this.big, this.big, this.big) }, { easing: 'cubicIn' })
+            .to(this.dt, { scale: v3(this.small, this.small, this.small) })
+            .call(() => cb())
+        return act
+    },
+    close: () => {}
 }

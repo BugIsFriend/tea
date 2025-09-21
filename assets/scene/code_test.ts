@@ -1,9 +1,10 @@
-import { _decorator, Component, log, Node, Sprite, tween, v3, warn } from 'cc'
+import { _decorator, color, Component, log, Node, Sprite, tween, v3, warn } from 'cc'
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/decorator'
 import { View } from '../tea/ui/view'
 import { ui } from '../tea/ui'
+import { EDITOR } from 'cc/env'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
@@ -15,29 +16,23 @@ export class TestCode extends Component {
 
     start() {
         this.emmiterTest()
+
         this.dayjsTest()
+
         this.storageTest()
 
         this.seekTest()
 
-        ui.init()
-        ui.load('TestPopView').show({ active: true })
-
-        this.scheduleOnce(() => {
+        if (!EDITOR) {
+            ui.init()
             ui.load('TestPopView').show({ active: true })
-        }, 1)
-
-        this.scheduleOnce(() => {
-            ui.closeTop()
-        }, 2)
-        this.scheduleOnce(() => {
-            ui.closeTop()
-        }, 3)
+            this.scheduleOnce(() => ui.load('TestPopView').show({ active: true, color: color(0, 255, 0, 50) }), 1)
+            this.scheduleOnce(() => ui.closeTop(), 2)
+            this.scheduleOnce(() => ui.closeTop(), 3)
+        }
     }
 
     seekTest() {
-        // tween(this._sprite).to(0.5, { color: Color.RED.clone() }).to(0.5, { color: Color.BLUE.clone() }).to(0.5, { color: Color.CYAN.clone() }).start()
-
         for (const sprite of this.sprites) {
             let scale = tween(sprite.node)
                 .to(0.5, { scale: v3(0.5, 0.5, 0.5) })

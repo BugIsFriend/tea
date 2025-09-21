@@ -6,7 +6,7 @@ import { EDITOR } from 'cc/env'
 import { loadAsync } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
-import { ViewAction, ViewState, ViewCategory, BackgroudParam } from './const'
+import { ViewAction, ViewState, ViewCategory, BackgroudParam, ActionCreator } from './const'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
 import { _decorator, CCBoolean, Color, Component, Enum, EventHandler, Node, UITransform, Vec3, tween, Prefab, instantiate } from 'cc'
@@ -115,15 +115,9 @@ export class View extends Component {
         this.state = ViewState.Opening
         let [openDt] = [0.2, 0.15]
         this.updateView()
-        if (this.action == ViewAction.Scale) {
-            let [scaleB, scaleM] = [new Vec3(1.2, 1.2, 1.2), new Vec3(1, 1, 1)]
 
-            this.node.setScale(Vec3.ZERO)
-            tween(this.node)
-                .to(openDt + 0.05, { scale: scaleB }, { easing: 'cubicIn' })
-                .to(openDt, { scale: scaleM })
-                .call(() => this._completed(ViewState.Openged))
-                .start()
+        if (this.action == ViewAction.Scale) {
+            ActionCreator[this.action].show(this.node, () => this._completed(ViewState.Openged)).start()
         } else if (this.action == ViewAction.Bottom || this.action == ViewAction.Top) {
             let sign = this.action == ViewAction.Top ? 1 : -1
             let bootY = uiRoot.getComponent(UITransform).contentSize.height
@@ -143,7 +137,7 @@ export class View extends Component {
         }
     }
 
-    closeAction() {
+    closeAnimate() {
         if (this.state == ViewState.Opening || this.state == ViewState.Closing) return
         let uiRoot = this.node.parent
         this.state = ViewState.Closing
