@@ -1,5 +1,4 @@
-import { Component, js, warn } from 'cc'
-import { storage } from './storage'
+import { Component, js, warn, error } from 'cc'
 
 export interface IEmitter {
     id: string
@@ -20,6 +19,11 @@ export class Emitter {
         return Emitter._instance
     }
 
+    /**
+     * 如果context is Component|Node & context.isValid 则自动清除所有与该对象的有关的事件监听；
+     * @param item
+     * @returns
+     */
     private checkEmmit(item: IEmitter) {
         let success = true
         let _class = item.context.constructor
@@ -92,7 +96,7 @@ export class Emitter {
      */
     public once(id: string, handler: Function, context: object) {
         if (!id || !handler || !context) {
-            console.error('QMsg: Once Msg', ` id: ${id}`)
+            error('QMsg: Once Msg', ` id: ${id}`)
             return
         }
         this.msgOnce.push({ id, handler, context })
@@ -104,11 +108,11 @@ export class Emitter {
      * @param handler
      * @param context
      * @param priority
-     * @returns
+     * @returns this    emmiter.on(id0,func0,this0).on(id1,func1,this1)
      */
     public on(id: string, handler: Function, context: object, priority?: number) {
         if (!id || !handler || !context) {
-            console.error('QMsg: On Msg', ` id: ${id}  handler: ${handler.name}    context: ${context}`)
+            error('QMsg: On Msg', ` id: ${id}  handler: ${handler.name}    context: ${context}`)
             return
         }
 
@@ -116,15 +120,16 @@ export class Emitter {
 
         let handlers = this.msgMap.get(id)
 
-        let tarIdx = handlers.findIndex((item) => item.handler == handler && item.context == context)
+        let target = _.find(handlers, (item) => item.handler == handler && item.context == context)
         // 防止多次监听
-        if (tarIdx == -1) {
+        if (!target) {
             if (!priority) priority = 0
             handlers.push({ id, handler, context, priority })
             _.orderBy(handlers, ['priority'], ['desc'])
         }
 
-        if (tarIdx != -1) console.warn(`reapeat on event ${id}`)
+        !!target && warn(`reapeat on event ${id}`)
+        return this
     }
 
     /**
@@ -142,12 +147,13 @@ export class Emitter {
         }
     }
 
-    // /**
-    //  * 销毁所有对象
-    //  */
-    // public destory() {
-    //     Emitter._instance = null
-    // }
+    /**
+     * 清除所有监听；
+     */
+    public clearAll() {
+        this.msgMap = new Map<string, Array<IEmitter>>()
+        this.msgOnce = new Array<IEmitter>()
+    }
 }
 
 export const emmiter: Emitter = Emitter.instance()
