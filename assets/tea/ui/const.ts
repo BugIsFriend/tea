@@ -17,6 +17,8 @@ export enum ViewState {
     Closed // 关闭且删除
 }
 
+Object.keys(ViewState).forEach((item) => console.log('sss ', parseInt(item)))
+
 @ccclass('BackgroudParam')
 export class BackgroudParam {
     constructor(param?: BackgroudParam) {

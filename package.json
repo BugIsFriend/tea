@@ -1,6 +1,7 @@
 {
   "name": "Component",
   "uuid": "05894f5b-b690-42eb-ac91-52277ad39f3e",
+  "type": "module",
   "creator": {
     "version": "3.8.7"
   }
