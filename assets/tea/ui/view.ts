@@ -131,7 +131,7 @@ export class View extends Component {
         this.state = ViewState.Opening
         this.updateView()
 
-        let aniFunc = NumberAnimateMap.get(this.action)
+        let aniFunc = NumberAnimateMap.get(this.animate)
         if (aniFunc) {
             aniFunc(this.node, true)
                 .call(() => this._completed(ViewState.Openged))
@@ -142,7 +142,7 @@ export class View extends Component {
     close() {
         if (this.state == ViewState.Opening || this.state == ViewState.Closing) return
         this.state = ViewState.Closing
-        let aniFunc = NumberAnimateMap.get(this.action)
+        let aniFunc = NumberAnimateMap.get(this.animate)
         if (aniFunc) {
             aniFunc(this.node, false)
                 .call(() => this._completed(ViewState.Closed))
