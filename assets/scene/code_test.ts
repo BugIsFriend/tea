@@ -26,17 +26,23 @@ export class TestCode extends Component {
 
         console.log('sss', typeof UIAnimate.bottom)
         if (!EDITOR) {
-            let dt = 0
-            ui.init()
-
-            ui.load('TestPopView').show(UIAnimate.scale, null, { active: true, color: color(0, 0, 0, 128) })
-            this.scheduleOnce(() => ui.load('TestPopView-top').show(UIAnimate.top, null, { active: true, color: color(0, 0, 0, 128) }), 0.5)
-            this.scheduleOnce(() => ui.load('TestPopView-bottom').show(UIAnimate.bottom, null, { active: true, color: color(0, 0, 0, 128) }), 1)
-            this.scheduleOnce(() => ui.load('TestPopView-left').show(UIAnimate.left, null, { active: true, color: color(0, 0, 0, 128) }), 1.5)
-            this.scheduleOnce(() => ui.load('TestPopView-right').show(UIAnimate.right, null, { active: true, color: color(0, 0, 0, 128) }), 2)
-            // this.scheduleOnce(() => ui.closeTop(), 2)
-            // this.scheduleOnce(() => ui.closeTop(), 3)
+            this.uiTest()
         }
+    }
+
+    uiTest() {
+        let dt = 0.5
+        ui.init()
+        ui.load('TestPopView').show(UIAnimate.scale, null, { active: true, color: color(0, 0, 0, 128) })
+        this.scheduleOnce(() => ui.load('TestPopView-top').show(UIAnimate.top, null, { active: true, color: color(0, 0, 0, 128) }), dt * 1)
+        this.scheduleOnce(() => ui.load('TestPopView-bottom').show(UIAnimate.bottom, null, { active: true, color: color(0, 255, 0, 10) }), dt * 2)
+        this.scheduleOnce(() => ui.load('TestPopView-left').show(UIAnimate.left, null, { active: true, color: color(0, 0, 0, 128) }), dt * 3)
+        this.scheduleOnce(() => ui.load('TestPopView-right').show(UIAnimate.right, null, { active: true, color: color(0, 0, 0, 128) }), dt * 4)
+        this.scheduleOnce(() => ui.closeTop(), dt * 5)
+        this.scheduleOnce(() => ui.closeTop(), dt * 6)
+        this.scheduleOnce(() => ui.closeTop(), dt * 7)
+        this.scheduleOnce(() => ui.closeTop(), dt * 8)
+        this.scheduleOnce(() => ui.closeTop(), dt * 9)
     }
 
     seekTest() {
