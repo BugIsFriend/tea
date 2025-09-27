@@ -23,7 +23,7 @@ import {
     EventHandler
 } from 'cc'
 import { EDITOR } from 'cc/env'
-import { BackgroudParam } from './const'
+import { BackgroudParam } from '../uitypes'
 const { ccclass, property, executionOrder, executeInEditMode } = _decorator
 
 @ccclass('Background')
@@ -126,7 +126,6 @@ export class Background extends Component {
     }
 
     setParam(param: BackgroudParam) {
-        // this.onInputEvent(param)
         Object.assign(this.param, param)
         this.updateView()
     }
@@ -165,6 +164,7 @@ export class Background extends Component {
         let tarColor = this.param.color.clone()
         let startColor = tarColor.clone()
         startColor.a = 0
+        sprite.color = startColor
         this.updateView()
         tween(sprite).to(openDt, { color: tarColor }).start().tag(1000)
     }

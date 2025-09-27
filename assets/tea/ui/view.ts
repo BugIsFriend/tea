@@ -6,10 +6,21 @@ import { EDITOR } from 'cc/env'
 import { loadAsync } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
-import { ViewAction, ViewState, ViewCategory, BackgroudParam, ActionCreator } from './const'
+import { ViewCategory } from './const'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
-import { _decorator, CCBoolean, Color, Component, Enum, EventHandler, Node, UITransform, Vec3, tween, Prefab, instantiate } from 'cc'
+import { _decorator, Component, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
+import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../uitypes'
+
+export enum ViewState {
+    None,
+    Opening,
+    Openged,
+    // TODO 界面的隐藏状态
+    Hide, // 隐藏不删除
+    Closing, //关闭中
+    Closed // 关闭且删除
+}
 
 @ccclass('View')
 @executionOrder(-1)
@@ -21,8 +32,8 @@ export class View extends Component {
     @property({ type: Enum(ViewCategory), tooltip: '弹出动作' })
     category: number = ViewCategory.Window
 
-    @property({ type: Enum(ViewAction), tooltip: '弹出动作' })
-    action: number = ViewAction.Scale
+    @property({ type: Enum(UIAnimate), tooltip: '弹出动作' })
+    animate: number = UIAnimate.scale
 
     @property({ type: BackgroudParam, tooltip: '背景参数' }) param: BackgroudParam = new BackgroudParam()
 
@@ -89,8 +100,14 @@ export class View extends Component {
 
     updateView() {}
 
-    // 动作执行完了
+    // 打开或关闭动画结束时回调函数
+    _completeFunc: Function
+    setCompletedFunc(func: Function) {
+        this._completeFunc = func
+    }
+
     _completed(state: ViewState) {
+        // 动作执行完了
         this.state = state
         let tarHandler = this.state == ViewState.Openged ? this.showHandler : this.closeHandler
 
@@ -103,67 +120,31 @@ export class View extends Component {
         } else if (this.state == ViewState.Closed) {
             this.onCloseCbs.forEach((func) => func())
         }
+
         if (this.category == ViewCategory.PopView || this.category == ViewCategory.Window) {
-            // todo 通知 ui 对象 做相关处理
-            ui.handleActionFinish(this)
+            this._completeFunc && this._completeFunc(this)
         }
     }
 
     show() {
         if (this.state == ViewState.Opening || this.state == ViewState.Closing) return
-        let uiRoot = this.node.parent
         this.state = ViewState.Opening
-        let [openDt] = [0.2, 0.15]
         this.updateView()
 
-        if (this.action == ViewAction.Scale) {
-            ActionCreator[this.action].show(this.node, () => this._completed(ViewState.Openged)).start()
-        } else if (this.action == ViewAction.Bottom || this.action == ViewAction.Top) {
-            let sign = this.action == ViewAction.Top ? 1 : -1
-            let bootY = uiRoot.getComponent(UITransform).contentSize.height
-            this.node.setPosition(new Vec3(0, sign * bootY, 0))
-            tween(this.node)
-                .to(openDt, { position: Vec3.ZERO })
-                .call(() => this._completed(ViewState.Openged))
-                .start()
-        } else if (this.action == ViewAction.Left || this.action == ViewAction.Right) {
-            let sign = this.action == ViewAction.Right ? 1 : -1
-            let x = uiRoot.getComponent(UITransform).contentSize.width
-            this.node.setPosition(new Vec3(sign * x, 0, 0))
-            tween(this.node)
-                .to(openDt, { position: Vec3.ZERO })
+        let aniFunc = NumberAnimateMap.get(this.animate)
+        if (aniFunc) {
+            aniFunc(this.node, true)
                 .call(() => this._completed(ViewState.Openged))
                 .start()
         }
     }
 
-    closeAnimate() {
+    close() {
         if (this.state == ViewState.Opening || this.state == ViewState.Closing) return
-        let uiRoot = this.node.parent
         this.state = ViewState.Closing
-        let [openDt] = [0.2, 0.15]
-        if (this.action == ViewAction.Scale) {
-            let [scaleB, scaleM] = [new Vec3(1.2, 1.2, 1.2), new Vec3(0, 0, 0)]
-
-            tween(this.node)
-                .to(openDt, { scale: scaleB }, { easing: 'cubicOut' })
-                .to(openDt, { scale: scaleM })
-                .call(() => this._completed(ViewState.Closed))
-                .start()
-        } else if (this.action == ViewAction.Bottom || this.action == ViewAction.Top) {
-            let sign = this.action == ViewAction.Top ? 1 : -1
-            let bootY = uiRoot.getComponent(UITransform).contentSize.height
-            let pos = new Vec3(0, sign * bootY, 0)
-            tween(this.node)
-                .to(openDt, { position: pos })
-                .call(() => this._completed(ViewState.Closed))
-                .start()
-        } else if (this.action == ViewAction.Left || this.action == ViewAction.Right) {
-            let sign = this.action == ViewAction.Right ? 1 : -1
-            let x = uiRoot.getComponent(UITransform).contentSize.width
-            let pos = new Vec3(sign * x, 0, 0)
-            tween(this.node)
-                .to(openDt, { position: pos })
+        let aniFunc = NumberAnimateMap.get(this.animate)
+        if (aniFunc) {
+            aniFunc(this.node, false)
                 .call(() => this._completed(ViewState.Closed))
                 .start()
         }

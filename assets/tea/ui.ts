@@ -5,14 +5,12 @@
  */
 
 import { loadAsync } from './load'
-import { BackgroudParam, ViewState } from './ui/const'
-import { View } from './ui/view'
+import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
-import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Size } from 'cc'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
+import { BackgroudParam, UIAnimate } from './uitypes'
 
-interface IShow {
-    show: (param?: BackgroudParam, closeCB?: Function) => void
-}
+type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
 
 export class UI {
     static _instance: UI = null
@@ -31,6 +29,8 @@ export class UI {
     private color: Color = new Color(0, 0, 0, Math.floor(255 * 0.6))
     private defaultParam: BackgroudParam = new BackgroudParam({ color: this.color, active: true, touch: true })
 
+    loadParam: Param
+
     /**
      * 切换场景，要把所有的UI 都删除
      */
@@ -39,6 +39,9 @@ export class UI {
         this.init()
     }
 
+    get root() {
+        return this._root
+    }
     /**
      * 首个场景调用下
      */
@@ -89,9 +92,8 @@ export class UI {
         return background
     }
 
-    async _load(asset: string | Prefab | Node, bundle?: string, tag?: string): Promise<View> {
-        if (!asset) return null
-
+    async _load(loadParam: Param): Promise<View> {
+        let { asset, bundle, tag } = loadParam
         let node: Node = null
         if (asset instanceof Node) {
             node = asset
@@ -106,6 +108,7 @@ export class UI {
             node = instantiate(prefab)
         }
         let viewcom = node.getComponent(View) || node.addComponent(View)
+        viewcom.setCompletedFunc(this.handleViewAnimateCompleted.bind(this))
         viewcom.tag = tag || ''
         return viewcom
     }
@@ -117,13 +120,40 @@ export class UI {
      * @param tag
      * @returns
      */
-    load(asset: string | Prefab | Node, bundle?: string, tag?: string): IShow {
-        return {
-            show: (param?: BackgroudParam, closeCb?: Function) => {
-                {
-                    ui._load(asset, bundle, tag).then((view) => ui.show({ view, param, closeCb }))
-                }
+    load(asset: string | Prefab | Node, bundle?: string, tag?: string): UI {
+        this.loadParam = { asset, bundle, tag }
+        return this
+    }
+
+    /**
+     * 先调用 load(param).show(param)
+     * @param animate
+     * @param closeCb
+     * @param param
+     */
+    public show(animate?: UIAnimate, closeCb?: Function, param?: BackgroudParam): null
+
+    public show(view: View, closeCb?: Function, param?: BackgroudParam): null
+
+    public show(view?: View | UIAnimate, closeCb?: Function, param?: BackgroudParam) {
+        if (!view || typeof view == 'number') {
+            let animate = view as number
+            ui._load(ui.loadParam).then((view) => {
+                view.animate = animate
+                ui.show(view, closeCb, param)
+            })
+            ui.loadParam = null
+        } else {
+            if (closeCb) view.appendClosedCb(closeCb)
+            if (this.getViewIdx(view) == -1) {
+                view.node.active = true
+                this._root.addChild(view.node)
+                this.uiViews.push(view)
             }
+            let param0 = Object.assign(this.defaultParam, param || view.param || {})
+            view.setBackgroundParam({ ...param0 })
+            this.backgroundAnimate(true, view)
+            view.show()
         }
     }
 
@@ -131,39 +161,22 @@ export class UI {
         this.background_0.setParam(param)
     }
 
-    public show(showParam: { view?: View; closeCb?: Function; param?: BackgroudParam }) {
-        let { closeCb, view, param } = showParam
-        closeCb && view.appendClosedCb(closeCb)
-
-        if (this.getViewIdx(view) == -1) {
-            view.node.active = true
-            this._root.addChild(view.node)
-            this.uiViews.push(view)
-        }
-
-        let param0 = Object.assign(this.defaultParam, param || {})
-
-        view.setBackgroundParam({ ...param0 })
-        this.backgroundAnimate(true, view)
-        view.show()
-    }
-
     /**
      *  播放背景动画
-     * @param show
+     * @param show  显示或者不显示
      * @param curViewCom
      */
-    public backgroundAnimate(show: boolean, curView: View) {
+    public backgroundAnimate(show: boolean, viewcom: View) {
         if (show) {
-            this.setBackgroundParam(curView.param)
+            this.setBackgroundParam(viewcom.param)
             this.background_0.fadeIn()
             this.background_0.setSiblingIndex(this.uiViews.length - 1)
         } else {
             let prebg = this.background_0
             prebg.fadeOut(() => prebg.setParam({ active: false }))
-            if (curView) {
+            if (viewcom) {
                 this.background_1.setSiblingIndex(this.uiViews.length - 1)
-                this.background_1.setParam(curView.param)
+                this.background_1.setParam(viewcom.param)
                 this.background_1.fadeIn()
 
                 let temp = this.background_1
@@ -177,15 +190,16 @@ export class UI {
      * 打开和关闭播放完的回调
      * @param viewcom
      */
-    public handleActionFinish(viewcom: View) {
+    public handleViewAnimateCompleted(viewcom: View) {
         if (viewcom.state == ViewState.Openged) {
         } else if (viewcom.state == ViewState.Closed) {
+            // 1：关闭动作执行完毕，销毁该节点；
             viewcom.node.destroy()
 
-            // 最顶层关闭，弹出下一个
+            // 2：弹出下一个
             let view = this.getTop()
             if (view && view.state == ViewState.Hide) {
-                ui.show({ view, param: view.param })
+                ui.show(view, null, null)
             }
         }
     }
@@ -195,12 +209,12 @@ export class UI {
         let view = this.uiViews[idx]
         if (view) {
             this.uiViews.splice(idx, 1)
-            view.closeAnimate()
+            view.close()
             this.backgroundAnimate(false, this.getTop())
         }
     }
 
-    getTop() {
+    public getTop() {
         return this.uiViews[this.uiViews.length - 1]
     }
 

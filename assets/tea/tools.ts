@@ -28,13 +28,10 @@ export function idxs<T extends object>(enumObj: T, kt: 'string' | 'number' = 'nu
  * @param defaultMap
  * @returns
  */
-export function enumMap<T extends object>(enumObj: T, orderMap?: any[], defaultMap?: any): eMap[] {
-    return idxs(enumObj).map((key, idx) => {
-        return {
-            idx: idx,
-            ikey: key,
-            skey: enumObj[key],
-            map: (orderMap && orderMap[idx]) || defaultMap
-        }
+export function enum2Map<T extends object, MT>(enumObj: T, kt: 'string' | 'number' = 'string', orderMap?: MT[], defaultMap?: any): Map<string | number, MT> {
+    let map = new Map<string | number, any>()
+    idxs(enumObj, kt).forEach((key, idx) => {
+        map.set(key, (orderMap && orderMap[idx]) || defaultMap)
     })
+    return map
 }
