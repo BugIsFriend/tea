@@ -74,6 +74,9 @@ export class UI {
             this.background_0 = this._root.getChildByName('CommonBgView0').getComponent(Background)
             this.background_1 = this._root.getChildByName('CommonBgView1').getComponent(Background)
         }
+        let closeTop = this.closeTop.bind(this)
+        this.background_0.setTouchCloseFunc(closeTop)
+        this.background_1.setTouchCloseFunc(closeTop)
     }
 
     createBackground(idx: number) {
@@ -131,17 +134,16 @@ export class UI {
      * @param closeCb
      * @param param
      */
-    public show(animate?: UIAnimate, closeCb?: Function, param?: BackgroudParam): null
+    public async show(animate?: UIAnimate, closeCb?: Function, param?: BackgroudParam): Promise<View>
 
-    public show(view: View, closeCb?: Function, param?: BackgroudParam): null
+    public async show(view: View, closeCb?: Function, param?: BackgroudParam): Promise<View>
 
-    public show(view?: View | UIAnimate, closeCb?: Function, param?: BackgroudParam) {
+    public async show(view?: View | UIAnimate, closeCb?: Function, param?: BackgroudParam): Promise<View> {
         if (!view || typeof view == 'number') {
             let animate = view as number
-            ui._load(ui.loadParam).then((view) => {
-                view.animate = animate
-                ui.show(view, closeCb, param)
-            })
+            let _view = await ui._load(ui.loadParam)
+            _view.animate = animate
+            ui.show(_view, closeCb, param)
             ui.loadParam = null
         } else {
             if (closeCb) view.appendClosedCb(closeCb)
@@ -154,6 +156,7 @@ export class UI {
             view.setBackgroundParam({ ...param0 })
             this.backgroundAnimate(true, view)
             view.show()
+            return view
         }
     }
 

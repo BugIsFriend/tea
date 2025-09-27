@@ -87,7 +87,7 @@ export class BackgroudParam {
     //能否触摸
     @property(CCBoolean) touch?: boolean //能否触摸
 
-    // TODO 该功能还未实现
+    // [Y] 该功能还未实现
     @property(CCBoolean) touchClose?: boolean //点击关闭
 
     //拦截触摸事件

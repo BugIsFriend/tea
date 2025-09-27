@@ -107,11 +107,11 @@ export class Background extends Component {
 
     onInputEvent(param: BackgroudParam) {
         this.addBgNode()
-        let { touch, intercept } = param
+        let { touch, intercept, touchClose } = param
         let touchBlock = this.bgNode.getComponent(BlockInputEvents)
-        if (this._onTouch !== touch) {
+        if (this._onTouch !== touch || touchClose) {
             if (!touch) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
-            if (touch) {
+            if (touch || touchClose) {
                 this.node.on(Input.EventType.TOUCH_START, this.onTouch, this)
             }
             this._onTouch = touch
@@ -146,10 +146,17 @@ export class Background extends Component {
         }
     }
 
+    // 设置触摸关闭回调函数
+    _touchCloseFunc: Function
+    setTouchCloseFunc(func: Function) {
+        this._touchCloseFunc = func
+    }
+
     onTouch() {
-        console.log('sssss  ', this.name)
         this.param.touch && this.touchHandler.forEach((item) => item.emit(null))
-        return true
+
+        this._touchCloseFunc && this._touchCloseFunc()
+        if (this.param.touchClose) return true
     }
 
     setactive(active: boolean) {
