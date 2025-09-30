@@ -2,7 +2,7 @@
  * @Author: myerse.lee
  * @Date: 2025-09-23 16:50:15
  * @Last Modified by: myerse.lee
- * @Last Modified time: 2025-09-23 22:32:33
+ * @Last Modified time: 2025-09-30 16:45:37
  */
 
 export type KT = number | string
@@ -28,7 +28,7 @@ export function idxs<T extends object>(enumObj: T, kt: 'string' | 'number' = 'nu
  * @param defaultMap
  * @returns
  */
-export function enum2Map<T extends object, MT>(enumObj: T, kt: 'string' | 'number' = 'string', orderMap?: MT[], defaultMap?: any): Map<string | number, MT> {
+export function enum2map<T extends object, MT>(enumObj: T, kt: 'string' | 'number' = 'string', orderMap?: MT[], defaultMap?: any): Map<string | number, MT> {
     let map = new Map<string | number, any>()
     idxs(enumObj, kt).forEach((key, idx) => {
         map.set(key, (orderMap && orderMap[idx]) || defaultMap)

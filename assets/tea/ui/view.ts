@@ -6,7 +6,7 @@ import { EDITOR } from 'cc/env'
 import { loadAsync } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
-import { ViewCategory } from './const'
+import { ViewCategory } from './category'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
 import { _decorator, Component, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
@@ -16,12 +16,14 @@ export enum ViewState {
     None,
     Opening,
     Openged,
-    // TODO 界面的隐藏状态
     Hide, // 隐藏不删除
     Closing, //关闭中
     Closed // 关闭且删除
 }
 
+/**
+ * 弹框基类
+ */
 @ccclass('View')
 @executionOrder(-1)
 @disallowMultiple

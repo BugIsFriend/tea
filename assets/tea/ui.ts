@@ -1,13 +1,13 @@
-/**
- * @author myerse.lee
- * @Date: 2024-09-25 17:10:15
- * @Last Modified time: 2024-09-25 18:46:51
- */
-
+/*
+ * @Author: myerse.lee
+ * @Date: 2025-09-30 16:43:12
+ * @Modified by:   myerse.lee
+ * @Modified time: 2025-09-30 16:43:12
+ * */
 import { loadAsync } from './load'
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
-import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color } from 'cc'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
 
 type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
@@ -110,6 +110,7 @@ export class UI {
             }
             node = instantiate(prefab)
         }
+        // TODO 进行优化 View 或者继承 View 的子类
         let viewcom = node.getComponent(View) || node.addComponent(View)
         viewcom.setCompletedFunc(this.handleViewAnimateCompleted.bind(this))
         viewcom.tag = tag || ''
@@ -235,6 +236,14 @@ export class UI {
         }
         return -1
     }
+
+    /*  tip 相关操作 */
+    /**
+     *
+     * @param content 显示内容
+     * @param param  {long:时长, push：压入列表(将之前的 Tip 向上顶， position：显示位置信息 )}
+     */
+    public tip(content: string, { long, push }: { long?: number; push?: boolean } = {}) {}
 }
 
 export const ui = UI.getInstance()

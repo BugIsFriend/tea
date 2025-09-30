@@ -1,9 +1,11 @@
 import { _decorator, Color, CCBoolean, ITweenOption, Node, Tween, tween, UITransform, v3, Vec3 } from 'cc'
 const { ccclass, property } = _decorator
 import { ui } from './ui'
-import { enum2Map } from './tools'
+import { enum2map } from './tools'
 const _dt = 0.2
 
+const ease: ITweenOption = { easing: 'sineIn' }
+// TODO 优化弹出动画表现
 var Animates = {
     none: function (node: Node, show: boolean) {
         return tween(node)
@@ -67,9 +69,8 @@ export enum UIAnimate {
     right // 从右边移到中间
 }
 
-const ease: ITweenOption = { easing: 'sineIn' }
 const animateFuncs = [Animates.none, Animates.scale, Animates.bottom, Animates.top, Animates.left, Animates.right]
-export const NumberAnimateMap = enum2Map(UIAnimate, 'number', animateFuncs) // 映射
+export const NumberAnimateMap = enum2map(UIAnimate, 'number', animateFuncs) // 映射
 
 @ccclass('BackgroudParam')
 export class BackgroudParam {

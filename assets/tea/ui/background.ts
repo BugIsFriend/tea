@@ -1,9 +1,9 @@
-/**
+/*
  * @Author: myerse.lee
- * @Date: 2024-09-25 17:10:15
- * @Last Modified by: myerse.lee
- * @Last Modified time: 2024-10-09 22:07:30
- */
+ * @Date: 2025-09-30 15:40:49
+ * @Modified by:   myerse.lee
+ * @Modified time: 2025-09-30 15:40:49
+ * */
 import {
     _decorator,
     assetManager,
