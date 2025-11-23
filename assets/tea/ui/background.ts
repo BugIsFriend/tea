@@ -74,7 +74,6 @@ export class Background extends Component {
                 this.bgNode.active = this.param.active
 
                 // 背景 给节点添加 UITransform
-
                 let vnode_Trans = this.node.getComponent(UITransform)
                 if (!vnode_Trans) {
                     vnode_Trans = this.node.addComponent(UITransform)
@@ -133,8 +132,6 @@ export class Background extends Component {
     updateView() {
         this.addBgNode()
         if (this.bgNode) {
-            let vnode_Trans = this.node.getComponent(UITransform)
-            this.bgNode.getComponent(UITransform).setContentSize(vnode_Trans.contentSize.clone())
 
             // 修改颜色
             let sprite = this.bgNode.getComponent(Sprite)
@@ -144,6 +141,9 @@ export class Background extends Component {
 
             this.onInputEvent({ ...this.param })
         }
+
+        let vnode_Trans = this.node.getComponent(UITransform)
+        this.bgNode.getComponent(UITransform).setContentSize(vnode_Trans.contentSize.clone())
     }
 
     // 设置触摸关闭回调函数

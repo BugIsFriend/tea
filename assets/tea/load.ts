@@ -2,7 +2,7 @@
  * author myerse.lee
  * created: 2024-09-25 17:10:15
  */
-import { Asset, AssetManager, assetManager, warn } from 'cc'
+import { Asset, AssetManager, assetManager, resources, warn } from 'cc'
 
 /**
  * 获取资源
@@ -25,25 +25,30 @@ function getAsset<T extends Asset>(url: string, bundle: AssetManager.Bundle, res
 /**
  * 异步加载资源
  * @param url
- * @param bundleName
+ * @param bundleName?: bundleName名不存在机会将 url 第一个路径解释为 bundle, 如果 不存在 bundle 将尝试从 resource获取资源
  * @returns
  */
-export function loadAsync<T extends Asset>(url: string, bundleName: string = 'resources'): Promise<T> {
+export function asyncload<T extends Asset>(url: string, bundleName?:string): Promise<T> {
     return new Promise<T>((resolve, reject) => {
+        let _path = url
+        if (!bundleName) { 
+            let sidx = url.indexOf('/')
+            bundleName = url.substring(0,sidx)
+            _path =  url.substring(sidx+1)
+        }
         let tarBundle = assetManager.getBundle(bundleName)
         if (!!tarBundle) {
-            let asset: T = tarBundle.get<T>(url)
+            let asset: T = tarBundle.get<T>(_path)
             if (asset) resolve(asset)
             else getAsset<T>(url, tarBundle, resolve, reject)
         } else {
             assetManager.loadBundle(bundleName, (error, bundle: AssetManager.Bundle) => {
-                console.log('ssss   ', url, bundleName, error)
-                if (!error) {
-                    getAsset<T>(url, bundle, resolve, reject)
-                } else {
-                    reject(null)
-                    warn(`load bundle: ${bundleName} error`, error)
+                if (!!error) {
+                    warn(`Fail: 获取 ${bundleName} bundle 失败， 尝试从 resource bundle 获取目标资源`)
+                    bundle = resources
+                    _path = url
                 }
+                getAsset<T>(_path, bundle, resolve, reject)
             })
         }
     })

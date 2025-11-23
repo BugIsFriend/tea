@@ -3,7 +3,7 @@
  * @Date: 2024-09-25 17:10:15
  */
 import { EDITOR } from 'cc/env'
-import { loadAsync } from '../load'
+import { asyncload } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
 import { ViewCategory } from './category'
@@ -32,7 +32,7 @@ export class View extends Component {
     public tag: string // 标记当前ViewTag
 
     @property({ type: Enum(ViewCategory), tooltip: '弹出动作' })
-    category: number = ViewCategory.Window
+    category: number = ViewCategory.View
 
     @property({ type: Enum(UIAnimate), tooltip: '弹出动作' })
     animate: number = UIAnimate.scale
@@ -65,7 +65,7 @@ export class View extends Component {
             node = asset
         } else if (typeof asset == 'string' || asset instanceof Prefab) {
             if (typeof asset == 'string') {
-                asset = (await loadAsync(asset, bundleName)) as any
+                asset = (await asyncload(asset, bundleName)) as any
                 if (!asset) return null
             }
             node = instantiate(asset)
@@ -123,7 +123,7 @@ export class View extends Component {
             this.onCloseCbs.forEach((func) => func())
         }
 
-        if (this.category == ViewCategory.PopView || this.category == ViewCategory.Window) {
+        if (this.category == ViewCategory.PopView || this.category == ViewCategory.View) {
             this._completeFunc && this._completeFunc(this)
         }
     }

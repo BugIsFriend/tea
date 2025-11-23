@@ -1,4 +1,4 @@
-import { Component, js, warn, error } from 'cc'
+import { Component, js, warn, error, isValid } from 'cc'
 
 export interface IEmitter {
     id: string
@@ -26,16 +26,14 @@ export class Emitter {
      */
     private checkEmmit(item: IEmitter) {
         let success = true
-        let _class = item.context.constructor
-        if (js.isChildClassOf(_class, Node) || js.isChildClassOf(_class, Component)) {
-            // @ts-ignore
-            if (!item.context.isValid) {
-                this.off({ context: item.context })
-                // @ts-ignore
-                warn(`object:${item.context.name} is invalid, clear all ${item.id} callbacks`)
-            }
+         // @ts-ignore
+        if (!item.context.isValid || !isValid(item.context) ) {
             success = false
+            this.off({ context: item.context })
+            // @ts-ignore
+            warn(`object:${item.context.name} is invalid, clear all ${item.id} callbacks`)
         }
+
         return success
     }
 

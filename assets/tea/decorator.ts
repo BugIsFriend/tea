@@ -104,7 +104,7 @@ export function subscribe(msg: string, priority?: number, once?: boolean) {
 }
 
 /**
- * 为该函数触发一个消息: 该方法被调用，触发一个消息；
+ * 该方法被调用，触发一个消息；
  * 返回值会作为触发消息的参数；
  * @param msg
  */

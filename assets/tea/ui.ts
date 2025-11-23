@@ -4,17 +4,18 @@
  * @Modified by:   myerse.lee
  * @Modified time: 2025-09-30 16:43:12
  * */
-import { loadAsync } from './load'
+import { asyncload } from './load'
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
+import { tea } from './tea'
 
 type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
 
 export class UI {
     static _instance: UI = null
-    static getInstance() {
+    static instance() {
         if (!UI._instance) UI._instance = new UI()
         return UI._instance
     }
@@ -46,27 +47,17 @@ export class UI {
      * 首个场景调用下
      */
     init() {
-        let tip = ''
-        if (!director.getScene()) tip = 'no running scene'
-        if (!find('Canvas', director.getScene())) tip = `the scene: ${director.getScene().name},  no Canvas node `
-
-        !!tip && warn(tip)
-
-        if (!!tip) return
-
-        let canvas = find('Canvas', director.getScene())
-
-        this._root = find('_root', canvas)
-
+        let view_root = tea.view_root()
+        this._root = find('_root', view_root)
         if (!this._root) {
             this.uiViews = []
             this._root = new Node('_root')
-            canvas.addChild(this._root)
+            view_root.addChild(this._root)
             let uitransfor = this._root.addComponent(UITransform)
             this._root.layer = Layers.BitMask.UI_2D
-            let size_canvas = canvas.getComponent(UITransform).contentSize
+            let size_canvas = view_root.getComponent(UITransform).contentSize
             this._root.getComponent(UITransform).setContentSize(size_canvas)
-            uitransfor.setContentSize(canvas.getComponent(UITransform).contentSize)
+            uitransfor.setContentSize(view_root.getComponent(UITransform).contentSize)
 
             this.background_0 = this.createBackground(0)
             this.background_1 = this.createBackground(1)
@@ -104,7 +95,7 @@ export class UI {
             node = instantiate(asset)
         } else if (typeof asset == 'string') {
             tag = tag || asset.split('/')[asset.split('/').length - 1]
-            let prefab = (await loadAsync(asset, bundle || 'resources')) as any
+            let prefab = (await asyncload(asset, bundle || 'resources')) as any
             if (!prefab) {
                 throw new Error(`did't find prefab: ${asset}`)
             }
@@ -236,14 +227,6 @@ export class UI {
         }
         return -1
     }
-
-    /*  tip 相关操作 */
-    /**
-     *
-     * @param content 显示内容
-     * @param param  {long:时长, push：压入列表(将之前的 Tip 向上顶， position：显示位置信息 )}
-     */
-    public tip(content: string, { long, push }: { long?: number; push?: boolean } = {}) {}
 }
 
-export const ui = UI.getInstance()
+export const ui = UI.instance()
