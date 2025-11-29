@@ -5,9 +5,10 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { asyncload } from '../../load'
+import { asynload } from '../../load'
+import { find, Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager ,} from 'cc'
+import { ITBox } from './tip-box'
 import { tea } from '../../tea'
-import { find, Node, Layers, UITransform, Prefab, instantiate } from 'cc'
 
 /**
  *  Toa管理类：
@@ -23,6 +24,7 @@ class Tip {
         return Tip._instance
     }
     private tip_root: Node = null
+    private tip_box: Node = null
     private tip_prefab: Prefab = null
     private box_prefab: Prefab = null
 
@@ -32,37 +34,55 @@ class Tip {
      * @param bundle 
      */
     async initDefaultTip(prefab: string, bundle: string) {
-        this.tip_prefab = await asyncload<Prefab>(prefab, bundle)
+        this.tip_prefab = await asynload<Prefab>(prefab, bundle)
         this.tip_prefab.addRef()
     }
 
     // 初始化Tips
     init() {
-        let view_root = tea.view_root()
-        this.tip_root = find('tip_root', view_root)
+        let _root = tea.root()
+        this.tip_root = find('tip_root', _root)
         if (!this.tip_root) {
             this.tip_root = new Node('tip_root')
-            view_root.addChild(this.tip_root)
+            _root.addChild(this.tip_root)
             let uitransfor = this.tip_root.addComponent(UITransform)
             this.tip_root.layer = Layers.BitMask.UI_2D
-            let size_canvas = view_root.getComponent(UITransform).contentSize
-            this.tip_root.getComponent(UITransform).setContentSize(size_canvas)
-            uitransfor.setContentSize(view_root.getComponent(UITransform).contentSize)
+            let size_canvas = _root.getComponent(UITransform).contentSize.clone()
+            uitransfor.setContentSize(size_canvas)
+
+            this.tip_box = new Node('tip_box')
+            this.tip_box.layer = Layers.BitMask.UI_2D
+            this.tip_root.addChild(this.tip_box)
         }
+
+        
+        asynload<Prefab>('1c1a1b62-5251-4020-a3bf-d61c28c1633c', AssetManager.BuiltinBundleName.MAIN).then((prefab) => { 
+            this.tip_prefab = prefab
+        })
     }
 
     /**
      * 通用 box 提示弹框
      */
     public show(box: ITBox): void
-    public show(content: string,  push?: boolean, time?: number ): void
+
+    /**
+     * 
+     * @param content 
+     * @param bubbling 
+     * @param time 
+     */
+    public show(content: string,  time?: number,  bubbling?: boolean ): void
     
-    public show(boxOrContent: ITBox | string,  push?: boolean, time?: number) {
+    public show(boxOrContent: ITBox | string, time?: number,  bubbling?: boolean) {
         // normalize arguments to ITBox
         let box: ITBox
         if (typeof boxOrContent === 'string') {
             box = { content: boxOrContent }
-            // opts.push / opts.time can be used here if needed
+            let tip_view = instantiate(this.tip_prefab)
+            this.tip_root.addChild(tip_view)
+            tip_view.layer = Layers.BitMask.UI_2D
+            tween(tip_view).delay(time?time:3).removeSelf().start()
         } else {
             box = boxOrContent
         }
@@ -71,17 +91,7 @@ class Tip {
     }
 }
 
-interface ITBox { 
-    title?:string   // 标题
-    content:string  // 提示内容
-    ok?: {
-        txt?: string,
-        cb?: Function,
-    },
-    cancel?: {
-        txt?: string,
-        cb?: Function,
-    }   
-}
 
-const toast = Tip.instance()
+export const tip = Tip.instance()
+
+

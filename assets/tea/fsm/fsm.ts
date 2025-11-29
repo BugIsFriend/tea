@@ -13,27 +13,27 @@ const { ccclass, property, executeInEditMode, executionOrder } = _decorator
  * TODO:   1.  添加全局状态；
  */
 @ccclass('StateMachine')
-@executeInEditMode()
+// @executeInEditMode()
 @executionOrder(3)
 export class StateMachine extends Component {
     owner: Node
 
+    curState = '' // 设置状态列表
     currentStateCom: State // 当前的状态类
 
     @property({ type: [CCString], tooltip: '状态组件都需要继承 State 类' }) states = []
 
-    @property({
-        tooltip: '没有值,重新激活组件',
-        type: Enum({}),
-        visible() {
-            let e_states = (this.states as []).map((state) => {
-                return { name: state, value: state }
-            })
-            CCClass.Attr.setClassAttr(this, 'curState', 'enumList', e_states)
-            return true
-        }
-    })
-    curState = '' // 设置状态列表
+    // @property({
+    //     tooltip: '没有值,重新激活组件',
+    //     type: Enum({}),
+    //     visible() {
+    //         let e_states = (this.states as []).map((state) => {
+    //             return { name: state, value: state }
+    //         })
+    //         CCClass.Attr.setClassAttr(this, 'curState', 'enumList', e_states)
+    //         return true
+    //     }
+    // })
 
     protected onLoad(): void {
         this.init()

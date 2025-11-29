@@ -16,7 +16,6 @@ import {
     v2,
     warn,
     tween,
-    isValid,
     Size,
     Tween,
     Input,
@@ -98,10 +97,18 @@ export class Background extends Component {
             })
         }
 
+        this.node.on(Node.EventType.SIZE_CHANGED, this.onNodeSizeChange, this)
+        
+        // 编辑器中修改组件属性，更新逻辑
         if (EDITOR) {
             this.unschedule(this.updateView)
             this.schedule(this.updateView, 0.2)
         }
+    }
+
+    onNodeSizeChange() {
+        let vnode_Trans = this.node.getComponent(UITransform)
+        this.bgNode.getComponent(UITransform).setContentSize(vnode_Trans.contentSize.clone())
     }
 
     onInputEvent(param: BackgroudParam) {
@@ -111,7 +118,7 @@ export class Background extends Component {
         if (this._onTouch !== touch || touchClose) {
             if (!touch) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
             if (touch || touchClose) {
-                this.node.on(Input.EventType.TOUCH_START, this.onTouch, this)
+                this.node.on(Input.EventType.TOUCH_END, this.onTouch, this)
             }
             this._onTouch = touch
         }
@@ -141,9 +148,6 @@ export class Background extends Component {
 
             this.onInputEvent({ ...this.param })
         }
-
-        let vnode_Trans = this.node.getComponent(UITransform)
-        this.bgNode.getComponent(UITransform).setContentSize(vnode_Trans.contentSize.clone())
     }
 
     // 设置触摸关闭回调函数
@@ -199,6 +203,6 @@ export class Background extends Component {
     protected onDestroy(): void {
         Tween.stopAllByTag(1000)
         Tween.stopAllByTag(1001)
-        isValid(this.bgNode) && this.bgNode.destroy()
+        this.bgNode.isValid && this.bgNode.destroy()
     }
 }

@@ -3,7 +3,7 @@
  * @Date: 2024-09-25 17:10:15
  */
 import { EDITOR } from 'cc/env'
-import { asyncload } from '../load'
+import { asynload } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
 import { ViewCategory } from './category'
@@ -65,7 +65,7 @@ export class View extends Component {
             node = asset
         } else if (typeof asset == 'string' || asset instanceof Prefab) {
             if (typeof asset == 'string') {
-                asset = (await asyncload(asset, bundleName)) as any
+                asset = (await asynload(asset, bundleName)) as any
                 if (!asset) return null
             }
             node = instantiate(asset)
@@ -93,7 +93,6 @@ export class View extends Component {
      * 在编辑器中定时调用 update;
      */
     runEditor() {
-        // 添加默认背景颜色
         if (EDITOR) {
             this.unschedule(this.updateView)
             this.schedule(this.updateView, 0.2)

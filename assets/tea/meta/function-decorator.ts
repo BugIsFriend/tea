@@ -6,7 +6,7 @@
  */
 
 import { Component, find, js, Node } from 'cc'
-import { emmiter } from './emitter'
+import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
 
@@ -118,3 +118,13 @@ export function publish(msg: string, data?: any) {
         return descriptor
     }
 }
+
+
+/**
+ * 给某个方法增加一个 debug button 入口
+ * @param entryName 
+ */
+export function debugentry(entryName) {
+    
+}
+

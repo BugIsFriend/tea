@@ -1,11 +1,12 @@
 import { _decorator, Color, color, Component, log, Node, Sprite, tween, v3, warn } from 'cc'
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
-import { publish, seek, subscribe } from '../tea/decorator'
+import { publish, seek, subscribe } from '../tea/meta/function-decorator'
 import { View } from '../tea/ui/view'
 import { ui } from '../tea/ui'
 import { EDITOR } from 'cc/env'
 import { UIAnimate } from '../tea/uitypes'
+import { tip } from '../tea/ui/tip/tip'
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('TestCode')
@@ -33,6 +34,8 @@ export class TestCode extends Component {
     uiTest() {
         let dt = 0.5
         ui.init()
+        tip.init()
+
         ui.load('TestPopView').show(UIAnimate.scale, null, { active: true, color: color(0, 0, 0, 128) })
         this.scheduleOnce(() => ui.load('TestPopView-top').show(UIAnimate.top, null, { active: true, color: color(0, 0, 0, 128) }), dt * 1)
         this.scheduleOnce(() => ui.load('TestPopView-bottom').show(UIAnimate.bottom, null, { active: true, color: color(0, 255, 0, 10) }), dt * 2)
@@ -45,7 +48,9 @@ export class TestCode extends Component {
         // this.scheduleOnce(() => ui.closeTop(), dt * 6)
         // this.scheduleOnce(() => ui.closeTop(), dt * 7)
         // this.scheduleOnce(() => ui.closeTop(), dt * 8)
-        // this.scheduleOnce(() => ui.closeTop(), dt * 9)
+        this.scheduleOnce(() => tip.show('tip pop test'), dt * 6)
+
+        
     }
 
     seekTest() {
@@ -99,7 +104,7 @@ export class TestCode extends Component {
 
     @subscribe('testSubscritbe')
     testSubscritbe(value) {
-        warn('test subscrib', value)
+        warn('test subscrib: ', value)
     }
 
     @publish('testSubscritbe')

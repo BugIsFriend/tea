@@ -4,23 +4,20 @@
  * @Modified by:   myerse.lee
  * @Modified time: 2025-09-30 16:43:12
  * */
-import { asyncload } from './load'
+import { asynload } from './load'
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
 import { tea } from './tea'
+import { singleton } from './meta/class-decorator'
 
 type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
 
-export class UI {
-    static _instance: UI = null
-    static instance() {
-        if (!UI._instance) UI._instance = new UI()
-        return UI._instance
-    }
 
-    private _root: Node = null
+@singleton
+export class UI {
+    private _ui_root: Node = null
     private uiViews: Array<View> = []
 
     // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
@@ -36,34 +33,33 @@ export class UI {
      * 切换场景，要把所有的UI 都删除
      */
     onSwitchScene() {
-        this._root = null
+        this._ui_root = null
         this.init()
     }
 
     get root() {
-        return this._root
+        return this._ui_root
     }
     /**
      * 首个场景调用下
      */
     init() {
-        let view_root = tea.view_root()
-        this._root = find('_root', view_root)
-        if (!this._root) {
+        let _root = tea.root()
+        this._ui_root = find('_ui_root', _root)
+        if (!this._ui_root) {
             this.uiViews = []
-            this._root = new Node('_root')
-            view_root.addChild(this._root)
-            let uitransfor = this._root.addComponent(UITransform)
-            this._root.layer = Layers.BitMask.UI_2D
-            let size_canvas = view_root.getComponent(UITransform).contentSize
-            this._root.getComponent(UITransform).setContentSize(size_canvas)
-            uitransfor.setContentSize(view_root.getComponent(UITransform).contentSize)
+            this._ui_root = new Node('view_root')
+            _root.addChild(this._ui_root)
+            let uitransfor = this._ui_root.addComponent(UITransform)
+            this._ui_root.layer = Layers.BitMask.UI_2D
+            let size_canvas = _root.getComponent(UITransform).contentSize.clone()
+            uitransfor.setContentSize(size_canvas)
 
             this.background_0 = this.createBackground(0)
             this.background_1 = this.createBackground(1)
         } else {
-            this.background_0 = this._root.getChildByName('CommonBgView0').getComponent(Background)
-            this.background_1 = this._root.getChildByName('CommonBgView1').getComponent(Background)
+            this.background_0 = this._ui_root.getChildByName('CommonBgView0').getComponent(Background)
+            this.background_1 = this._ui_root.getChildByName('CommonBgView1').getComponent(Background)
         }
         let closeTop = this.closeTop.bind(this)
         this.background_0.setTouchCloseFunc(closeTop)
@@ -81,7 +77,7 @@ export class UI {
         background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
         background.updateUITransform(size_canvas.clone())
 
-        this._root.addChild(background.node)
+        this._ui_root.addChild(background.node)
 
         return background
     }
@@ -95,13 +91,13 @@ export class UI {
             node = instantiate(asset)
         } else if (typeof asset == 'string') {
             tag = tag || asset.split('/')[asset.split('/').length - 1]
-            let prefab = (await asyncload(asset, bundle || 'resources')) as any
+            let prefab = (await asynload(asset, bundle || 'resources')) as any
             if (!prefab) {
                 throw new Error(`did't find prefab: ${asset}`)
             }
             node = instantiate(prefab)
         }
-        // TODO 进行优化 View 或者继承 View 的子类
+
         let viewcom = node.getComponent(View) || node.addComponent(View)
         viewcom.setCompletedFunc(this.handleViewAnimateCompleted.bind(this))
         viewcom.tag = tag || ''
@@ -141,7 +137,7 @@ export class UI {
             if (closeCb) view.appendClosedCb(closeCb)
             if (this.getViewIdx(view) == -1) {
                 view.node.active = true
-                this._root.addChild(view.node)
+                this._ui_root.addChild(view.node)
                 this.uiViews.push(view)
             }
             let param0 = Object.assign(this.defaultParam, param || view.param || {})
@@ -229,4 +225,4 @@ export class UI {
     }
 }
 
-export const ui = UI.instance()
+export const ui = new UI()

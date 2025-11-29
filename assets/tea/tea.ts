@@ -6,10 +6,23 @@
  * */
 
 import { director, find, warn, Node, UITransform, Layers } from 'cc'
+import { singleton } from './meta/class-decorator'
 
-export namespace tea {
-    // 初始化 视图根节点
-    export function view_root(): Node {
+/**
+ *  框架层代码
+ */
+
+@singleton
+export class Tea {
+
+    
+    // 初始场景中初始化框架
+    public init() {
+        this.root()
+    }
+
+    // 初始化 root节点
+    root(): Node {
         let tip = ''
 
         if (!director.getScene()) tip = 'no running scene'
@@ -22,19 +35,20 @@ export namespace tea {
 
         let canvas = find('Canvas', director.getScene())
 
-        let viewroot = find('ViewRoot', canvas)
-        if (!viewroot) {
-            let uiNode = new Node('ViewRoot')
-            canvas.addChild(uiNode)
-            let uitransfor = viewroot.addComponent(UITransform)
-            viewroot.layer = Layers.BitMask.UI_2D
-            let size_canvas = canvas.getComponent(UITransform).contentSize
-            viewroot.getComponent(UITransform).setContentSize(size_canvas)
-            uitransfor.setContentSize(canvas.getComponent(UITransform).contentSize)
+        let _root = find('__root', canvas)
+        if (!_root) {
+            _root = new Node('__root')
+            canvas.addChild(_root)
+            _root.layer = Layers.BitMask.UI_2D
+            let size_canvas = canvas.getComponent(UITransform).contentSize.clone()
+            _root.addComponent(UITransform).setContentSize(size_canvas)
         }
-
-        return viewroot
+        return _root
     }
 
-    export function init() {}
+    
 }
+
+
+
+export const tea = new Tea()

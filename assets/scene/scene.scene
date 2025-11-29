@@ -369,7 +369,7 @@
     "_priority": 1073741824,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 628.9738058551618,
+    "_orthoHeight": 395.79384965831434,
     "_near": 1,
     "_far": 2000,
     "_color": {
@@ -549,7 +549,7 @@
     "_string": "button",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 26.32683658170915,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1237,7 +1237,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
+      "width": 350,
       "height": 200
     },
     "_anchorPoint": {
@@ -1257,7 +1257,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "category": 1,
+    "category": 600,
     "animate": 1,
     "param": {
       "__id__": 33
@@ -1268,6 +1268,7 @@
   },
   {
     "__type__": "BackgroudParam",
+    "active": true,
     "touchClose": false,
     "color": {
       "__type__": "cc.Color",

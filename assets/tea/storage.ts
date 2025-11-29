@@ -7,14 +7,16 @@ export namespace storage {
     type StorageValue<T> = {
         value: T
         expireAt: number // 过期时间的时间戳（毫秒）
+        encrypt?: boolean
     }
 
     const ALL_KEYS = '__ALL_KEYS'
 
-    export function set<T>(key: string, value: T, expireDate?: Dayjs) {
+    export function set<T>(key: string, value: T, expireDate?: Dayjs, encrypt?:boolean) {
         const data: StorageValue<T> = {
             value,
-            expireAt: expireDate?.valueOf()
+            expireAt : expireDate?.valueOf(),
+            encrypt : encrypt?true:false
         }
         localStorage.setItem(key, JSON.stringify(data))
 
@@ -43,6 +45,10 @@ export namespace storage {
 
     export function remove(key: string) {
         localStorage.removeItem(key)
+    }
+
+    export function dump(key){ 
+        
     }
 
     /**

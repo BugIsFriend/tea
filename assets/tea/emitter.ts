@@ -1,4 +1,5 @@
 import { Component, js, warn, error, isValid } from 'cc'
+import { singleton } from './meta/class-decorator'
 
 export interface IEmitter {
     id: string
@@ -7,17 +8,13 @@ export interface IEmitter {
     priority?: number
 }
 
+
+@singleton
 export class Emitter {
-    private static _instance: Emitter
     private msgMap = new Map<string, Array<IEmitter>>()
     private msgOnce = new Array<IEmitter>()
 
     private _onceemmit: boolean = false
-
-    static instance() {
-        if (!Emitter._instance) Emitter._instance = new Emitter()
-        return Emitter._instance
-    }
 
     /**
      * 如果context is Component|Node & context.isValid 则自动清除所有与该对象的有关的事件监听；
@@ -154,4 +151,4 @@ export class Emitter {
     }
 }
 
-export const emmiter: Emitter = Emitter.instance()
+export const emmiter = new Emitter()
