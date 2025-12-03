@@ -6,9 +6,9 @@
  * */
 
 import { asynload } from '../../load'
-import { find, Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager ,} from 'cc'
-import { ITBox } from './tip-box'
+import { find, Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager, Layout ,} from 'cc'
 import { tea } from '../../tea'
+import { ITBox } from './tip-box'
 
 /**
  *  Toa管理类：
@@ -24,9 +24,10 @@ class Tip {
         return Tip._instance
     }
     private tip_root: Node = null
+    private tip_node:Node = null
     private tip_box: Node = null
     private tip_prefab: Prefab = null
-    private box_prefab: Prefab = null
+    private tipbox_prefab: Prefab = null
 
     /**
      * 设置自定义 Tip 预制体
@@ -41,6 +42,11 @@ class Tip {
     // 初始化Tips
     init() {
         let _root = tea.root()
+
+        asynload<Prefab>('tea/ui/tip/prefabs/TipView').then((prefab) => { 
+
+        })
+
         this.tip_root = find('tip_root', _root)
         if (!this.tip_root) {
             this.tip_root = new Node('tip_root')
@@ -50,15 +56,22 @@ class Tip {
             let size_canvas = _root.getComponent(UITransform).contentSize.clone()
             uitransfor.setContentSize(size_canvas)
 
+            // 
             this.tip_box = new Node('tip_box')
             this.tip_box.layer = Layers.BitMask.UI_2D
             this.tip_root.addChild(this.tip_box)
+
+
+            this.tip_node = new Node('tip_node')
+            this.tip_node.layer = Layers.BitMask.UI_2D
+            this.tip_root.addChild(this.tip_node)
+            let layout = this.tip_node.addComponent(Layout)
+            layout.type = Layout.Type.VERTICAL
+            layout.verticalDirection = 1
         }
 
-        
-        asynload<Prefab>('1c1a1b62-5251-4020-a3bf-d61c28c1633c', AssetManager.BuiltinBundleName.MAIN).then((prefab) => { 
-            this.tip_prefab = prefab
-        })
+        asynload<Prefab>('tea/ui/tip/prefabs/TipItemView').then((prefab) => this.tip_prefab = prefab)
+        asynload<Prefab>('tea/ui/tip/prefabs/TipBoxView').then((prefab) => this.tipbox_prefab = prefab)
     }
 
     /**
@@ -67,7 +80,6 @@ class Tip {
     public show(box: ITBox): void
 
     /**
-     * 
      * @param content 
      * @param bubbling 
      * @param time 
@@ -80,9 +92,9 @@ class Tip {
         if (typeof boxOrContent === 'string') {
             box = { content: boxOrContent }
             let tip_view = instantiate(this.tip_prefab)
-            this.tip_root.addChild(tip_view)
+            this.tip_node.addChild(tip_view)
             tip_view.layer = Layers.BitMask.UI_2D
-            tween(tip_view).delay(time?time:3).removeSelf().start()
+            tween(tip_view).delay(time?time:4).removeSelf().start()
         } else {
             box = boxOrContent
         }

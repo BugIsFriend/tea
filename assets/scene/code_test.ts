@@ -48,7 +48,10 @@ export class TestCode extends Component {
         // this.scheduleOnce(() => ui.closeTop(), dt * 6)
         // this.scheduleOnce(() => ui.closeTop(), dt * 7)
         // this.scheduleOnce(() => ui.closeTop(), dt * 8)
-        this.scheduleOnce(() => tip.show('tip pop test'), dt * 6)
+        this.scheduleOnce(() => tip.show('tip pop test 1'), dt * 2)
+        this.scheduleOnce(() => tip.show('tip pop test 2'), dt * 3)
+        this.scheduleOnce(() => tip.show('tip pop test 3'), dt * 4)
+        this.scheduleOnce(() => tip.show('tip pop test 4'), dt * 5)
 
         
     }

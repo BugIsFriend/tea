@@ -28,7 +28,7 @@ function getAsset<T extends Asset>(url: string, bundle: AssetManager.Bundle, res
  * @param bundleName?: bundleName名不存在机会将 url 第一个路径解释为 bundle, 如果 不存在 bundle 将尝试从 resource获取资源
  * @returns
  */
-export function asynload<T extends Asset>(url: string, bundleName?:string): Promise<T> {
+export function asynload<T extends Asset>(url: string, bundleName?: string): Promise<T| null>  {
     return new Promise<T>((resolve, reject) => {
         let _path = url
         if (!bundleName) { 
