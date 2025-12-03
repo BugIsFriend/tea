@@ -43,9 +43,9 @@ class Tip {
     init() {
         let _root = tea.root()
 
-        asynload<Prefab>('tea/ui/tip/prefabs/TipView').then((prefab) => { 
+        // asynload<Prefab>('tea/ui/tip/prefabs/TipView').then((prefab) => { 
 
-        })
+        // })
 
         this.tip_root = find('tip_root', _root)
         if (!this.tip_root) {
@@ -70,8 +70,8 @@ class Tip {
             layout.verticalDirection = 1
         }
 
-        asynload<Prefab>('tea/ui/tip/prefabs/TipItemView').then((prefab) => this.tip_prefab = prefab)
-        asynload<Prefab>('tea/ui/tip/prefabs/TipBoxView').then((prefab) => this.tipbox_prefab = prefab)
+        asynload<Prefab>('tea/asset/prefabs/tips/TipItem').then((prefab) => this.tip_prefab = prefab)
+        asynload<Prefab>('tea/asset/prefabs/tips/TipBox').then((prefab) => this.tipbox_prefab = prefab)
     }
 
     /**
