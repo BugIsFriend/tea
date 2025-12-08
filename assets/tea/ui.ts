@@ -10,7 +10,7 @@ import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
 import { tea } from './tea'
-import { singleton } from './meta/class-decorator'
+import { singleton } from './meta/class'
 
 type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
 

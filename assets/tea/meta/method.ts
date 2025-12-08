@@ -118,13 +118,3 @@ export function publish(msg: string, data?: any) {
         return descriptor
     }
 }
-
-
-/**
- * 给某个方法增加一个 debug button 入口
- * @param entryName 
- */
-export function debugentry(entryName) {
-    
-}
-

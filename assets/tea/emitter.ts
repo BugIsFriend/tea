@@ -1,10 +1,12 @@
-import { Component, js, warn, error, isValid } from 'cc'
-import { singleton } from './meta/class-decorator'
+import { warn, error, isValid } from 'cc'
+import { singleton } from './meta/class'
 
 export interface IEmitter {
     id: string
     handler: Function
-    context: object
+    context: {
+        isValid?: boolean
+    }
     priority?: number
 }
 
@@ -23,8 +25,7 @@ export class Emitter {
      */
     private checkEmmit(item: IEmitter) {
         let success = true
-         // @ts-ignore
-        if (!item.context.isValid || !isValid(item.context) ) {
+        if (item.context?.isValid || !isValid(item.context) ) {
             success = false
             this.off({ context: item.context })
             // @ts-ignore
@@ -134,6 +135,7 @@ export class Emitter {
         if (!!target?.id && !!target.context) {
             // 删除摸个对象摸个事件
             let tarHandlers = this.msgMap.get(target.id) || []
+            //
             _.remove(tarHandlers, (emmitees) => emmitees.context == target.context)
         } else if (!!target.context) {
             for (const [key, handlers] of this.msgMap) {
@@ -146,6 +148,11 @@ export class Emitter {
      * 清除所有监听；
      */
     public clearAll() {
+        this.msgMap = new Map<string, Array<IEmitter>>()
+        this.msgOnce = new Array<IEmitter>()
+    }
+
+    public clear() { 
         this.msgMap = new Map<string, Array<IEmitter>>()
         this.msgOnce = new Array<IEmitter>()
     }

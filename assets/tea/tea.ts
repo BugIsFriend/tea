@@ -6,7 +6,7 @@
  * */
 
 import { director, find, warn, Node, UITransform, Layers } from 'cc'
-import { singleton } from './meta/class-decorator'
+import { singleton } from './meta/class'
 
 /**
  *  框架层代码
