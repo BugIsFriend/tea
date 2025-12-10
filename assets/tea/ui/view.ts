@@ -165,4 +165,12 @@ export class View extends Component {
     appendClosedCb(func: Function) {
         this.onCloseCbs.push(func)
     }
+
+    /**
+     * 响应返回按键，默认不响应
+     * @returns 
+     */
+    backKeyEnabled() { 
+        return false
+    }
 }
