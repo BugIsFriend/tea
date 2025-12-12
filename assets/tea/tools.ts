@@ -5,6 +5,8 @@
  * @Last Modified time: 2025-09-30 17:18:07
  */
 
+import { isValid, tween, Node, v3 } from "cc";
+
 export type KT = number | string
 
 export type eMap = { idx: number; ikey: KT; skey: KT; map: any }
@@ -34,4 +36,27 @@ export function enum2map<T extends object, MT>(enumObj: T, kt: 'string' | 'numbe
         map.set(key, (orderMap && orderMap[idx]) || defaultMap)
     })
     return map
+}
+
+/**
+ * 
+ * @param node 
+ * @param repeatTimes: -1: 永久效果；
+ */
+export function breathingAni(node: Node, repeatTimes: number, timeScale: number = 1) {
+    if (!isValid(node)) return
+    let once_ani = tween(node)
+                .to(.35*timeScale,{scale:v3(1.05,1.05,1.05)})
+                .to(.35*timeScale,{scale:v3(1,1,1)})
+                .to(.35*timeScale,{scale:v3(0.95,0.95,0.95)})
+        .to(.35 * timeScale,{scale:v3(1,1,1)})
+    
+    if (repeatTimes == -1) {
+      return tween(node).repeatForever(once_ani).start()
+    } else { 
+      return tween(node).repeat(repeatTimes,once_ani).start()
+    }
+
+     
+    
 }

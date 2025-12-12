@@ -73,11 +73,9 @@ export class View extends Component {
         return node.addComponent(View)
     }
 
-    protected onLoad(): void {
-        this.runEditor()
-    }
+    protected onLoad(): void {}
 
-    setBackgroundParam(param: BackgroudParam) {
+    public setBackgroundParam(param: BackgroudParam) {
         Object.assign(this.param, param)
         this.background?.setParam(this.param)
     }
@@ -87,16 +85,6 @@ export class View extends Component {
             this.background = this.addComponent(Background)
         }
         this.background.setParam(this.param)
-    }
-
-    /**
-     * 在编辑器中定时调用 update;
-     */
-    runEditor() {
-        if (EDITOR) {
-            this.unschedule(this.updateView)
-            this.schedule(this.updateView, 0.2)
-        }
     }
 
     updateView() {}
