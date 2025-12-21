@@ -2,7 +2,7 @@
  * @Author: myerse.lee
  * @Date: 2025-09-23 16:50:15
  * @Last Modified by: myerse.lee
- * @Last Modified time: 2025-09-30 17:18:07
+ * @Last Modified time: 2025-12-21 16:39:27
  */
 
 import { isValid, tween, Node, v3 } from "cc";
@@ -39,11 +39,11 @@ export function enum2map<T extends object, MT>(enumObj: T, kt: 'string' | 'numbe
 }
 
 /**
- * 
+ * 节点的呼吸动效
  * @param node 
  * @param repeatTimes: -1: 永久效果；
  */
-export function breathingAni(node: Node, repeatTimes: number, timeScale: number = 1) {
+export function breathingAni(node: Node, repeatTimes: number = -1, timeScale: number = 1) {
     if (!isValid(node)) return
     let once_ani = tween(node)
                 .to(.35*timeScale,{scale:v3(1.05,1.05,1.05)})
@@ -56,7 +56,4 @@ export function breathingAni(node: Node, repeatTimes: number, timeScale: number 
     } else { 
       return tween(node).repeat(repeatTimes,once_ani).start()
     }
-
-     
-    
 }

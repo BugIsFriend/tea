@@ -1,7 +1,11 @@
-/**
- * 本地存储带过期时间的数据
- * 使用day 来定义数据格式
- */
+/*  
+* @Author: myerse.lee  
+* @Date: 2025-12-21 16:22:58   
+* @Modified by:   myerse.lee   
+* @Modified time: 2025-12-21 16:22:58
+* @Description:  本地存储带过期时间的数据 使用day 来定义数据格式
+* */
+
 import { log, sys, warn } from "cc"
 import { DEBUG, PREVIEW } from "cc/env"
 

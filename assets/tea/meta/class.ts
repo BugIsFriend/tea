@@ -5,6 +5,7 @@
  * 要实现自己的 clear()方法；
  * new 多少次 都只用一个实例对象；
  */
+
 export function singleton<T extends new (...args: any[]) => any>(constructor: T): T {
     let instance: InstanceType<T> | null = null;
 
