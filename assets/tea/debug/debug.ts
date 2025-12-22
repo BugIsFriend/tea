@@ -14,7 +14,10 @@ export class Debug {
     
     private _mFlowGroups:Map<number,IDebugCaseData[]> = new Map<number,IDebugCaseData[]>()
 
-    // 添加一个测试用例
+    /**
+     * 增加一个测试用例；
+     * @param debug_case 
+     */
     public addCase(debug_case: IDebugCaseData) { 
  
         if (!debug_case.id) { 
@@ -33,6 +36,13 @@ export class Debug {
             this._mData.set(debug_case.id , debug_case)
         }
     }
+
+    /**
+     * addDataCase: 添加数据测试用例, 用于显示数据的变化；用例，每一帧都要更新；
+     */
+    public addDataCase() {
+        
+    }
 }
 
 export interface IDebugCaseData { 
@@ -43,4 +53,4 @@ export interface IDebugCaseData {
     cb?:Function
 }
 
-export const _debug = new Debug()
+export const __debug = new Debug()
