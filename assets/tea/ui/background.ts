@@ -8,7 +8,6 @@ import {
     _decorator,
     assetManager,
     BlockInputEvents,
-    Component,
     Node,
     Sprite,
     SpriteFrame,
@@ -23,12 +22,13 @@ import {
 } from 'cc'
 import { EDITOR } from 'cc/env'
 import { BackgroudParam } from '../uitypes'
+import { Unit } from '../unit'
 const { ccclass, property, executionOrder, executeInEditMode } = _decorator
 
 @ccclass('Background')
 @executionOrder(-1)
 @executeInEditMode
-export class Background extends Component {
+export class Background extends Unit {
     @property(BackgroudParam) param: BackgroudParam = new BackgroudParam({})
 
     @property({ type: [EventHandler], tooltip: '显示时: 回调xx组件的xx方法' })
@@ -39,76 +39,59 @@ export class Background extends Component {
     public tag: string // 标记当前ViewTag
 
     public bgNode: Node
+    public bgUnit: Unit
 
     protected onLoad(): void {
         this.addBgNode()
-        this.onInputEvent({ ...this.param })
     }
 
     updateUITransform(size: Size) {
         if (!this.bgNode) this.addBgNode()
 
-        let vnode_Trans = this.node.getComponent(UITransform)
-        let uiTransform = this.bgNode.getComponent(UITransform)
+        let vnode_Trans = this.gainComponent(UITransform)
+        let uiTransform = this.bgUnit.gainComponent(UITransform)
 
-        if (size && uiTransform) {
-            uiTransform.setAnchorPoint(v2(0.5, 0.5))
-            uiTransform.setContentSize(size.clone())
-        }
-        if (size && vnode_Trans) {
-            vnode_Trans.setContentSize(size.clone())
-        }
+        uiTransform.setAnchorPoint(v2(0.5, 0.5))
+        uiTransform.setContentSize(size.clone())
+    
+        vnode_Trans.setContentSize(size.clone())
     }
 
     addBgNode() {
         // 添加默认背景颜色
-        this.bgNode = this.node.getChildByName('#bgNode')
-        if (!this.bgNode) {
-            if (!this.bgNode) {
-                // 添加背景节点
-                this.bgNode = new Node('#bgNode')
-                this.node.addChild(this.bgNode)
-                this.bgNode.layer = this.node.layer
-                this.bgNode.setSiblingIndex(0)
-                this.bgNode.active = this.param.active
+        let _nodename ='#bgNode'
+        let bgNode =  this.node.getChildByName(_nodename)
 
-                // 背景 给节点添加 UITransform
-                let vnode_Trans = this.node.getComponent(UITransform)
-                if (!vnode_Trans) {
-                    vnode_Trans = this.node.addComponent(UITransform)
-                    warn(`ViewCom: 该节点没有 UITransform,自动添加,请检查 ${this.node.name}`)
-                } else {
-                }
-                let uiTransform = this.bgNode.addComponent(UITransform)
-                uiTransform.setAnchorPoint(v2(0.5, 0.5))
-                uiTransform.setContentSize(vnode_Trans.contentSize.clone())
+        if (!bgNode) {
+            // 添加背景节点
+            this.bgNode = new Node(_nodename)
+            this.bgUnit = this.bgNode.addComponent(Unit)
+            this.node.addChild(this.bgNode)
+            this.bgNode.setSiblingIndex(0)
+            this.bgNode.active = this.param.active
+            this.bgUnit.node.layer = this.node.layer
 
-                // 添加组件
-                this.bgNode.addComponent(Sprite)
-                this.bgNode.addComponent(BlockInputEvents)
+            // 背景 给节点添加 UITransform
+            let vnode_Trans = this.gainComponent(UITransform)
+            let uiTransform = this.bgUnit.gainComponent(UITransform)
+            uiTransform.setAnchorPoint(v2(0.5, 0.5))
+            uiTransform.setContentSize(vnode_Trans.contentSize.clone())
 
-                this.updateView()
-            }
+            // 添加组件
+            this.bgNode.addComponent(Sprite)
+            this.bgNode.addComponent(BlockInputEvents)
 
-            this.bgNode.active = true
             let bgSprite = this.bgNode.getComponent(Sprite)
             assetManager.loadAny('7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941', (err, spriteFrame: SpriteFrame) => {
-                if (!err) bgSprite.spriteFrame = spriteFrame
+                if (!err) { 
+                    bgSprite.spriteFrame = spriteFrame
+                }
             })
+            this.updateView()
+        } else { 
+            this.bgNode = bgNode
+            this.bgNode.active = true
         }
-
-        this.node.on(Node.EventType.SIZE_CHANGED, this.onNodeSizeChange, this)
-        
-        // 编辑器中修改组件属性，更新逻辑
-        if (EDITOR) {
-            this.unschedule(this.updateView)
-            this.schedule(this.updateView, 0.2)
-        }
-    }
-
-    onNodeSizeChange() {
-        let vnode_Trans = this.node.getComponent(UITransform)
-        this.bgNode.getComponent(UITransform).setContentSize(vnode_Trans.contentSize.clone())
     }
 
     onInputEvent(param: BackgroudParam) {

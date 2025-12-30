@@ -1,8 +1,8 @@
 import { _decorator, Component, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('LoadComp')
-export class LoadComp extends Component {
+@ccclass('Loader')
+export class Loader extends Component {
     
 }
 

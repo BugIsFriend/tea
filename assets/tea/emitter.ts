@@ -69,7 +69,7 @@ export class Emitter {
             emit: function (id: string, ...param: any) {
                 let timer = null
                 new Promise((resolve, reject) => {
-                    timer = setTimeout(() => {
+                    timer = setTimeout(() => {   // 待优化 改成 引擎类的定时器
                         resolve(true)
                         emmiter.emit(id, param)
                     }, dt * 1000)

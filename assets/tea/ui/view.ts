@@ -9,8 +9,9 @@ import { Background } from './background'
 import { ViewCategory } from './category'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
-import { _decorator, Component, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
+import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
 import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../uitypes'
+import { Unit } from '../unit'
 
 export enum ViewState {
     None,
@@ -28,7 +29,7 @@ export enum ViewState {
 @executionOrder(-1)
 @disallowMultiple
 @executeInEditMode
-export class View extends Component {
+export class View extends Unit {
     public tag: string // 标记当前ViewTag
 
     @property({ type: Enum(ViewCategory), tooltip: '弹出动作' })
@@ -72,8 +73,6 @@ export class View extends Component {
         }
         return node.addComponent(View)
     }
-
-    protected onLoad(): void {}
 
     public setBackgroundParam(param: BackgroudParam) {
         Object.assign(this.param, param)
@@ -158,7 +157,7 @@ export class View extends Component {
      * TODO 响应返回按键，尚未实现
      * @returns 
      */
-    backKeyEnabled() { 
+    returnKeyEnabled() { 
         return false
     }
 }
