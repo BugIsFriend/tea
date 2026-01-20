@@ -3,7 +3,7 @@ import { Component } from "cc";
 
 
 /**
- * 
+ * 用于非 cocos Creator 组件的封装；
  */
 export interface IUnit {
     get isValid(): boolean

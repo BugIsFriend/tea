@@ -2,7 +2,6 @@ import { _decorator, Color, color, Component, log, Node, Sprite, tween, v3, warn
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/meta/method'
-import { View } from '../tea/ui/view'
 import { ui } from '../tea/ui'
 import { EDITOR } from 'cc/env'
 import { UIAnimate } from '../tea/uitypes'

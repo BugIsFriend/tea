@@ -4,20 +4,18 @@
  * @Modified by:   myerse.lee
  * @Modified time: 2025-09-30 16:43:12
  * */
-import { asynload } from './load'
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
 import { tea } from './tea'
 import { singleton } from './meta/class'
+import { LoadCom } from './component/loadcom'
 
 type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
 
-
 @singleton
 export class UI {
-    private _ui_root: Node = null
     private uiViews: Array<View> = []
 
     // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
@@ -29,37 +27,20 @@ export class UI {
 
     loadParam: Param
 
-    /**
-     * 切换场景，要把所有的UI 都删除
-     */
-    onSwitchScene() {
-        this._ui_root = null
-        this.init()
-    }
-
     get root() {
-        return this._ui_root
+        return tea.ui_root
     }
     /**
      * 首个场景调用下
      */
     init() {
-        let _root = tea.root()
-        this._ui_root = find('_ui_root', _root)
-        if (!this._ui_root) {
-            this.uiViews = []
-            this._ui_root = new Node('view_root')
-            _root.addChild(this._ui_root)
-            let uitransfor = this._ui_root.addComponent(UITransform)
-            this._ui_root.layer = Layers.BitMask.UI_2D
-            let size_canvas = _root.getComponent(UITransform).contentSize.clone()
-            uitransfor.setContentSize(size_canvas)
-
+        let ui_root = tea.ui_root
+        if (!this.background_0 ) {
             this.background_0 = this.createBackground(0)
             this.background_1 = this.createBackground(1)
         } else {
-            this.background_0 = this._ui_root.getChildByName('CommonBgView0').getComponent(Background)
-            this.background_1 = this._ui_root.getChildByName('CommonBgView1').getComponent(Background)
+            this.background_0 = ui_root.getChildByName('CommonBgView0').getComponent(Background)
+            this.background_1 = ui_root.getChildByName('CommonBgView1').getComponent(Background)
         }
         let closeTop = this.closeTop.bind(this)
         this.background_0.setTouchCloseFunc(closeTop)
@@ -77,25 +58,25 @@ export class UI {
         background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
         background.updateUITransform(size_canvas.clone())
 
-        this._ui_root.addChild(background.node)
+        let ui_root = tea.ui_root
+        ui_root.addChild(background.node)
 
         return background
     }
 
     async _load(loadParam: Param): Promise<View> {
-        let { asset, bundle, tag } = loadParam
+        let { asset, tag } = loadParam
         let node: Node = null
         if (asset instanceof Node) {
             node = asset
         } else if (asset instanceof Prefab) {
             node = instantiate(asset)
         } else if (typeof asset == 'string') {
-            tag = tag || asset.split('/')[asset.split('/').length - 1]
-            let prefab = (await asynload(asset, bundle || 'resources')) as any
+            let prefab = await LoadCom.asynload(asset) as Prefab
             if (!prefab) {
                 throw new Error(`did't find prefab: ${asset}`)
             }
-            node = instantiate(prefab)
+            node = instantiate(prefab) as Node
         }
 
         let viewcom = node.getComponent(View) || node.addComponent(View)
@@ -111,8 +92,8 @@ export class UI {
      * @param tag
      * @returns
      */
-    load(asset: string | Prefab | Node, bundle?: string, tag?: string): UI {
-        this.loadParam = { asset, bundle, tag }
+    load(asset: string | Prefab | Node, tag?: string): UI {
+        this.loadParam = { asset, tag }
         return this
     }
 
@@ -137,7 +118,7 @@ export class UI {
             if (closeCb) view.appendClosedCb(closeCb)
             if (this.getViewIdx(view) == -1) {
                 view.node.active = true
-                this._ui_root.addChild(view.node)
+                tea.ui_root.addChild(view.node)
                 this.uiViews.push(view)
             }
             let param0 = Object.assign(this.defaultParam, param || view.param || {})

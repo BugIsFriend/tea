@@ -12,7 +12,7 @@ export type KT = number | string
 export type eMap = { idx: number; ikey: KT; skey: KT; map: any }
 
 /**
- * 取出枚举对象的 数字索引数组 | 字符索引数组
+ * 取出对象中所有的数字 key 或者字符串 key
  * @param enumObj
  * @returns
  */

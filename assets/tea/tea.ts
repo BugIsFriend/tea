@@ -5,8 +5,10 @@
  * @Modified time: 2025-09-30 17:17:42
  * */
 
-import { director, find, warn, Node, UITransform, Layers } from 'cc'
+import { director, find, warn, Node, UITransform, Layers, Prefab, error, instantiate } from 'cc'
 import { singleton } from './meta/class'
+import { init } from '../../dts/lodash/fp'
+import { LoadCom } from './component/loadcom'
 
 /**
  *  框架层代码
@@ -14,37 +16,39 @@ import { singleton } from './meta/class'
 
 @singleton
 export class Tea {
+   
+    prefabRoot: Prefab = null
 
-    
-    // 初始场景中初始化框架
-    public init() {
-        this.root()
+    async init() {
+        this.prefabRoot = await LoadCom.asynload<Prefab>('tea/prefabs/2DRoot')
+        if (!this.prefabRoot) {
+            error('加载 2DRoot 预制体失败')
+        } else {
+            this.prefabRoot.addRef()
+         }   
     }
 
     // 初始化 root节点
-    root(): Node {
-        let tip = ''
-
-        if (!director.getScene()) tip = 'no running scene'
-
-        if (!find('Canvas', director.getScene())) tip = `the scene: ${director.getScene().name},  no Canvas node `
-
-        !!tip && warn(tip)
-
-        if (!!tip) return
-
-        let canvas = find('Canvas', director.getScene())
-
-        let _root = find('__root', canvas)
-        if (!_root) {
-            _root = new Node('__root')
-            canvas.addChild(_root)
-            _root.layer = Layers.BitMask.UI_2D
-            let size_canvas = canvas.getComponent(UITransform).contentSize.clone()
-            _root.addComponent(UITransform).setContentSize(size_canvas)
+    public get root(): Node {
+        if (!director.getScene()) { 
+             warn( 'no running scene')
+            return;
         }
-        return _root
+
+        let scene = director.getScene()
+        let root = find('2DRoot', scene)
+
+        if (!root) { 
+            root = instantiate(this.prefabRoot)
+            scene.addChild(root)    
+        }
+        return root;
     }
+
+    public get ui_root(): Node {
+        return find('UI/view', this.root)
+    }
+
 
     
 }

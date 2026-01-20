@@ -21,7 +21,7 @@ export namespace storage {
 
     function encode<T>(obj: StorageValue<T>):string{ 
         if (obj.encrypt && !PREVIEW) { 
-            // obj.value =  _encode(obj.value)  // TODO implement _encode mether 
+            // obj.value =  _encode(obj.value)  // TODO implement _encode method 
         }
         return  JSON.stringify(obj)
     }
@@ -30,7 +30,7 @@ export namespace storage {
         if (!!content) { 
             let obj = JSON.parse(content) as StorageValue<T>
             if (obj.encrypt && !PREVIEW) { 
-                // return _decode(obj.value) as T  // TODO implement _decode mether
+                // return _decode(obj.value) as T  // TODO implement _decode method
             }
             return obj.value
         }
@@ -82,7 +82,7 @@ export namespace storage {
         if (!!keys_string) { 
             let allKeys = keys_string.split(',').filter((item) => item != key)
             keys_string = allKeys.join(',')
-            sys.localStorage.getItem(keys_string) 
+            sys.localStorage.setItem(ALL_KEYS, keys_string)
         }
     }
 

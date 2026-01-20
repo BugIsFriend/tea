@@ -1,7 +1,17 @@
 import { singleton } from "../meta/class";
 
 
-type DebugData =  Map<number, IDebugCaseData>
+type KeyType = number | string
+type DebugData =  Map<KeyType, IDebugCaseData>
+
+export interface IDebugCaseData { 
+    name: number,
+    flow_id?:  KeyType,    // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
+    group?: KeyType,      // 当前属于那一组； 0
+    id?: KeyType,
+    cb?:Function
+}
+
 
 /**
  *  debug 模块；
@@ -10,9 +20,9 @@ type DebugData =  Map<number, IDebugCaseData>
 export class Debug { 
 
     // 单个测试用例
-    private _mData: DebugData = new Map<number, IDebugCaseData>()
+    private _mData: DebugData = new Map<KeyType, IDebugCaseData>()
     
-    private _mFlowGroups:Map<number,IDebugCaseData[]> = new Map<number,IDebugCaseData[]>()
+    private _mFlowGroups:Map<KeyType,IDebugCaseData[]> = new Map<KeyType,IDebugCaseData[]>()
 
     /**
      * 增加一个测试用例；
@@ -29,9 +39,9 @@ export class Debug {
             if (!flow_group) { 
                 flow_group =  new Array<IDebugCaseData>()
                 this._mFlowGroups.set(debug_case.flow_id, flow_group)
-                _.orderBy(flow_group,['group'], ['asc'])
             }
             flow_group.push(debug_case)
+            _.orderBy(flow_group,['group'], ['asc'])
         } else {   
             this._mData.set(debug_case.id , debug_case)
         }
@@ -43,14 +53,6 @@ export class Debug {
     public addDataCase() {
         
     }
-}
-
-export interface IDebugCaseData { 
-    name: number,
-    flow_id?: number,    // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
-    group?: number,      // 当前属于那一组； 0
-    id?: number,
-    cb?:Function
 }
 
 export const __debug = new Debug()

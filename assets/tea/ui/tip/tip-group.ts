@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Prefab } from 'cc';
-import { asynload } from '../../load';
+import { LoadCom } from '../../component/loadcom';
 const { ccclass, property } = _decorator;
 
 
@@ -11,7 +11,7 @@ export class TipGroup extends Component {
 
    
     async setItemPrefab(path: string) { 
-        let prefab = await asynload<Prefab>(path)
+        let prefab = await LoadCom.asynload<Prefab>(path)
         if (!!prefab) { 
             this.ItermPrefab = prefab
         }

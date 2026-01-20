@@ -5,10 +5,10 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { asynload } from '../../load'
 import { find, Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager, Layout ,} from 'cc'
 import { tea } from '../../tea'
 import { ITBox } from './tip-box'
+import { LoadCom } from '../../component/loadcom'
 
 /**
  *  Toa管理类：
@@ -35,17 +35,13 @@ class Tip {
      * @param bundle 
      */
     async initDefaultTip(prefab: string, bundle: string) {
-        this.tip_prefab = await asynload<Prefab>(prefab, bundle)
+        this.tip_prefab = await LoadCom.asynload<Prefab>(prefab, bundle)
         this.tip_prefab.addRef()
     }
 
     // 初始化Tips
     init() {
         let _root = tea.root()
-
-        // asynload<Prefab>('tea/ui/tip/prefabs/TipView').then((prefab) => { 
-
-        // })
 
         this.tip_root = find('tip_root', _root)
         if (!this.tip_root) {
@@ -70,8 +66,8 @@ class Tip {
             layout.verticalDirection = 1
         }
 
-        asynload<Prefab>('tea/asset/prefabs/tips/TipItem').then((prefab) => this.tip_prefab = prefab)
-        asynload<Prefab>('tea/asset/prefabs/tips/TipBox').then((prefab) => this.tipbox_prefab = prefab)
+        LoadCom.asynload<Prefab>('tea/asset/prefabs/tips/TipItem').then((prefab) => this.tip_prefab = prefab)
+        LoadCom.asynload<Prefab>('tea/asset/prefabs/tips/TipBox').then((prefab) => this.tipbox_prefab = prefab)
     }
 
     /**

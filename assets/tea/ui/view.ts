@@ -2,8 +2,6 @@
  * @Author: myerse.lee
  * @Date: 2024-09-25 17:10:15
  */
-import { EDITOR } from 'cc/env'
-import { asynload } from '../load'
 import { ui } from '../ui'
 import { Background } from './background'
 import { ViewCategory } from './category'
@@ -12,6 +10,7 @@ const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple }
 import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
 import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../uitypes'
 import { Unit } from '../unit'
+import { LoadCom } from '../component/loadcom'
 
 export enum ViewState {
     None,
@@ -66,7 +65,7 @@ export class View extends Unit {
             node = asset
         } else if (typeof asset == 'string' || asset instanceof Prefab) {
             if (typeof asset == 'string') {
-                asset = (await asynload(asset, bundleName)) as any
+                asset = (await LoadCom.asynload(asset, bundleName)) as any
                 if (!asset) return null
             }
             node = instantiate(asset)
