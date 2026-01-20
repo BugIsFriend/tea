@@ -20,7 +20,7 @@ export class Tea {
     prefabRoot: Prefab = null
 
     async init() {
-        this.prefabRoot = await LoadCom.asynload<Prefab>('tea/prefabs/2DRoot')
+        this.prefabRoot = await LoadCom.asynload<Prefab>('tea/prefab/2DRoot')
         if (!this.prefabRoot) {
             error('加载 2DRoot 预制体失败')
         } else {
@@ -30,12 +30,12 @@ export class Tea {
 
     // 初始化 root节点
     public get root(): Node {
-        if (!director.getScene()) { 
-             warn( 'no running scene')
+        let scene = director.getScene()
+        if (!scene) { 
+            warn( 'no running scene')
             return;
         }
 
-        let scene = director.getScene()
         let root = find('2DRoot', scene)
 
         if (!root) { 
@@ -47,6 +47,10 @@ export class Tea {
 
     public get ui_root(): Node {
         return find('UI/view', this.root)
+    }
+
+    public get tip_root(): Node {
+        return find('UI/tip', this.root)
     }
 
 

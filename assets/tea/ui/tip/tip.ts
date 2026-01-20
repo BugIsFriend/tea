@@ -35,39 +35,14 @@ class Tip {
      * @param bundle 
      */
     async initDefaultTip(prefab: string, bundle: string) {
-        this.tip_prefab = await LoadCom.asynload<Prefab>(prefab, bundle)
+        this.tip_prefab = await LoadCom.asynload<Prefab>(prefab)
         this.tip_prefab.addRef()
     }
 
-    // 初始化Tips
+    // 初始化Tip
     init() {
-        let _root = tea.root()
-
-        this.tip_root = find('tip_root', _root)
-        if (!this.tip_root) {
-            this.tip_root = new Node('tip_root')
-            _root.addChild(this.tip_root)
-            let uitransfor = this.tip_root.addComponent(UITransform)
-            this.tip_root.layer = Layers.BitMask.UI_2D
-            let size_canvas = _root.getComponent(UITransform).contentSize.clone()
-            uitransfor.setContentSize(size_canvas)
-
-            // 
-            this.tip_box = new Node('tip_box')
-            this.tip_box.layer = Layers.BitMask.UI_2D
-            this.tip_root.addChild(this.tip_box)
-
-
-            this.tip_node = new Node('tip_node')
-            this.tip_node.layer = Layers.BitMask.UI_2D
-            this.tip_root.addChild(this.tip_node)
-            let layout = this.tip_node.addComponent(Layout)
-            layout.type = Layout.Type.VERTICAL
-            layout.verticalDirection = 1
-        }
-
-        LoadCom.asynload<Prefab>('tea/asset/prefabs/tips/TipItem').then((prefab) => this.tip_prefab = prefab)
-        LoadCom.asynload<Prefab>('tea/asset/prefabs/tips/TipBox').then((prefab) => this.tipbox_prefab = prefab)
+        LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipItem').then((prefab) => this.tip_prefab = prefab)
+        LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipBox').then((prefab) => this.tipbox_prefab = prefab)
     }
 
     /**
@@ -95,7 +70,6 @@ class Tip {
             box = boxOrContent
         }
 
-        // TODO: implement the actual show logic using `box` and `opts`
     }
 }
 

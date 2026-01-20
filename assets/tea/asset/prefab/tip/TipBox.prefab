@@ -209,6 +209,7 @@
     "node": {
       "__id__": 2
     },
+    "_enabled": true,
     "__prefab": {
       "__id__": 8
     },
@@ -334,7 +335,7 @@
     "_string": "label",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 22.848575712143926,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -550,7 +551,7 @@
     "_string": "cancel",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 22.848575712143926,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -922,7 +923,7 @@
     "_string": "ok",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 22.848575712143926,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1294,7 +1295,7 @@
     "_string": "close",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 22.848575712143926,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
