@@ -29,15 +29,6 @@ class Tip {
     private tip_prefab: Prefab = null
     private tipbox_prefab: Prefab = null
 
-    /**
-     * 设置自定义 Tip 预制体
-     * @param prefab 
-     * @param bundle 
-     */
-    async initDefaultTip(prefab: string, bundle: string) {
-        this.tip_prefab = await LoadCom.asynload<Prefab>(prefab)
-        this.tip_prefab.addRef()
-    }
 
     // 初始化Tip
     init() {
