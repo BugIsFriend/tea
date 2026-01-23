@@ -6,8 +6,14 @@
 * @Description:  本地存储带过期时间的数据 使用day 来定义数据格式
 * */
 
-import { log, sys, warn } from "cc"
-import { DEBUG, PREVIEW } from "cc/env"
+import { sys, warn } from "cc"
+import { PREVIEW } from "cc/env"
+
+export interface IValue { 
+    value: any,
+    expireDate?: Dayjs,
+    encrypt?: boolean
+}
 
 export namespace storage {
 
@@ -37,20 +43,29 @@ export namespace storage {
         return null
     }
 
-    export function set<T>(key: string, value: T, expireDate?: Dayjs, encrypt?: boolean) {
+    /**
+     * 
+     * @param key  存储 key
+     * @param data 存储 数据
+     * @param id   存储 key 绑定到指定 id 上如 uid / device_id 等， 也可是是组合 id;
+     * @returns 
+     */
+    export function set<T>(key: string, data:IValue, id?:number|string) {
         
-        if (value === null || value === undefined) { 
+        if (data.value === null || data.value === undefined) { 
             warn('storage fail:  the value is null')
             return 
         }
+
+        if (!!id) key = `${key}_${id}`   
         
-        const data: StorageValue<T> = {
-            value,
-            expireAt : expireDate?.valueOf(),
-            encrypt : encrypt?true:false
+        const sdata: StorageValue<T> = {
+            value : data.value,
+            expireAt : data.expireDate?.valueOf(),
+            encrypt : data.encrypt?true:false
         }
         
-        sys.localStorage.setItem(key, encode(data))
+        sys.localStorage.setItem(key, encode(sdata))
 
         let values = sys.localStorage.getItem(ALL_KEYS) || ''
         if (!values.includes(key)) {
@@ -59,7 +74,10 @@ export namespace storage {
         }
     }
 
-    export function get<T>(key: string): T | null {
+    export function get<T>(key: string, id?: number | string): T | null {
+
+        if (!!id) key = `${key}_${id}`  
+
         const content:string = sys.localStorage.getItem(key)
         if (!content) return null
         try {
