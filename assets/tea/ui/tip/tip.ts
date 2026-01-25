@@ -5,7 +5,7 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { find, Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager, Layout ,} from 'cc'
+import { Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager, Layout ,} from 'cc'
 import { tea } from '../../tea'
 import { ITBox } from './tip-box'
 import { LoadCom } from '../../component/loadcom'

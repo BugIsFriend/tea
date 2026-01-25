@@ -5,14 +5,17 @@
 import {Component, Asset, AssetManager, assetManager, resources, warn ,_decorator} from 'cc'
 const { ccclass } = _decorator;
 
+type TAsset = {
+    url: string
+    asset?: any
+}
+
 @ccclass('LoadCom')
 export class LoadCom extends Component {
-    
     /**
-     * 获取资源,失败返回 null
      * @param url 资源路径
      * @param bundle 资源包
-     * @param resolve 成功回调
+     * @return 失败返回 null
      */
     static getAsset<T extends Asset>(url: string, bundle: AssetManager.Bundle, success?:(asset: T) => void, fail?:(err) => void) {
         bundle.load<T>(url, (err: any, assest: T) => err ? (fail?.(err)) : (success?.( assest)))
@@ -39,18 +42,17 @@ export class LoadCom extends Component {
                 resolve(asset)
             }, (err) => {
                 warn(`加载资源失败: ${url} , 失败原因: ${err}`)
-                resolve(null)
+                reject(err)
             })
         })
     }
-
 
     /**
      * @param url: bundle_xx/xx/xx/xxx         本地资源包资源加载；
      *             remoteBundle_xx/xx/../xxx   需要添加添加http服务器；bundle 可能来自不同项目；
      *             http(s)://xx/../xxx        直接远程资源加载
      */
-    public static load<T extends Asset>(url: string, success?:(asset: T) => void, fail?:(err) => void): void {
+    public static load<T extends Asset>(url: string, success?:(asset: T) => void, fail?:(err:Error) => void): void {
         if (url == null || url.length == 0) throw new Error("Invalid URL");
 
         // 处理远程资源加载
@@ -59,13 +61,13 @@ export class LoadCom extends Component {
             return;
         }
 
-        let { bundleName, path, isRemote, version } = LoadCom.parsePath(url)
+        let { bundleName, path, version } = LoadCom.parsePath(url)
         let tarBundle = assetManager.getBundle(bundleName)
         if (!!tarBundle) {
             LoadCom.getAsset<T>(path, tarBundle, success, fail)
         } else {
             let options = {}
-            if (isRemote) options = { version: version }
+            if (!!version) options = { version: version }
             assetManager.loadBundle(bundleName, options, (error, bundle: AssetManager.Bundle) => {
                 if (!!error) {
                     bundle = resources
@@ -74,6 +76,25 @@ export class LoadCom extends Component {
                 LoadCom.getAsset<T>(path, bundle, success, fail)
             })
         }
+    }
+
+    /** 加载一个资源 */
+    public load<T extends Asset>(url: string, success?: (asset: T) => void, fail?: (err: Error) => void) { 
+        let done = (asset: T) => this.isValid && success?.(asset)
+        let undone = (err:Error) =>  this.isValid && fail?.(err)
+        LoadCom.load(url, done, undone)
+    }
+
+    /** 加载资源列表
+     * @param list 
+     * @param success 
+     * @param fail 
+     */
+    public loads(list:Array<TAsset>, success?: (asset:any[]) => void, fail?: (err:Error) => void) { 
+        let all_promise = list.map((item) => LoadCom.asynload(item.url))
+        let done = (assets: Asset[]) =>  this.isValid && success?.(assets)
+        let undone = (err:Error) =>  this.isValid && fail?.(err)
+        Promise.all(all_promise).then(done,undone)
     }
 
 
