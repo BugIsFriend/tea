@@ -3,14 +3,14 @@
  * 要实现自己的 clear()方法；
  * new 多少次 都只用一个实例对象；
  */
-export abstract class ISingletonClass {
+export abstract class ISingleton {
 
     public init(...args: any[]): void { }
 
     public  destroy(): void { }
 }
 
-export const singletons = new Map<any, ISingletonClass>(); 
+export const singletons = new Map<any, ISingleton>(); 
 
 export function singleton<T extends new (...args: any[]) => any>(constructor: T): T {
 
@@ -18,7 +18,7 @@ export function singleton<T extends new (...args: any[]) => any>(constructor: T)
     return class extends constructor {
         
         constructor(...args: any[]) {
-            let _instance: ISingletonClass = singletons.get(constructor as any)
+            let _instance: ISingleton = singletons.get(constructor as any)
             if (_instance) {
                 return _instance as any;
             }
@@ -26,5 +26,6 @@ export function singleton<T extends new (...args: any[]) => any>(constructor: T)
             singletons.set(constructor, this as any);
             return _instance;
         }
+        
     } as T;
 }

@@ -9,9 +9,8 @@
 import { sys, warn } from "cc"
 import { PREVIEW } from "cc/env"
 
-export interface IValue { 
-    value: any,
-    expireDate?: Dayjs,
+export interface IValue extends Object { 
+    expire?: Dayjs,
     encrypt?: boolean
 }
 
@@ -21,7 +20,7 @@ export namespace storage {
 
     type StorageValue<T> = {
         value: T
-        expireAt: number // 过期时间的时间戳（毫秒）
+        expire: number // 过期时间的时间戳（毫秒）
         encrypt?: boolean
     }
 
@@ -50,19 +49,21 @@ export namespace storage {
      * @param id   存储 key 绑定到指定 id 上如 uid / device_id 等， 也可是是组合 id;
      * @returns 
      */
-    export function set<T>(key: string, data:IValue, id?:number|string) {
+    export function set<T extends IValue>(key: string, data:T, id?:number|string) {
         
-        if (data.value === null || data.value === undefined) { 
+        if (data === null || data === undefined) { 
             warn('storage fail:  the value is null')
             return 
         }
 
         if (!!id) key = `${key}_${id}`   
-        
+        let { expire, encrypt } = data
+        delete data.expire 
+        delete data.encrypt 
         const sdata: StorageValue<T> = {
-            value : data.value,
-            expireAt : data.expireDate?.valueOf(),
-            encrypt : data.encrypt?true:false
+            value : data as any,
+            expire : expire?.valueOf(),
+            encrypt : encrypt?true:false
         }
         
         sys.localStorage.setItem(key, encode(sdata))
@@ -82,7 +83,7 @@ export namespace storage {
         if (!content) return null
         try {
             const data: StorageValue<T> = decode(content)
-            if (!!data.expireAt && Date.now() > data.expireAt) {
+            if (!!data.expire && Date.now() > data.expire) {
                 remove(key)
                 return null
             }

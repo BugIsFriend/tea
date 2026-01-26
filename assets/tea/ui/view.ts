@@ -57,7 +57,7 @@ export class View extends Unit {
      * @param bundleName : asset 是字符串，则需要bundleName
      * @returns
      */
-    static async create(asset: string | Prefab | Node | '', bundleName: string = 'resources'): Promise<View> {
+    static async create(asset: string | Prefab | Node | ''): Promise<View> {
         let node = null
         if (!asset) {
             node = new Node()
@@ -65,7 +65,7 @@ export class View extends Unit {
             node = asset
         } else if (typeof asset == 'string' || asset instanceof Prefab) {
             if (typeof asset == 'string') {
-                asset = (await LoadCom.asynload(asset, bundleName)) as any
+                asset = (await LoadCom.asynload(asset)) as any
                 if (!asset) return null
             }
             node = instantiate(asset)

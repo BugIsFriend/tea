@@ -5,10 +5,10 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { Node, Layers, UITransform, Prefab, instantiate, tween, AssetManager, Layout ,} from 'cc'
-import { tea } from '../../tea'
+import { Node, Layers, Prefab, instantiate, tween, warn, find,} from 'cc'
 import { ITBox } from './tip-box'
 import { LoadCom } from '../../component/loadcom'
+import { singleton } from '../../meta/class'
 
 /**
  *  Toa管理类：
@@ -17,23 +17,23 @@ import { LoadCom } from '../../component/loadcom'
  *        这种玩家需要自行管理，并进行消耗
  */
 
-class Tip {
-    static _instance: Tip = null
-    static instance() {
-        if (!Tip._instance) Tip._instance = new Tip()
-        return Tip._instance
-    }
-    private tip_root: Node = null
-    private tip_node:Node = null
-    private tip_box: Node = null
+@singleton
+export class Tip {
+
     private tip_prefab: Prefab = null
     private tipbox_prefab: Prefab = null
 
-
     // 初始化Tip
-    init() {
-        LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipItem').then((prefab) => this.tip_prefab = prefab)
-        LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipBox').then((prefab) => this.tipbox_prefab = prefab)
+    async init() {
+        this.tip_prefab = await LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipItem')
+        this.tipbox_prefab = await LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipBox')
+
+        if( !this.tip_prefab ||  !this.tipbox_prefab) warn('初始资源加载事变, TipItem  TipBox ')
+    }
+    
+    
+    public get root() : Node {
+        return  find('UI/tip', tea.root)
     }
 
     /**
@@ -54,8 +54,8 @@ class Tip {
         if (typeof boxOrContent === 'string') {
             box = { content: boxOrContent }
             let tip_view = instantiate(this.tip_prefab)
-            this.tip_node.addChild(tip_view)
             tip_view.layer = Layers.BitMask.UI_2D
+            tip_view.parent = this.root
             tween(tip_view).delay(time?time:4).removeSelf().start()
         } else {
             box = boxOrContent
@@ -65,6 +65,6 @@ class Tip {
 }
 
 
-export const tip = Tip.instance()
+export const tip = new Tip()
 
 

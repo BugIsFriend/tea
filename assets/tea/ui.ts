@@ -8,7 +8,6 @@ import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
 import { BackgroudParam, UIAnimate } from './uitypes'
-import { tea } from './tea'
 import { singleton } from './meta/class'
 import { LoadCom } from './component/loadcom'
 
@@ -28,19 +27,18 @@ export class UI {
     loadParam: Param
 
     get root() {
-        return tea.ui_root
+        return find('UI/view', tea.root)
     }
     /**
      * 首个场景调用下
      */
     init() {
-        let ui_root = tea.ui_root
         if (!this.background_0 ) {
             this.background_0 = this.createBackground(0)
             this.background_1 = this.createBackground(1)
         } else {
-            this.background_0 = ui_root.getChildByName('CommonBgView0').getComponent(Background)
-            this.background_1 = ui_root.getChildByName('CommonBgView1').getComponent(Background)
+            this.background_0 = this.root.getChildByName('CommonBgView0').getComponent(Background)
+            this.background_1 = this.root.getChildByName('CommonBgView1').getComponent(Background)
         }
         let closeTop = this.closeTop.bind(this)
         this.background_0.setTouchCloseFunc(closeTop)
@@ -58,8 +56,7 @@ export class UI {
         background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
         background.updateUITransform(size_canvas.clone())
 
-        let ui_root = tea.ui_root
-        ui_root.addChild(background.node)
+        this.root.addChild(background.node)
 
         return background
     }
@@ -118,7 +115,7 @@ export class UI {
             if (closeCb) view.appendClosedCb(closeCb)
             if (this.getViewIdx(view) == -1) {
                 view.node.active = true
-                tea.ui_root.addChild(view.node)
+                this.root.addChild(view.node) 
                 this.uiViews.push(view)
             }
             let param0 = Object.assign(this.defaultParam, param || view.param || {})
