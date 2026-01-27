@@ -27,7 +27,7 @@ export class UI {
     loadParam: Param
 
     get root() {
-        return find('UI/view', tea.root)
+        return find('Canvas/view', tea.root)
     }
     /**
      * 首个场景调用下
@@ -46,8 +46,7 @@ export class UI {
     }
 
     createBackground(idx: number) {
-        let canvas = find('Canvas', director.getScene())
-        let size_canvas = canvas.getComponent(UITransform).contentSize
+        let size_canvas =  this.root.getComponent(UITransform).contentSize
         let background = new Node().addComponent(Background)
         background.node.layer = Layers.BitMask.UI_2D
         background.node.name = 'CommonBgView' + idx

@@ -319,7 +319,7 @@
     "_lineHeight": 30,
     "_string": "xxxxxxxxxx",
     "_horizontalAlign": 2,
-    "_verticalAlign": 1,
+    "_verticalAlign": 0,
     "_fontSize": 30,
     "_fontColor": {
       "__type__": "cc.Color",
