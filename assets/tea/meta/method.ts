@@ -5,7 +5,7 @@
  * @Last Modified time: 2025-12-21 16:51:39
  */
 
-import { Component, find, js, Node } from 'cc'
+import { Component, find, js, Node, warn } from 'cc'
 import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
@@ -15,8 +15,14 @@ type ParamTypeObj<T> = { type: T[] }
 export type ParamTypeComp<T extends Component> = T | ParamTypeObj<T>
 export type ParamType<T extends MixType> = T | ParamTypeObj<T>
 
-function getTarget<T extends MixType>(ctor: { new (): T }, comp: any): T {
-    return js.isChildClassOf(ctor, Node) ? comp.node : comp.getComponent(ctor)
+function getTarget<T extends MixType>(ctor: { new(): T }, comp: any): T {
+    if (js.isChildClassOf(ctor, Node)) {
+        return comp.node
+    } else { 
+        let tarcom = comp.getComponent(ctor)
+        if (!tarcom) warn(` there isn't ${ctor.name}  in  ${comp.node.name} Node`)
+        return tarcom
+    }
 }
 
 function initDecoratorKey(obj: any) {
