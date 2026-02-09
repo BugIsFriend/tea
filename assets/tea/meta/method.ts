@@ -27,8 +27,8 @@ function initDecoratorKey(obj: any) {
  *  !不能和property一起使用
  *  获取当前节点的组件(某一类组件列表)
  * @param param: Component|Node|[Component|Node]
- * @param url : 如果 param 非数组，目标节点或者目标组件；
- *              如果 param 是数组，并且param[0] 是 Node，找到所有名字为propNameLenght-1的节点： 如属性golds 前缀为gold
+ * @param url : 如果 param 非数组，url 所致节点上的 的 Node 或者 Component；
+ *              如果 param 是数组，并且param[0] 是 Node，找到所有名字为propNameLenght-1的节点： 如属性golds 前缀为gold 的节点
  *              如果 param 是数组，并且param[0] 是 Component, 找到所有名字为propNameLenght-1的节点, 且节点拥有 param[0]组件；
  * @returns
  */

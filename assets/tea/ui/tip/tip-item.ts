@@ -1,11 +1,11 @@
-import { _decorator, Component, Label } from 'cc';
+import { _decorator, Component, Label, RichText } from 'cc';
 import { seek } from '../../meta/method';
 const { ccclass } = _decorator;
 
 @ccclass('TipItem')
 export class TipItem extends Component {
 
-    @seek(Label) TxtContent:Label
+    @seek(RichText, 'TxtContent') TxtContent:RichText
 
 
     show(content: string) { 
