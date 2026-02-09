@@ -5,7 +5,7 @@
  * @Last Modified time: 2025-12-21 16:51:39
  */
 
-import { Component, find, js, Node, warn } from 'cc'
+import { Component, find, js, Node, error } from 'cc'
 import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
@@ -20,7 +20,7 @@ function getTarget<T extends MixType>(ctor: { new(): T }, comp: any): T {
         return comp.node
     } else { 
         let tarcom = comp.getComponent(ctor)
-        if (!tarcom) warn(` there isn't ${ctor.name}  in  ${comp.node.name} Node`)
+        if (!tarcom) error(` there isn't ${ctor.name}  in  ${comp.node.name} Node`)
         return tarcom
     }
 }
