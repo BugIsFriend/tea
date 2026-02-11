@@ -42,14 +42,16 @@ export class TestCode extends Component {
             () => ui.load('resources/TestPopView-right').show(UIAnimate.right, null, { active: true, color: color(0, 0, 0, 128), touchClose: true }),
             dt * 4
         )
+
         this.scheduleOnce(() => ui.closeTop(), dt * 5)
         this.scheduleOnce(() => ui.closeTop(), dt * 6)
         this.scheduleOnce(() => ui.closeTop(), dt * 7)
         this.scheduleOnce(() => ui.closeTop(), dt * 8)
-        this.scheduleOnce(() => tip.show('tip pop test 1'), dt * 2)
-        // this.scheduleOnce(() => tip.show('tip pop test 2'), dt * 3)
-        // this.scheduleOnce(() => tip.show('tip pop test 3'), dt * 4)
-        // this.scheduleOnce(() => tip.show('tip pop test 4'), dt * 5)
+        dt+=0.5
+        this.scheduleOnce(() => tip.show('tip pop test 1',true), dt * 2)
+        this.scheduleOnce(() => tip.show('tip pop test 2'), dt * 3)
+        this.scheduleOnce(() => tip.show('tip pop test 3',true), dt * 4)
+        this.scheduleOnce(() => tip.show('tip pop test 4',true), dt * 5)
 
         
     }

@@ -5,14 +5,13 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { Node, Layers, Prefab, instantiate, tween, warn, find,} from 'cc'
-// import { ITipBox } from './tip-box'
+import { Node, Layers, Prefab, instantiate, tween, warn, find, UITransform,} from 'cc'
 import { LoadCom } from '../../component/loadcom'
 import { singleton } from '../../meta/class'
 import { TipItem } from './tip-item'
 import { ITipBox, TipBox } from './tip-box'
-
-
+import { gain } from '../../tools'
+import { Unit } from '../../unit'
 
 /**
  *  Toa管理类：
@@ -41,53 +40,62 @@ export class Tip {
         return  find('Canvas/tip/tips', tea.root)
     }
 
-    public popTipItem() { 
-        
-    }
-
-    public show(box: ITipBox): void
+    public show(content: ITipBox,  bubble?: number| boolean): void
     /**
      * @param content 
      * @param timeOrbubling : 
      */
-    public show(content: string,  timeOrbubbling: number| boolean): void
+    public show(content: string,  bubble?: number| boolean): void
     
-    public show<T extends TipItem | TipBox>(boxOrContent: ITipBox | string, timeOrbubbling: number| boolean = 4):T{
+    public show<T extends TipBox>(content: ITipBox | string, bubble: number| boolean):T{
        
-        let tipNode: Node = null
         let tipCom:any = null
-        if (typeof boxOrContent === 'string') {
-            tipNode= instantiate(this.tip_prefab)
-            tipNode.parent = this.root
-            tipCom = tipNode.getComponent(TipItem)
-            tipCom.show(boxOrContent)
-            let bubble = typeof timeOrbubbling === 'boolean' ? true : false
+        let tipNode: Node = typeof content === 'string' ? instantiate(this.tip_prefab) : instantiate(this.tipbox_prefab)
+        this.root.addChild(tipNode)
         
-            if (bubble) {
-                // TODO 冒泡泡 Tip
-            } else { 
-                tween(tipNode).delay(timeOrbubbling as number).removeSelf().start()
-            }
+        if (typeof content === 'string') {
+            let _tip = tipNode.getComponent(TipItem)
+            tipCom = _tip
+            let _bubble = typeof bubble === 'boolean' ? true : false
+            let _time =  _bubble?4:bubble as number
+
+            _tip.show(content, _time)
+           if(!_bubble) this.popTipItem(true)
+            this.popTip.push(_tip)
+            let gap = 20
+            
+            let copy = [...this.popTip]
+            copy.reverse().forEach((item, idx) => {
+                item.node.y = idx * (item.gain(UITransform).height + gap)
+            })
         } else {
-            tipNode = instantiate(this.tipbox_prefab)
-            tipNode.parent = this.root
             tipCom = tipNode.getComponent(TipBox)
-            tipCom.show(boxOrContent)
+            tipCom.show(content)
         }
         tipNode.layer = Layers.BitMask.UI_2D
         return tipCom
     }
+    
+    /**
+     * removeTipItem
+     */
+    public popTipItem(immediately: boolean) {
+        if (immediately) {
+            if(this.popTip.length <=0) return 
+            let tip_item = this.popTip.splice(this.popTip.length-1,1)[0]
+            this.hide(tip_item)
+        } else { 
+
+        }
+    }
 
     // 隐藏指定
     public hide(tip:TipItem | TipBox) { 
-        if (tip.node.isValid) {
+     if (tip.node.isValid) {
             tip.node.parent = null
-        }
+        }   
     }
 }
-
-
-
 
 export const tip = new Tip()
 

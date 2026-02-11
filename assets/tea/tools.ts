@@ -5,7 +5,8 @@
  * @Last Modified time: 2025-12-21 16:39:27
  */
 
-import { isValid, tween, Node, v3 } from "cc";
+import { isValid, tween, Node, v3, Component } from "cc";
+import { Unit } from "./unit";
 
 export type KT = number | string
 
@@ -43,7 +44,7 @@ export function enum2map<T extends object, MT>(enumObj: T, kt: 'string' | 'numbe
  * @param node 
  * @param repeatTimes: -1: 永久效果；
  */
-export function breathingAni(node: Node, repeatTimes: number = -1, timeScale: number = 1) {
+export function breath(node: Node, repeatTimes: number = -1, timeScale: number = 1) {
     if (!isValid(node)) return
     let once_ani = tween(node)
                 .to(.35*timeScale,{scale:v3(1.05,1.05,1.05)})
@@ -56,4 +57,15 @@ export function breathingAni(node: Node, repeatTimes: number = -1, timeScale: nu
     } else { 
       return tween(node).repeat(repeatTimes,once_ani).start()
     }
+}
+
+/**
+ **  从节点或者组件 如果没有该组件则添加一个，有别于 getComponent 只是获取；
+ * @param node 
+ * @param ctor 
+ * @returns 
+ */
+export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }) {
+    //@ts-ignore
+    return node.getComponent(ctor) || node.addComponent(ctor)
 }

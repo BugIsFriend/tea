@@ -48,8 +48,8 @@ export class Background extends Unit {
     updateUITransform(size: Size) {
         if (!this.bgNode) this.addBgNode()
 
-        let vnode_Trans = this.gainComponent(UITransform)
-        let uiTransform = this.bgUnit.gainComponent(UITransform)
+        let vnode_Trans = this.gain(UITransform)
+        let uiTransform = this.bgUnit.gain(UITransform)
 
         uiTransform.setAnchorPoint(v2(0.5, 0.5))
         uiTransform.setContentSize(size.clone())
@@ -72,8 +72,8 @@ export class Background extends Unit {
             this.bgUnit.node.layer = this.node.layer
 
             // 背景 给节点添加 UITransform
-            let vnode_Trans = this.gainComponent(UITransform)
-            let uiTransform = this.bgUnit.gainComponent(UITransform)
+            let vnode_Trans = this.gain(UITransform)
+            let uiTransform = this.bgUnit.gain(UITransform)
             uiTransform.setAnchorPoint(v2(0.5, 0.5))
             uiTransform.setContentSize(vnode_Trans.contentSize.clone())
 

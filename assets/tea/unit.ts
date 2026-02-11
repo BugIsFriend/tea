@@ -1,7 +1,5 @@
 import { Component } from "cc";
 
-
-
 /**
  * 用于非 cocos Creator 组件的封装；
  */
@@ -15,7 +13,6 @@ export interface IUnit {
  */
 export class Unit extends Component implements IUnit { 
 
-
     /** 
      * 组将被创建出来后，做一些初始化工作；
      * @param creator 
@@ -26,7 +23,7 @@ export class Unit extends Component implements IUnit {
      *  获取一个 Unit 组件，如果没有该组件则添加一个，有别于 getComponent 只是获取；
      * @returns 
      */
-    public gainComponent<T extends Component>(type: { new(): T; } ): T | null {
+    public gain<T extends Component>(type: { new(): T; } ): T {
         let comp = this.getComponent(type)
         if (!comp) {
             comp = this.addComponent(type)
@@ -34,6 +31,5 @@ export class Unit extends Component implements IUnit {
         }
         return comp
     }
-
 
 }
