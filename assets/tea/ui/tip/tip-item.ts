@@ -9,7 +9,7 @@ export class TipItem extends Unit {
     @seek(RichText, 'TxtContent') TxtContent:RichText
 
 
-    show(content: string, time:number) { 
+    show(content: string) { 
         this.TxtContent.string = content
     }
 

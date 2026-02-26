@@ -13,14 +13,12 @@ import {
     SpriteFrame,
     UITransform,
     v2,
-    warn,
     tween,
     Size,
     Tween,
     Input,
     EventHandler
 } from 'cc'
-import { EDITOR } from 'cc/env'
 import { BackgroudParam } from '../uitypes'
 import { Unit } from '../unit'
 const { ccclass, property, executionOrder, executeInEditMode } = _decorator

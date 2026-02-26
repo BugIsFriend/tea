@@ -5,21 +5,11 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { Node, Layers, Prefab, instantiate, tween, warn, find, UITransform,} from 'cc'
+import { Node, Layers, Prefab, instantiate, tween, warn, find, UITransform, error,} from 'cc'
 import { LoadCom } from '../../component/loadcom'
 import { singleton } from '../../meta/class'
 import { TipItem } from './tip-item'
 import { ITipBox, TipBox } from './tip-box'
-import { gain } from '../../tools'
-import { Unit } from '../../unit'
-
-/**
- *  Toa管理类：
- *     1. 显示通用 Tip: 显示时长，
- *     2. 动态创建一个个性化 Tip: 可以指定 Prefab, 显示位置， 父节点； 用户可以持有该tip 实例，做一些逻辑操作；tip 特定的动画，显示后一些回调； 等等；
- *        这种玩家需要自行管理，并进行消耗
- */
-
 @singleton
 export class Tip {
 
@@ -40,15 +30,17 @@ export class Tip {
         return  find('Canvas/tip/tips', tea.root)
     }
 
-    public show(content: ITipBox,  bubble?: number| boolean): void
-    /**
-     * @param content 
-     * @param timeOrbubling : 
-     */
-    public show(content: string,  bubble?: number| boolean): void
+    public show(content: ITipBox, bubble?:boolean, time?:number): void
+   
+    public show(content: string,  bubble?: boolean, time?:number): void
     
-    public show<T extends TipBox>(content: ITipBox | string, bubble: number| boolean):T{
+    public show<T extends TipBox>(content: ITipBox | string, bubble: number| boolean, time?:number ):T{
        
+        if (!this.tip_prefab || !this.tipbox_prefab) {
+            error('没有默认的 TipItem, TipBox 预制体，请检查资源是否正确加载')
+            return null;
+         }
+        
         let tipCom:any = null
         let tipNode: Node = typeof content === 'string' ? instantiate(this.tip_prefab) : instantiate(this.tipbox_prefab)
         this.root.addChild(tipNode)
@@ -56,18 +48,16 @@ export class Tip {
         if (typeof content === 'string') {
             let _tip = tipNode.getComponent(TipItem)
             tipCom = _tip
-            let _bubble = typeof bubble === 'boolean' ? true : false
-            let _time =  _bubble?4:bubble as number
+            let _time =  time?time:4 as number
 
-            _tip.show(content, _time)
-           if(!_bubble) this.popTipItem(true)
-            this.popTip.push(_tip)
-            let gap = 20
+            _tip.show(content)
+
+            if (!bubble) this.popTipItem(true)
             
-            let copy = [...this.popTip]
-            copy.reverse().forEach((item, idx) => {
-                item.node.y = idx * (item.gain(UITransform).height + gap)
-            })
+            this.pushTipItem(_tip)
+
+            _tip.scheduleOnce(() => this.popTipItem(_tip), _time)
+
         } else {
             tipCom = tipNode.getComponent(TipBox)
             tipCom.show(content)
@@ -75,24 +65,43 @@ export class Tip {
         tipNode.layer = Layers.BitMask.UI_2D
         return tipCom
     }
+
+
+    updateLayout() {
+        let gap = 20                // tip 之间的间隔
+        let copy = [...this.popTip]
+        copy.reverse().forEach((item, idx) => {
+            item.node.y = idx * (item.gain(UITransform).height + gap)
+        })
+    }
     
+
+    public pushTipItem(tip: TipItem) {
+        this.popTip.push(tip)
+        this.updateLayout()
+    }
+
     /**
      * removeTipItem
      */
-    public popTipItem(immediately: boolean) {
-        if (immediately) {
-            if(this.popTip.length <=0) return 
-            let tip_item = this.popTip.splice(this.popTip.length-1,1)[0]
+    public popTipItem(top: boolean | TipItem) {
+        
+        if (this.popTip.length <= 0) return 
+        if (typeof top === 'boolean' && top) {
+            let tip_item = this.popTip.splice(this.popTip.length - 1, 1)[0]
             this.hide(tip_item)
         } else { 
-
+            _.remove(this.popTip, top as TipItem)
+            this.hide(top as TipItem)
         }
+        this.updateLayout()
     }
 
     // 隐藏指定
     public hide(tip:TipItem | TipBox) { 
-     if (tip.node.isValid) {
+        if (tip.node.isValid) {
             tip.node.parent = null
+            // TODO 回收缓存进行优化；
         }   
     }
 }

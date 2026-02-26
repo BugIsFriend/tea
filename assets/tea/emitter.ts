@@ -92,7 +92,7 @@ export class Emitter {
      */
     public once(id: string, handler: Function, context: object) {
         if (!id || !handler || !context) {
-            error('QMsg: Once Msg', ` id: ${id}`)
+            error('Msg: Once Msg', ` id: ${id}`)
             return
         }
         this.msgOnce.push({ id, handler, context })

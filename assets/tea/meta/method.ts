@@ -2,7 +2,7 @@
  * @Author: myerse.lee
  * @Date: 2024-09-25 17:10:15
  * @Last Modified by: myerse.lee
- * @Last Modified time: 2025-12-21 16:51:39
+ * @Last Modified time: 2026-02-26 15:28:07
  */
 
 import { Component, find, js, Node, error } from 'cc'
@@ -102,7 +102,7 @@ export function subscribe(msg: string, priority?: number, once?: boolean) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let oldvalue = target[propertyKey]
         descriptor.value = function (...args: any[]) {
-            oldvalue.apply(this, args)
+            oldvalue.apply(target, args)
         }
         once ? emmiter.once(msg, descriptor.value, target) : emmiter.on(msg, descriptor.value, target, priority)
         return descriptor
@@ -118,7 +118,7 @@ export function publish(msg: string, data?: any) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         let oldvalue = target[propertyKey]
         descriptor.value = function (...args: any[]) {
-            let result = oldvalue.apply(this, args)
+            let result = oldvalue.apply(target, args)
             emmiter.emit(msg, result)
         }
         return descriptor

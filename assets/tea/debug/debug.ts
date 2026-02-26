@@ -1,3 +1,10 @@
+/*  
+* @Author: myerse.lee   
+* @Date: 2026-02-26 14:55:35   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-02-26 14:55:35   
+* * */
+
 import { singleton } from "../meta/class";
 
 
@@ -5,17 +12,12 @@ type KeyType = number | string
 type DebugData =  Map<KeyType, IDebugCaseData>
 
 export interface IDebugCaseData { 
-    name: number,
+    name: string,
     flow_id?:  KeyType,    // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
     group?: KeyType,      // 当前属于那一组； 0
     id?: KeyType,
     cb?:Function
 }
-
-
-/**
- *  debug 模块；
- */
 @singleton
 export class Debug { 
 
