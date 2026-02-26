@@ -34,7 +34,7 @@ export class Tip {
    
     public show(content: string,  bubble?: boolean, time?:number): void
     
-    public show<T extends TipBox>(content: ITipBox | string, bubble: number| boolean, time?:number ):T{
+    public show<T extends TipBox>(content: ITipBox | string, bubble?: number| boolean, time?:number ):T{
        
         if (!this.tip_prefab || !this.tipbox_prefab) {
             error('没有默认的 TipItem, TipBox 预制体，请检查资源是否正确加载')
@@ -66,8 +66,7 @@ export class Tip {
         return tipCom
     }
 
-
-    updateLayout() {
+    public updateLayout() {
         let gap = 20                // tip 之间的间隔
         let copy = [...this.popTip]
         copy.reverse().forEach((item, idx) => {
@@ -75,15 +74,11 @@ export class Tip {
         })
     }
     
-
     public pushTipItem(tip: TipItem) {
         this.popTip.push(tip)
         this.updateLayout()
     }
 
-    /**
-     * removeTipItem
-     */
     public popTipItem(top: boolean | TipItem) {
         
         if (this.popTip.length <= 0) return 

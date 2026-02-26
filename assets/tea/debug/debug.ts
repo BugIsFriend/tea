@@ -55,6 +55,11 @@ export class Debug {
     public addDataCase() {
         
     }
+
+    public showDebugView() { 
+
+    }
+
 }
 
 export const __debug = new Debug()
