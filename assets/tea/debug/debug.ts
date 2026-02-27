@@ -56,7 +56,7 @@ export class Debug {
         
     }
 
-    public showDebugView() { 
+    public showView() { 
 
     }
 

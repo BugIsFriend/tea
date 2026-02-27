@@ -1,9 +1,9 @@
-/**
+/*  
  * @Author: myerse.lee
  * @Date: 2024-09-25 17:10:15
  * @Last Modified by: myerse.lee
- * @Last Modified time: 2026-02-26 15:28:07
- */
+ * @Last Modified time: 2026-02-27 17:05:46
+* * */
 
 import { Component, find, js, Node, error } from 'cc'
 import { emmiter } from '../emitter'
@@ -15,8 +15,9 @@ type ParamTypeObj<T> = { type: T[] }
 export type ParamTypeComp<T extends Component> = T | ParamTypeObj<T>
 export type ParamType<T extends MixType> = T | ParamTypeObj<T>
 
-function getTarget<T extends MixType>(ctor: { new(): T }, comp: any): T {
+function getTarget<T extends MixType>(ctor: { new(): T }, comp: any, key?:string, url?:string): T {
     if (js.isChildClassOf(ctor, Node)) {
+        if(!url && !!key) return comp.node.getChildByName(key) as T
         return comp.node
     } else { 
         let tarcom = comp.getComponent(ctor)
@@ -30,14 +31,18 @@ function initDecoratorKey(obj: any) {
 }
 
 /**
- *  !不能和property一起使用
- *  获取当前节点的组件(某一类组件列表)
+ *  获取当前节点的组件或者子节点的组件； 通过url参数指定获取组件的节点
  * @param param: Component|Node|[Component|Node]
- * @param url : 如果 param 非数组，url 所致节点上的 的 Node 或者 Component；
- *              如果 param 是数组，并且param[0] 是 Node，找到所有名字为propNameLenght-1的节点： 如属性golds 前缀为gold 的节点
- *              如果 param 是数组，并且param[0] 是 Component, 找到所有名字为propNameLenght-1的节点, 且节点拥有 param[0]组件；
- * @returns
- */
+ * @param url : 路径：指向当前节点对应的子节点； 若不存在 
+ * ! 非数组
+ * @example 1： @seek(Node) xNode: Node;                获取子节点名字为label的节点； 
+ * @example 2： @seek(Node,'xxx/xx') xNode: Node;       获取子节点为'xxx/xx'的节点 
+ * @example 3： @seek(Label) label: Label;              获取Label组件；
+ * @example 4： @seek(Label,'xxx/xx') label: Label;     获取子节点为'xxx/xx'的节点的 Label 组件；
+ * ! 数组 需要链接key的前缀(最后一个字符前面的部分) 
+ * @example 5： @seek([Node]) nodes: Node[];            获取所有子节点名字包含 'node' 的节点；
+ * @example 6： @seek([Label]) lables: Label[];          获取所有子节点名字包含 'lable' 的节点上的 Label 组件；
+ * */
 export function seek<ParamType>(param: ParamType, url?: string) {
     return function (target, key) {
         const mapKey = '_##_' + key
@@ -54,7 +59,7 @@ export function seek<ParamType>(param: ParamType, url?: string) {
             let node = !!url ? find(url, this.node) : this.node
             if (!Array.isArray(param)) {
                 //@ts-ignore
-                this.__decoratorkey__[mapKey] = getTarget(param, node) // 找到对应的
+                this.__decoratorkey__[mapKey] = getTarget(param, node, key,url) // 找到对应的
             } else {
                 let result = []
                 //@ts-ignore

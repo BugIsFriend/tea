@@ -17,14 +17,15 @@ import {
     Size,
     Tween,
     Input,
-    EventHandler
+    EventHandler,
+    log
 } from 'cc'
 import { BackgroudParam } from '../uitypes'
 import { Unit } from '../unit'
 const { ccclass, property, executionOrder, executeInEditMode } = _decorator
 
 @ccclass('Background')
-@executionOrder(-1)
+@executionOrder(1)
 @executeInEditMode
 export class Background extends Unit {
     @property(BackgroudParam) param: BackgroudParam = new BackgroudParam({})
@@ -40,7 +41,7 @@ export class Background extends Unit {
     public bgUnit: Unit
 
     protected onLoad(): void {
-        this.addBgNode()
+        this.addBgNode(true)
     }
 
     updateUITransform(size: Size) {
@@ -55,10 +56,11 @@ export class Background extends Unit {
         vnode_Trans.setContentSize(size.clone())
     }
 
-    addBgNode() {
+    addBgNode(load = false) {
         // 添加默认背景颜色
         let _nodename ='#bgNode'
-        let bgNode =  this.node.getChildByName(_nodename)
+        let bgNode = this.node.getChildByName(_nodename)
+        
 
         if (!bgNode) {
             // 添加背景节点
@@ -68,34 +70,30 @@ export class Background extends Unit {
             this.bgNode.setSiblingIndex(0)
             this.bgNode.active = this.param.active
             this.bgUnit.node.layer = this.node.layer
-
-            // 背景 给节点添加 UITransform
-            let vnode_Trans = this.gain(UITransform)
-            let uiTransform = this.bgUnit.gain(UITransform)
-            uiTransform.setAnchorPoint(v2(0.5, 0.5))
-            uiTransform.setContentSize(vnode_Trans.contentSize.clone())
-
-            // 添加组件
-            this.bgNode.addComponent(Sprite)
-            this.bgNode.addComponent(BlockInputEvents)
-
-            let bgSprite = this.bgNode.getComponent(Sprite)
-            assetManager.loadAny('7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941', (err, spriteFrame: SpriteFrame) => {
-                if (!err) { 
-                    bgSprite.spriteFrame = spriteFrame
-                }
-            })
-            this.updateView()
         } else { 
             this.bgNode = bgNode
             this.bgNode.active = true
+            this.bgUnit = this.bgNode.getComponent(Unit) || this.bgNode.addComponent(Unit)
         }
+        // 背景 给节点添加 UITransform
+        let vnode_Trans = this.gain(UITransform)
+        let uiTransform = this.bgUnit.gain(UITransform)
+        uiTransform.setAnchorPoint(v2(0.5, 0.5))
+        uiTransform.setContentSize(vnode_Trans.contentSize.clone())
+
+        // 添加组件
+        this.bgUnit.gain(BlockInputEvents)
+
+        assetManager.loadAny('7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941', (err, spriteFrame: SpriteFrame) => {
+            if (!err) this.bgUnit.gain(Sprite).spriteFrame = spriteFrame
+        })
+       load && this.updateView()
     }
 
     onInputEvent(param: BackgroudParam) {
         this.addBgNode()
         let { touch, intercept, touchClose } = param
-        let touchBlock = this.bgNode.getComponent(BlockInputEvents)
+        let touchBlock = this.bgUnit.gain(BlockInputEvents)
         if (this._onTouch !== touch || touchClose) {
             if (!touch) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
             if (touch || touchClose) {
@@ -122,7 +120,7 @@ export class Background extends Unit {
         if (this.bgNode) {
 
             // 修改颜色
-            let sprite = this.bgNode.getComponent(Sprite)
+            let sprite = this.bgUnit.gain(Sprite)
             sprite.color = this.param.color
 
             this.bgNode.active = this.param.active
@@ -152,7 +150,7 @@ export class Background extends Unit {
     fadeIn() {
         this.node.active = true
         let [openDt] = [0.2, 0.15]
-        let sprite = this.bgNode.getComponent(Sprite)
+        let sprite = this.bgUnit.gain(Sprite)
         let tarColor = this.param.color.clone()
         let startColor = tarColor.clone()
         startColor.a = 0
@@ -164,7 +162,7 @@ export class Background extends Unit {
     fadeOut(callFunc?: Function) {
         this.node.active = true
         let [openDt] = [0.2, 0.15]
-        let sprite = this.bgNode.getComponent(Sprite)
+        let sprite = this.bgUnit.gain(Sprite)
         let tarColor = this.param.color.clone()
         tarColor.a = 0
         tween(sprite)
@@ -184,6 +182,6 @@ export class Background extends Unit {
     protected onDestroy(): void {
         Tween.stopAllByTag(1000)
         Tween.stopAllByTag(1001)
-        this.bgNode.isValid && this.bgNode.destroy()
+        // this.bgNode.isValid && this.bgNode.destroy()
     }
 }
