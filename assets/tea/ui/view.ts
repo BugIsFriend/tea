@@ -8,7 +8,7 @@ import { ViewCategory } from './category'
 
 const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
 import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
-import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../uitypes'
+import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../ui-types'
 import { Unit } from '../unit'
 import { LoadCom } from '../component/loadcom'
 

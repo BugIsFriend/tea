@@ -7,7 +7,7 @@
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
-import { BackgroudParam, UIAnimate } from './uitypes'
+import { BackgroudParam, UIAnimate } from './ui-types'
 import { singleton } from './meta/class'
 import { LoadCom } from './component/loadcom'
 

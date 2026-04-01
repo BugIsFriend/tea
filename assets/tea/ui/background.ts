@@ -20,7 +20,7 @@ import {
     EventHandler,
     log
 } from 'cc'
-import { BackgroudParam } from '../uitypes'
+import { BackgroudParam } from '../ui-types'
 import { Unit } from '../unit'
 const { ccclass, property, executionOrder, executeInEditMode } = _decorator
 

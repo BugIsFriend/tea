@@ -8,10 +8,7 @@ export interface IUnit {
     get isValid(): boolean
 }
 
-
-/**
- * cocos Creator 组件的封装；
- */
+// Cocos 组件的封装；
 @ccclass('Unit')
 export class Unit extends Component implements IUnit { 
 

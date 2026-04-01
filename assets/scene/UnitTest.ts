@@ -4,7 +4,7 @@ import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/meta/method'
 import { ui } from '../tea/ui'
 import { EDITOR } from 'cc/env'
-import { UIAnimate } from '../tea/uitypes'
+import { UIAnimate } from '../tea/ui-types'
 import { tip } from '../tea/ui/tip/tip'
 const { ccclass,  executeInEditMode } = _decorator
 

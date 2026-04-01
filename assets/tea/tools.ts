@@ -6,7 +6,6 @@
  */
 
 import { isValid, tween, Node, v3, Component } from "cc";
-import { Unit } from "./unit";
 
 export type KT = number | string
 
@@ -63,9 +62,20 @@ export function breath(node: Node, repeatTimes: number = -1, timeScale: number =
  **  从节点或者组件 如果没有该组件则添加一个，有别于 getComponent 只是获取；
  * @param node 
  * @param ctor 
- * @returns 
  */
-export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }) {
+export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }):T {
     //@ts-ignore
     return node.getComponent(ctor) || node.addComponent(ctor)
+}
+
+/**
+ * 打乱数组顺序
+ * @param arr 
+ */
+export function shuffle<T>(arr: T[]):T[]{
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr
 }

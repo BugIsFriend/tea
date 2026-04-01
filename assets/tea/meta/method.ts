@@ -40,8 +40,8 @@ function initDecoratorKey(obj: any) {
  * @example 3： @seek(Label) label: Label;              获取Label组件；
  * @example 4： @seek(Label,'xxx/xx') label: Label;     获取子节点为'xxx/xx'的节点的 Label 组件；
  * ! 数组 需要链接key的前缀(最后一个字符前面的部分) 
- * @example 5： @seek([Node]) nodes: Node[];            获取所有子节点名字包含 'node' 的节点；
- * @example 6： @seek([Label]) lables: Label[];          获取所有子节点名字包含 'lable' 的节点上的 Label 组件；
+ * @example 5： @seek([Node]) nodes: Node[];            获取所有子节点  名字包含'node' 的节点；
+ * @example 6： @seek([Label]) lables: Label[];         获取所有子节点 名字包含 'lable' 的节点上的 Label 组件；
  * */
 export function seek<ParamType>(param: ParamType, url?: string) {
     return function (target, key) {
