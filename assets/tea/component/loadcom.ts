@@ -2,7 +2,7 @@
  * author myerse.lee
  * created: 2024-09-25 17:10:15
  */
-import {Component, Asset, AssetManager, assetManager, resources, warn ,_decorator} from 'cc'
+import {Component, Asset, AssetManager, assetManager, resources, warn ,_decorator, log} from 'cc'
 const { ccclass } = _decorator;
 
 type TAsset = {
@@ -80,8 +80,14 @@ export class LoadCom extends Component {
 
     /** 加载一个资源 */
     public load<T extends Asset>(url: string, success?: (asset: T) => void, fail?: (err: Error) => void) { 
-        let done = (asset: T) => this.isValid && success?.(asset)
-        let undone = (err:Error) =>  this.isValid && fail?.(err)
+        let done = (asset: T) => { 
+            !this.isValid && warn(`LoadCom 已经失效， 但资源 ${url} 加载成功了， `)
+            this.isValid && success?.(asset)
+        }
+        let undone = (err: Error) => { 
+            !this.isValid && warn(`LoadCom 已经失效， 但资源 ${url} 加载成功了， `)
+            this.isValid && fail?.(err)
+        }
         LoadCom.load(url, done, undone)
     }
 
@@ -96,7 +102,6 @@ export class LoadCom extends Component {
         let undone = (err:Error) =>  this.isValid && fail?.(err)
         Promise.all(all_promise).then(done,undone)
     }
-
 
 }
 

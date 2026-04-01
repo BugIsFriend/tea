@@ -1,4 +1,10 @@
-import { _decorator, Component, Label, tween, UIOpacity ,Node} from 'cc';
+/*  
+* @Author: myerse.lee   
+* @Date: 2026-04-01 18:46:19   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-04-01 18:46:19   * */
+
+import { _decorator, Component, Label, tween, UIOpacity, Node } from 'cc';
 import { seek } from '../../meta/method';
 const { ccclass } = _decorator;
 export interface ITipBox { 

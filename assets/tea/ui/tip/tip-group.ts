@@ -1,3 +1,9 @@
+/*  
+* @Author: myerse.lee   
+* @Date: 2026-04-01 18:46:30   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-04-01 18:46:30   * */
+
 import { _decorator, Component, Node, Prefab } from 'cc';
 import { LoadCom } from '../../component/loadcom';
 const { ccclass, property } = _decorator;
