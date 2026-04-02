@@ -10,6 +10,7 @@ import { singleton } from './meta/class'
 import { LoadCom } from './component/loadcom'
 import { Tip } from './ui/tip/tip'
 import { UI } from './ui'
+import { __debug } from './debug/debug'
 
 /**
  *  框架层代码
@@ -44,22 +45,20 @@ export class Tea {
         return root;
     }
 
-    
-    /**
-     *  tip 单例
-     */
+    // tip 单例
     public get tip() : Tip {
         return  new Tip()
     }
 
-    /**
-     * ui 单例
-     */
+    // ui 单例
     public get ui():UI {
        return new UI() 
     }
 
-   
+    // 测试模块
+    public get debug() {
+        return __debug
+    }
 }
 
 window.tea = new Tea()

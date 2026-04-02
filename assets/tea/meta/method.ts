@@ -5,7 +5,7 @@
  * @Last Modified time: 2026-02-27 17:05:46
 * * */
 
-import { Component, find, js, Node, error } from 'cc'
+import { Component, find, js, Node, error, log } from 'cc'
 import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
@@ -17,7 +17,10 @@ export type ParamType<T extends MixType> = T | ParamTypeObj<T>
 
 function getTarget<T extends MixType>(ctor: { new(): T }, comp: any, key?:string, url?:string): T {
     if (js.isChildClassOf(ctor, Node)) {
-        if(!url && !!key) return comp.node.getChildByName(key) as T
+        if (!url && !!key) { 
+            log(` seek Node by key: ${key} in ${comp}`)
+            return comp.node.getChildByName(key) as T
+        }
         return comp.node
     } else { 
         let tarcom = comp.getComponent(ctor)
@@ -35,7 +38,7 @@ function initDecoratorKey(obj: any) {
  * @param param: Component|Node|[Component|Node]
  * @param url : 路径：指向当前节点对应的子节点； 若不存在 
  * ! 非数组
- * @example 1： @seek(Node) xNode: Node;                获取子节点名字为label的节点； 
+ * @example 1： @seek(Node) xNode: Node;                获取子节点名字为xNode的节点； 
  * @example 2： @seek(Node,'xxx/xx') xNode: Node;       获取子节点为'xxx/xx'的节点 
  * @example 3： @seek(Label) label: Label;              获取Label组件；
  * @example 4： @seek(Label,'xxx/xx') label: Label;     获取子节点为'xxx/xx'的节点的 Label 组件；

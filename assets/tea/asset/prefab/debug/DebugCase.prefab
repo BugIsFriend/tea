@@ -133,7 +133,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
+      "width": 220,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -169,7 +169,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "xxxxxxxxxxxxxxxx",
+    "_string": "xxxxxxxxxxxxxxxxxxxxxx",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -242,7 +242,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
+      "width": 230,
       "height": 50
     },
     "_anchorPoint": {

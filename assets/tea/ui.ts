@@ -11,7 +11,7 @@ import { BackgroudParam, UIAnimate } from './ui-types'
 import { singleton } from './meta/class'
 import { LoadCom } from './component/loadcom'
 
-type Param = { asset: string | Prefab | Node; bundle?: string; tag?: string }
+type Param = { asset: string | Prefab | Node; tag?: string }
 
 @singleton
 export class UI {
