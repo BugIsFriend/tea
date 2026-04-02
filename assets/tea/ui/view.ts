@@ -54,7 +54,7 @@ export class View extends Unit {
     public state: ViewState = ViewState.None // 窗口状态
 
     /**
-     * 创建有 ViewComp 组件的 Node
+     * 创建有 View 组件的 Node
      * @param asset :
      * @param bundleName : asset 是字符串，则需要bundleName
      * @returns
