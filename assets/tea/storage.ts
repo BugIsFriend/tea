@@ -10,7 +10,7 @@ import { sys, warn } from "cc"
 import { PREVIEW } from "cc/env"
 
 export interface IValue extends Object { 
-    expire?: Dayjs,
+    expire?: Dayjs|number,
     encrypt?: boolean
 }
 
@@ -83,6 +83,7 @@ export namespace storage {
         if (!content) return null
         try {
             const data: StorageValue<T> = decode(content)
+            // ! 这个时间有必要使用服务器时间吗？如果本地时间被修改了，过期时间就不准确了；如果有服务器时间的话，就不受本地时间修改的影响了；
             if (!!data.expire && Date.now() > data.expire) {
                 remove(key)
                 return null
