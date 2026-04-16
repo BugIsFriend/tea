@@ -9,43 +9,58 @@ import { singleton } from "../meta/class";
 
 
 type KeyType = number | string
-type DebugData =  Map<KeyType, IDebugCaseData>
+type Group  = string
+type DebugDatas = Map<KeyType, ICaseData>
 
-export interface IDebugCaseData { 
-    name: string,
-    flow_id?:  KeyType,    // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
-    group?: KeyType,      // 当前属于那一组； 0
-    id?: KeyType,
-    cb?:Function
+
+export interface ICaseData { 
+    name: string,                               // 显示名字；
+    flow_id?:  KeyType,                         // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
+    group?: Group,                              // 当前属于那一组； 0
+    id?: KeyType,                               // 测试用例ID；
+    cb?:(duebugData:ICaseData)=>string     // 返回数据需要显示文本；
 }
+
+export interface IFlowCaseData extends ICaseData { 
+    flow_id:  KeyType
+}
+
 @singleton
 export class Debug { 
 
     // 单个测试用例
-    private _mData: DebugData = new Map<KeyType, IDebugCaseData>()
+    private _gData: Map<Group,DebugDatas>  = new Map<Group, Map<KeyType,ICaseData>>()
     
-    private _mFlowGroups:Map<KeyType,IDebugCaseData[]> = new Map<KeyType,IDebugCaseData[]>()
+    private _mFlowGroups:Map<KeyType,ICaseData[]> = new Map<KeyType,ICaseData[]>()
 
     /**
      * 增加一个测试用例；
      * @param debug_case 
      */
-    public addCase(debug_case: IDebugCaseData) { 
+    public addCase(debug_case: ICaseData) { 
  
         if (!debug_case.id) { 
             debug_case.id =  Date.now()
         }
-    
+
+        debug_case.group ??= 'All'
+
+        let mGroup = this._gData.get(debug_case.group)
+        if (!mGroup) { 
+            mGroup = new Map<Group, ICaseData>()
+            this._gData.set(debug_case.group,mGroup)
+        }
+        
         if (debug_case.flow_id) {
             let flow_group = this._mFlowGroups.get(debug_case.flow_id)
             if (!flow_group) { 
-                flow_group =  new Array<IDebugCaseData>()
+                flow_group =  new Array<ICaseData>()
                 this._mFlowGroups.set(debug_case.flow_id, flow_group)
             }
             flow_group.push(debug_case)
             _.orderBy(flow_group,['group'], ['asc'])
         } else {   
-            this._mData.set(debug_case.id , debug_case)
+            mGroup.set(debug_case.id , debug_case)
         }
     }
 
@@ -58,6 +73,10 @@ export class Debug {
 
     public showView() { 
 
+    }
+
+    public data(): Map<Group,DebugDatas> { 
+        return this._gData
     }
 
 }

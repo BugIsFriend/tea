@@ -4,46 +4,96 @@
 * @Modified by:   myerse.lee   
 * @Modified time: 2026-02-27 15:39:13   * */
 
-import { _decorator, Prefab, Node, instantiate, log } from "cc";
+import { _decorator, Prefab, Node, instantiate, log, Label, Component, Layout} from "cc";
 import { Unit } from "../unit";
+import { seek } from "../meta/method";
+import { ICaseData } from "./debug";
+import { gain } from "../tools";
+import { DebugCase } from "./debug-case";
 const { ccclass,property, executeInEditMode } = _decorator
+
 
 @ccclass('DebugView')
 @executeInEditMode
 class DebugView extends Unit {
 
     @property(Prefab) casePrefab: Prefab = null;
+    @property(Prefab) LayoutPrefab: Prefab = null;
 
     @property(Node) Category: Node = null;
+    @property(Node) DebugcaseLayouts: Node = null;
+
+
+    mNodeCategory:Map<Node,Node> = new Map()
 
 
     protected start(): void {
         this.Category.removeAllChildren()
+        this.DebugcaseLayouts.removeAllChildren()
+        
         this.init()
     }
     
     public init( data?: any): void {
-     
-        let category = [
-            { name: 'all', value: 'FSM' },
-            { name: 'storage', value: 'View' },
-            { name: 'flow', value: 'Background' },
-        ]
-        
-        tea.debug.addCase({ name: 'test', group: 'all', cb: () => {
+ 
+        tea.debug.addCase({ name: 'test', cb: (data) => {
             log('test debug case')
-        }})
-        
-
-        category.forEach((item) => {
-            let node = this.Category.getChildByName(item.value)
-            if (!node) {
-                node = instantiate(this.casePrefab)
-                node.name = item.value
-                node.parent = this.Category 
-            }
+            return data.name
+        }
         })
         
+        tea.debug.addCase({
+            group:'Storage',
+            name: 'test1', cb: (data) => {
+            log('test debug case')
+            return data.name
+        }})
+        
+        let _data = tea.debug.data()
+
+        let first = true
+        _data.forEach((mGroup, groupId) => { 
+
+            // TableItem
+            let tabItem = this.Category.getChildByName(groupId)
+            if (!tabItem) {
+                tabItem = instantiate(this.casePrefab)
+
+                let layout = instantiate(this.LayoutPrefab)
+                layout.parent = this.DebugcaseLayouts
+                this.mNodeCategory.set(tabItem, layout)
+                
+                let data: ICaseData = {
+                    name: groupId,                          // 显示名字；
+                    group: groupId,                         // 当前属于那一组； 0
+                    cb: (data: ICaseData) => this.tapCatgeory(tabItem)
+                }
+                
+                let comp = gain(tabItem, DebugCase)
+                comp.init(data, this.Category, 0)
+                
+                layout.active = first
+                first = false
+                
+            }
+
+            // DebugItem
+            mGroup.forEach((debugItem, key) => { 
+                let node = instantiate(this.casePrefab)
+                let comp = gain(node, DebugCase)
+                comp.init(debugItem, this.mNodeCategory.get(tabItem))
+            })
+
+            
+        })
+        
+    }
+
+    public tapCatgeory(tabItem:Node) { 
+        this.mNodeCategory.forEach((value, key) => { 
+            value.active = (tabItem == key)
+        })
+        return ''
     }
 
 }
