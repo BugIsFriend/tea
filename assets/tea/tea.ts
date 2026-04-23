@@ -25,6 +25,7 @@ export class Tea {
         this.prefabRoot = await LoadCom.asynload<Prefab>('tea/asset/prefab/2DRoot')
         await this.tip.init()
         this.ui.init()
+        this.debug.init()
         this.prefabRoot.addRef() 
     }
 

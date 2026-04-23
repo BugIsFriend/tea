@@ -55,8 +55,6 @@ export class TestCode extends Component {
         
         
 
-        tea.debug.show()
-
     }
 
     seekTest() {
