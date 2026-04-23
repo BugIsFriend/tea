@@ -149,14 +149,14 @@ export class Background extends Unit {
         Tween.stopAllByTag(1001)
 
         this.node.active = true
-        let [openDt] = [ 0.15]
+        let [openDt] = [0.15]
         let sprite = gain(this.bgNode,Sprite)
         let tarColor = this.param.color.clone()
         let startColor = tarColor.clone()
         startColor.a = 0
         sprite.color = startColor
         this.updateView()
-        tween(sprite).to(openDt[0], { color: tarColor }).start().tag(1000)
+        tween(sprite).to(openDt, { color: tarColor }).start().tag(1000)
     }
 
     fadeOut(callFunc?: Function) {
@@ -169,7 +169,7 @@ export class Background extends Unit {
         let tarColor = this.param.color.clone()
         tarColor.a = 0
         tween(sprite)
-            .to(openDt[0], { color: tarColor })
+            .to(openDt, { color: tarColor })
             .call(() => {
                 this.onInputEvent({})
                 callFunc?.()
@@ -181,9 +181,5 @@ export class Background extends Unit {
     setSiblingIndex(idx: number) {
         this.node.setSiblingIndex(idx)
     }
-
-    protected onDestroy(): void {
-        Tween.stopAllByTag(1000)
-        Tween.stopAllByTag(1001)
-    }
+    
 }
