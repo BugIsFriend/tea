@@ -12,7 +12,7 @@ const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple }
 import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
 import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../ui-types'
 import { Unit } from '../unit'
-import { LoadCom } from '../component/loadcom'
+import { LoadCom } from '../component/load'
 
 export enum ViewState {
     None,
@@ -50,7 +50,6 @@ export class View extends Unit {
     private onShowCbs: Function[] = []
     private onCloseCbs: Function[] = []
 
-    public background: Background
     public state: ViewState = ViewState.None // 窗口状态
 
     /**
@@ -77,14 +76,7 @@ export class View extends Unit {
 
     public setBackgroundParam(param: BackgroudParam) {
         Object.assign(this.param, param)
-        this.background?.setParam(this.param)
-    }
-
-    addBackground() {
-        if (this.param.active && !this.background) {
-            this.background = this.addComponent(Background)
-        }
-        this.background.setParam(this.param)
+        this.gain(Background).setParam(this.param)
     }
 
     updateView() {}

@@ -242,7 +242,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 230,
+      "width": 240,
       "height": 50
     },
     "_anchorPoint": {
@@ -269,7 +269,7 @@
       "__id__": 11
     },
     "clickEvents": [],
-    "_interactable": true,
+    "_interactable": false,
     "_transition": 0,
     "_normalColor": {
       "__type__": "cc.Color",

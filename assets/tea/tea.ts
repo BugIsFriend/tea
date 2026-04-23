@@ -7,7 +7,7 @@
 
 import { director, find, warn, Node, UITransform, Layers, Prefab, error, instantiate } from 'cc'
 import { singleton } from './meta/class'
-import { LoadCom } from './component/loadcom'
+import { LoadCom } from './component/load'
 import { Tip } from './ui/tip/tip'
 import { UI } from './ui'
 import { __debug } from './debug/debug'

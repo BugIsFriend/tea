@@ -6,10 +6,11 @@
  * */
 import { View, ViewState } from './ui/view'
 import { Background } from './ui/background'
-import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2 } from 'cc'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2, log } from 'cc'
 import { BackgroudParam, UIAnimate } from './ui-types'
 import { singleton } from './meta/class'
-import { LoadCom } from './component/loadcom'
+import { LoadCom } from './component/load'
+import { gain } from './tools'
 
 type Param = { asset: string | Prefab | Node; tag?: string }
 
@@ -75,7 +76,7 @@ export class UI {
             node = instantiate(prefab) as Node
         }
 
-        let viewcom = node.getComponent(View) || node.addComponent(View)
+        let viewcom = gain(node, View)
         viewcom.setCompletedFunc(this.handleViewAnimateCompleted.bind(this))
         viewcom.tag = tag || ''
         return viewcom
@@ -112,6 +113,10 @@ export class UI {
             ui.loadParam = null
         } else {
             if (closeCb) view.appendClosedCb(closeCb)
+            
+            let top = this.getTop()
+            top?.gain(Background)?.fadeOut()
+            
             if (this.getViewIdx(view) == -1) {
                 view.node.active = true
                 this.root.addChild(view.node) 
@@ -162,7 +167,7 @@ export class UI {
         if (viewcom.state == ViewState.Openged) {
         } else if (viewcom.state == ViewState.Closed) {
             // 1：关闭动作执行完毕，销毁该节点；
-            viewcom.node.destroy()
+            viewcom.node.parent = null
 
             // 2：弹出下一个
             let view = this.getTop()

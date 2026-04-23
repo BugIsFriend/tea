@@ -6,7 +6,6 @@
 
 import { _decorator, Prefab, Node, instantiate, log, Label, Component, Layout} from "cc";
 import { Unit } from "../unit";
-import { seek } from "../meta/method";
 import { ICaseData } from "./debug";
 import { gain } from "../tools";
 import { DebugCase } from "./debug-case";
@@ -15,7 +14,7 @@ const { ccclass,property, executeInEditMode } = _decorator
 
 @ccclass('DebugView')
 @executeInEditMode
-class DebugView extends Unit {
+export class DebugView extends Unit {
 
     @property(Prefab) casePrefab: Prefab = null;
     @property(Prefab) LayoutPrefab: Prefab = null;
@@ -23,6 +22,7 @@ class DebugView extends Unit {
     @property(Node) Category: Node = null;
     @property(Node) DebugcaseLayouts: Node = null;
 
+    @property(Node) Root: Node = null;
 
     mNodeCategory:Map<Node,Node> = new Map()
 
@@ -30,7 +30,6 @@ class DebugView extends Unit {
     protected start(): void {
         this.Category.removeAllChildren()
         this.DebugcaseLayouts.removeAllChildren()
-        
         this.init()
     }
     
@@ -71,10 +70,9 @@ class DebugView extends Unit {
                 
                 let comp = gain(tabItem, DebugCase)
                 comp.init(data, this.Category, 0)
-                
+                comp.setDark(first)
                 layout.active = first
                 first = false
-                
             }
 
             // DebugItem
@@ -83,17 +81,25 @@ class DebugView extends Unit {
                 let comp = gain(node, DebugCase)
                 comp.init(debugItem, this.mNodeCategory.get(tabItem))
             })
-
-            
         })
         
     }
 
     public tapCatgeory(tabItem:Node) { 
         this.mNodeCategory.forEach((value, key) => { 
-            value.active = (tabItem == key)
+            let click = (tabItem == key)
+            value.active = (click)
+            gain(tabItem, DebugCase).setDark(click)
         })
         return ''
+    }
+
+    show() { 
+        this.Root.active = true
+    }
+
+    hide() { 
+        this.Root.active = false
     }
 
 }

@@ -32,28 +32,31 @@ export class TestCode extends Component {
     }
 
     uiTest() {
-        let dt = 0.5
+        let dt = 3
 
-        ui.load('resources/TestPopView').show(UIAnimate.scale, null, { active: true, color: color(0, 0, 0, 128) })
-        this.scheduleOnce(() => ui.load('resources/TestPopView-top').show(UIAnimate.top, null, { active: true, color: color(0, 0, 0, 128) }), dt * 1)
-        this.scheduleOnce(() => ui.load('resources/TestPopView-bottom').show(UIAnimate.bottom, null, { active: true, color: color(0, 255, 0, 10) }), dt * 2)
-        this.scheduleOnce(() => ui.load('resources/TestPopView-left').show(UIAnimate.left, null, { active: true, color: color(0, 0, 0, 128) }), dt * 3)
-        this.scheduleOnce(
-            () => ui.load('resources/TestPopView-right').show(UIAnimate.right, null, { active: true, color: color(0, 0, 0, 128), touchClose: true }),
-            dt * 4
-        )
+        ui.load('resources/TestPopView').show(UIAnimate.scale, null, { active: true, color: color(0, 0, 0, 200) })
+        // this.scheduleOnce(() => ui.load('resources/TestPopView-top').show(UIAnimate.top, null, { active: true, color: color(0, 0, 0, 200) }), dt * 1)
+        // this.scheduleOnce(() => ui.load('resources/TestPopView-bottom').show(UIAnimate.bottom, null, { active: true, color: color(0, 0, 0, 200) }), dt * 2)
+        // this.scheduleOnce(() => ui.load('resources/TestPopView-left').show(UIAnimate.left, null, { active: true, color: color(0, 0, 0, 200) }), dt * 3)
+        // this.scheduleOnce(
+        //     () => ui.load('resources/TestPopView-right').show(UIAnimate.right, null, { active: true, color: color(0, 0, 0, 200), touchClose: true }),
+        //     dt * 4
+        // )
 
-        this.scheduleOnce(() => ui.closeTop(), dt * 5)
-        this.scheduleOnce(() => ui.closeTop(), dt * 6)
-        this.scheduleOnce(() => ui.closeTop(), dt * 7)
-        this.scheduleOnce(() => ui.closeTop(), dt * 8)
+        // this.scheduleOnce(() => ui.closeTop(), dt * 5)
+        // this.scheduleOnce(() => ui.closeTop(), dt * 6)
+        // this.scheduleOnce(() => ui.closeTop(), dt * 7)
+        // this.scheduleOnce(() => ui.closeTop(), dt * 8)
         dt+=0.5
-        this.scheduleOnce(() => tip.show('tip pop test 1',true), dt * 2)
-        this.scheduleOnce(() => tip.show('tip pop test 2'), dt * 3)
-        this.scheduleOnce(() => tip.show('tip pop test 3',true), dt * 4)
-        this.scheduleOnce(() => tip.show('tip pop test 4',true), dt * 5)
-
+        // this.scheduleOnce(() => tip.show('tip pop test 1',true), dt * 2)
+        // this.scheduleOnce(() => tip.show('tip pop test 2'), dt * 3)
+        // this.scheduleOnce(() => tip.show('tip pop test 3',true), dt * 4)
+        // this.scheduleOnce(() => tip.show('tip pop test 4', true), dt * 5)
         
+        
+
+        // tea.debug.show()
+
     }
 
     seekTest() {

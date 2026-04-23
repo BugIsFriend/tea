@@ -6,7 +6,7 @@
  * */
 
 import { Node, Layers, Prefab, instantiate, tween, warn, find, UITransform, error,} from 'cc'
-import { LoadCom } from '../../component/loadcom'
+import { LoadCom } from '../../component/load'
 import { singleton } from '../../meta/class'
 import { TipItem } from './tip-item'
 import { ITipBox, TipBox } from './tip-box'

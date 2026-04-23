@@ -75,7 +75,7 @@ export const NumberAnimateMap = enum2map(UIAnimate, 'number', animateFuncs) // æ
 @ccclass('BackgroudParam')
 export class BackgroudParam {
     constructor(param?: BackgroudParam) {
-        this.color = param?.color || this.color
+        this.color = param?.color?.clone() || this.color
         this.active = param?.active
         this.touch = param?.touch
         this.touchClose = false

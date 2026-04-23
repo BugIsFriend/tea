@@ -5,7 +5,11 @@
 * @Modified time: 2026-02-26 14:55:35   
 * * */
 
+import { instantiate, Prefab, Node, find, debug } from "cc";
+import { LoadCom } from "../component/load";
 import { singleton } from "../meta/class";
+import { gain } from "../tools";
+import { DebugView } from "./debug-view";
 
 
 type KeyType = number | string
@@ -31,8 +35,10 @@ export class Debug {
     // 单个测试用例
     private _gData: Map<Group,DebugDatas>  = new Map<Group, Map<KeyType,ICaseData>>()
     
-    private _mFlowGroups:Map<KeyType,ICaseData[]> = new Map<KeyType,ICaseData[]>()
+    private _mFlowGroups: Map<KeyType, ICaseData[]> = new Map<KeyType, ICaseData[]>()
 
+    public view:DebugView
+    
     /**
      * 增加一个测试用例；
      * @param debug_case 
@@ -71,8 +77,21 @@ export class Debug {
         
     }
 
-    public showView() { 
+    get root() {
+        return find('Canvas/debug', tea.root)
+    }
 
+    public show() { 
+        if (!this.view) {
+            LoadCom.asynload<Prefab>('tea/asset/prefab/debug/DebugsView').then((prefab) => {
+                let debug_node = instantiate(prefab)
+                debug_node.parent = this.root
+                this.view = gain(debug_node, DebugView)
+                this.view.show()
+            })
+        } else { 
+            this.view.show()
+        }
     }
 
     public data(): Map<Group,DebugDatas> { 
