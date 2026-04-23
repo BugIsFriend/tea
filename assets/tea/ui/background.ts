@@ -72,7 +72,7 @@ export class Background extends Unit {
             this.bgNode.layer = this.node.layer
         } else { 
             this.bgNode = bgNode
-            this.bgNode.active = true
+            this.bgNode.active = this.param.active
             this.bgUnit = gain(this.bgNode, Unit)
         }
         // 背景 给节点添加 UITransform
@@ -144,25 +144,32 @@ export class Background extends Unit {
     }
 
     fadeIn() {
+
+        Tween.stopAllByTag(1000)
+        Tween.stopAllByTag(1001)
+
         this.node.active = true
-        let [openDt] = [0.2, 0.15]
+        let [openDt] = [ 0.15]
         let sprite = gain(this.bgNode,Sprite)
         let tarColor = this.param.color.clone()
         let startColor = tarColor.clone()
         startColor.a = 0
         sprite.color = startColor
         this.updateView()
-        tween(sprite).to(openDt, { color: tarColor }).start().tag(1000)
+        tween(sprite).to(openDt[0], { color: tarColor }).start().tag(1000)
     }
 
     fadeOut(callFunc?: Function) {
+        Tween.stopAllByTag(1000)
+        Tween.stopAllByTag(1001)
+
         this.node.active = true
-        let [openDt] = [0.2, 0.15]
+        let [openDt] = [0.15]
         let sprite = gain(this.bgNode,Sprite)
         let tarColor = this.param.color.clone()
         tarColor.a = 0
         tween(sprite)
-            .to(openDt, { color: tarColor })
+            .to(openDt[0], { color: tarColor })
             .call(() => {
                 this.onInputEvent({})
                 callFunc?.()

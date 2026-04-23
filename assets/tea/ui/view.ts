@@ -76,7 +76,7 @@ export class View extends Unit {
 
     public setBackgroundParam(param: BackgroudParam) {
         Object.assign(this.param, param)
-        this.gain(Background).setParam(this.param)
+        this.getComponent(Background)?.setParam(this.param)
     }
 
     updateView() {}

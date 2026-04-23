@@ -19,8 +19,7 @@ export class UI {
     private uiViews: Array<View> = []
 
     // 公共背景，制作动画期间显示，动画结束之后隐藏，并且展示的弹框自己的bgView
-    private background_0: Background = null
-    private background_1: Background = null
+    private bgs: Background[] = []
 
     private color: Color = new Color(0, 0, 0, Math.floor(255 * 0.6))
     private defaultParam: BackgroudParam = new BackgroudParam({ color: this.color, active: true, touch: true })
@@ -34,16 +33,12 @@ export class UI {
      * 首个场景调用下
      */
     init() {
-        if (!this.background_0 ) {
-            this.background_0 = this.createBackground(0)
-            this.background_1 = this.createBackground(1)
-        } else {
-            this.background_0 = this.root.getChildByName('CommonBgView0').getComponent(Background)
-            this.background_1 = this.root.getChildByName('CommonBgView1').getComponent(Background)
-        }
-        let closeTop = this.closeTop.bind(this)
-        this.background_0.setTouchCloseFunc(closeTop)
-        this.background_1.setTouchCloseFunc(closeTop)
+        this.root.removeAllChildren()
+        this.bgs = [this.createBackground(0),this.createBackground(1)]
+        this.bgs.forEach(item => { 
+            item.setParam({active: false})
+            item.setTouchCloseFunc(this.closeTop.bind(this))
+        })
     }
 
     createBackground(idx: number) {
@@ -57,7 +52,7 @@ export class UI {
         background.updateUITransform(size_canvas.clone())
 
         this.root.addChild(background.node)
-
+        
         return background
     }
 
@@ -114,9 +109,6 @@ export class UI {
         } else {
             if (closeCb) view.appendClosedCb(closeCb)
             
-            let top = this.getTop()
-            top?.gain(Background)?.fadeOut()
-            
             if (this.getViewIdx(view) == -1) {
                 view.node.active = true
                 this.root.addChild(view.node) 
@@ -130,32 +122,25 @@ export class UI {
         }
     }
 
-    setBackgroundParam(param: BackgroudParam) {
-        this.background_0.setParam(param)
-    }
-
     /**
      *  播放背景动画
      * @param show  显示或者不显示
      * @param curViewCom
      */
     public backgroundAnimate(show: boolean, viewcom: View) {
-        if (show) {
-            this.setBackgroundParam(viewcom.param)
-            this.background_0.fadeIn()
-            this.background_0.setSiblingIndex(this.uiViews.length - 1)
-        } else {
-            let prebg = this.background_0
-            prebg.fadeOut(() => prebg.setParam({ active: false }))
-            if (viewcom) {
-                this.background_1.setSiblingIndex(this.uiViews.length - 1)
-                this.background_1.setParam(viewcom.param)
-                this.background_1.fadeIn()
 
-                let temp = this.background_1
-                this.background_1 = this.background_0
-                this.background_0 = temp
-            }
+        let bg_s = this.bgs[0].node.active ? this.bgs[0] : this.bgs[1]
+        let bg_h = this.bgs[0].node.active ? this.bgs[1] : this.bgs[0] 
+
+        let s_idx = show ? (viewcom.node.getSiblingIndex() - 1) : this.uiViews.length - 1
+        
+        if (viewcom) {
+            bg_s.node.active = false
+            bg_h.setSiblingIndex(s_idx)
+            bg_h.setParam(viewcom.param)
+            bg_h.fadeIn()
+        } else { 
+            bg_s.fadeOut(item=> bg_s.node.active = false)
         }
     }
 

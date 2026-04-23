@@ -2,7 +2,7 @@ import { _decorator, Color, CCBoolean, ITweenOption, Node, Tween, tween, UITrans
 const { ccclass, property } = _decorator
 import { ui } from './ui'
 import { enum2map } from './tools'
-const _dt = 0.2
+const _dt = 0.15
 
 const ease: ITweenOption = { easing: 'sineIn' }
 // TODO 优化弹出动画表现
