@@ -1,5 +1,5 @@
 
-import { _decorator, Prefab, Node, instantiate, log, Label, Button, EventHandler, Input, Component, Sprite, Color } from "cc";
+import { _decorator, Prefab, Node, instantiate, log, Label, Button, Component, Sprite, Color } from "cc";
 import { ICaseData } from "./debug";
 import { seek } from "../meta/method";
 const { ccclass, property, executeInEditMode } = _decorator
@@ -26,7 +26,7 @@ export class DebugCase extends Component {
     }
 
     protected onLoad(): void {
-        this.node.on('click', () => {
+        this.node.on(Button.EventType.CLICK, () => {
             let desc = this.debugItem.cb?.(this.debugItem)
             this.TxtName.string ??= desc
         })

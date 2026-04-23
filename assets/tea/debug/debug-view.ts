@@ -88,8 +88,8 @@ export class DebugView extends Unit {
     public tapCatgeory(tabItem:Node) { 
         this.mNodeCategory.forEach((value, key) => { 
             let click = (tabItem == key)
-            value.active = (click)
-            gain(tabItem, DebugCase).setDark(click)
+            value.active = click
+            gain(key, DebugCase).setDark(click)
         })
         return ''
     }

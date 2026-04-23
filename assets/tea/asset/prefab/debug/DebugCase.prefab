@@ -269,8 +269,8 @@
       "__id__": 11
     },
     "clickEvents": [],
-    "_interactable": false,
-    "_transition": 0,
+    "_interactable": true,
+    "_transition": 3,
     "_normalColor": {
       "__type__": "cc.Color",
       "r": 255,
