@@ -16,7 +16,7 @@ export enum SoundState {
     Cancel,
     Loaded
 }
-
+1
 export class SoundEntity{
     id:number = -1;
     path:string="";

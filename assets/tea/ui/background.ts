@@ -23,7 +23,7 @@ import {
 import { BackgroudParam } from '../ui-types'
 import { Unit } from '../unit'
 import { gain } from '../tools'
-const { ccclass, property, executionOrder, executeInEditMode } = _decorator
+const { ccclass, property, executionOrder, executeInEditMode} = _decorator
 
 @ccclass('Background')
 @executionOrder(1)
