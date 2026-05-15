@@ -5,11 +5,12 @@
  * @Modified time: 2025-09-30 16:48:58
  * */
 
-import { Node, Layers, Prefab, instantiate, tween, warn, find, UITransform, error,} from 'cc'
+import { Node, Layers, Prefab, instantiate, warn, find, UITransform, error,} from 'cc'
 import { LoadCom } from '../../component/load'
 import { singleton } from '../../meta/class'
 import { TipItem } from './tip-item'
-import { ITipBox, TipBox } from './tip-box'
+import { TipBox } from './tip-box'
+import { ITipBox, TipBase } from './tip-base'
 @singleton
 export class Tip {
 
@@ -30,11 +31,11 @@ export class Tip {
         return  find('Canvas/tip/tips', tea.root)
     }
 
-    public show(content: ITipBox, bubble?:boolean, time?:number): void
+    public show(content: ITipBox, bubble?:boolean, time?:number): TipBox
    
-    public show(content: string,  bubble?: boolean, time?:number): void
+    public show(content: string,  bubble?: boolean, time?:number): TipBox
     
-    public show<T extends TipBox>(content: ITipBox | string, bubble?: number| boolean, time?:number ):T{
+    public show<T extends TipBase>(content: ITipBox | string, bubble?: number| boolean, time?:number ):T{
        
         if (!this.tip_prefab || !this.tipbox_prefab) {
             error('没有默认的 TipItem, TipBox 预制体，请检查资源是否正确加载')
@@ -80,7 +81,6 @@ export class Tip {
     }
 
     public popTipItem(top: boolean | TipItem) {
-        
         if (this.popTip.length <= 0) return 
         if (typeof top === 'boolean' && top) {
             let tip_item = this.popTip.splice(this.popTip.length - 1, 1)[0]
@@ -92,11 +92,10 @@ export class Tip {
         this.updateLayout()
     }
 
-    // 隐藏指定
+    // 删除 Tip 组将；
     public hide(tip:TipItem | TipBox) { 
         if (tip.node.isValid) {
             tip.node.parent = null
-            // TODO 回收缓存进行优化；
         }   
     }
 }

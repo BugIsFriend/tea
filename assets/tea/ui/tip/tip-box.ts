@@ -6,21 +6,10 @@
 
 import { _decorator, Component, Label, tween, UIOpacity, Node } from 'cc';
 import { seek } from '../../meta/method';
+import { ITipBox } from './tip-base';
 const { ccclass } = _decorator;
-export interface ITipBox { 
-    title?:string   // 标题
-    content:string  // 提示内容
-    ok?: {
-        txt?: string,
-        cb?: Function,
-    },
-    cancel?: {
-        txt?: string,
-        cb?: Function,
-    }
-    
-    close?: Function
-}
+
+
 
 @ccclass('TipBox')
 export class TipBox extends Component {
