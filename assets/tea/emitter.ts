@@ -23,7 +23,7 @@ export class Emitter {
      * @param item
      * @returns
      */
-    private checkEmmit(item: IEmitter) {
+    private checkEmmiter(item: IEmitter) {
         let success = true
         if (!isValid(item.context) ) {
             success = false
@@ -43,11 +43,11 @@ export class Emitter {
     public emit(id: string, ...params: any) {
         let handlers = this.msgMap.get(id)
         handlers?.forEach((item) => {
-            if (this.checkEmmit(item)) item.handler.apply(item.context, params)
+            if (this.checkEmmiter(item)) item.handler.apply(item.context, params)
         })
 
         this.msgOnce.forEach((item) => {
-            if (item.id == id && this.checkEmmit(item)) {
+            if (item.id == id && this.checkEmmiter(item)) {
                 item.handler.apply(item.context, params)
                 this._onceemmit = true
             }
@@ -121,7 +121,8 @@ export class Emitter {
         if (!target) {
             if (!priority) priority = 0
             handlers.push({ id, handler, context, priority })
-            _.orderBy(handlers, ['priority'], ['desc'])
+            handlers = _.orderBy(handlers, ['priority'], ['desc'])
+            this.msgMap.set(id, handlers)
         }
 
         !!target && warn(`reapeat on event ${id}`)
@@ -132,12 +133,18 @@ export class Emitter {
      * @param target:{id?: string; context?: object}  删除指定监听器
      */
     public off(target: { id?: string; context?: object }) {
+
+        _.remove(this.msgOnce, (item) => {
+            return item.context == target.context || item.id == target.id
+        })
+        
         if (!!target?.id && !!target.context) {
             // 删除摸个对象摸个事件
             let tarHandlers = this.msgMap.get(target.id) || []
             //
             _.remove(tarHandlers, (emmitees) => emmitees.context == target.context)
         } else if (!!target.context) {
+
             for (const [key, handlers] of this.msgMap) {
                 _.remove(handlers || [], (item) => item.context == target.context)
             }

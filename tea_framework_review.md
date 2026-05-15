@@ -247,7 +247,7 @@
 
 ---
 
-### Bug 6：UI.show 异步分支返回值缺失
+### Bug 6：UI.show 异步分支返回值缺失  [✅ Done]
 
 - 文件：`assets/tea/ui.ts:102`
 
@@ -299,7 +299,7 @@
 
 ---
 
-### Bug 9：View 缺少无动画兜底完成态
+### Bug 9：View 缺少无动画兜底完成态     [✅ Done]
 
 - 文件：`assets/tea/ui/view.ts:115`
 - 文件：`assets/tea/ui/view.ts:126`
@@ -317,7 +317,7 @@
 
 ---
 
-### Bug 10：装饰器订阅绑定到 prototype 而不是实例
+### Bug 10：装饰器订阅绑定到 prototype 而不是实例     [✅ Done]
 
 - 文件：`assets/tea/meta/method.ts:109`
 - 文件：`assets/tea/meta/method.ts:125`
@@ -379,14 +379,14 @@
 
 ---
 
-### 6.2 `assets/tea/emitter.ts`
+### 6.2 `assets/tea/emitter.ts`       [✅ Done]
 
 #### 要解决的问题
 
-1. 监听有效性判断错误
+1. 监听有效性判断错误    [✅ Done]
 2. delay 参数传递错误
-3. `_.orderBy` 未接回结果，优先级排序可能没生效
-4. `off()` 没有处理 once 队列
+3. `_.orderBy` 未接回结果，优先级排序可能没生效  [✅ Done]
+4. `off()` 没有处理 once 队列  [✅ Done]
 
 #### 建议修改
 
@@ -418,7 +418,7 @@
 
 ### 6.3 `assets/tea/unit.ts`
 
-#### 要解决的问题
+#### 要解决的问题        [✅ Done]
 
 - `gain()` 初始化调错对象
 
@@ -438,7 +438,7 @@
 
 #### 要解决的问题
 
-1. owner 未初始化
+1. owner 未初始化  [✅ Done]
 2. `curState` 初始状态切换流程不完整
 3. 状态名和组件名强绑定，运行时容易失败
 
@@ -462,7 +462,7 @@
 
 #### 要解决的问题
 
-1. `show()` 返回值不稳定
+1. `show()` 返回值不稳定    [✅ Done]
 2. 默认背景参数被污染
 3. `uiViews` 生命周期依赖太隐式
 4. 全局单例写法重复

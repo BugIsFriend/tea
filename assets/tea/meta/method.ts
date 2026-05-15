@@ -108,7 +108,7 @@ export function unlinkProperty(obj) {
  */
 export function subscribe(msg: string, priority?: number, once?: boolean) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        let oldvalue = target[propertyKey]
+        let oldvalue = descriptor.value
         descriptor.value = function (...args: any[]) {
             oldvalue.apply(target, args)
         }
@@ -124,7 +124,7 @@ export function subscribe(msg: string, priority?: number, once?: boolean) {
  */
 export function publish(msg: string, data?: any) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        let oldvalue = target[propertyKey]
+        let oldvalue = descriptor.value
         descriptor.value = function (...args: any[]) {
             let result = oldvalue.apply(target, args)
             emmiter.emit(msg, result)

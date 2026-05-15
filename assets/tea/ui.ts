@@ -80,7 +80,7 @@ export class UI {
     /**
      *  加载资源或者实例为节点
      * @param asset
-     * @param bundle : 默认为 'resources'
+     * @param bundle 
      * @param tag
      * @returns
      */
@@ -104,8 +104,8 @@ export class UI {
             let animate = view as number
             let _view = await ui._load(ui.loadParam)
             _view.animate = animate
-            ui.show(_view, closeCb, param)
             ui.loadParam = null
+            return ui.show(_view, closeCb, param)
         } else {
             if (closeCb) view.appendClosedCb(closeCb)
             

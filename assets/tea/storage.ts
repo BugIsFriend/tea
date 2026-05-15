@@ -9,7 +9,8 @@
 import { sys, warn } from "cc"
 import { PREVIEW } from "cc/env"
 
-export interface IValue extends Object { 
+export interface IValue extends Object {
+    value:any
     expire?: Dayjs|number,
     encrypt?: boolean
 }
@@ -35,11 +36,15 @@ export namespace storage {
         if (!!content) { 
             let obj = JSON.parse(content) as StorageValue<T>
             if (obj.encrypt && !PREVIEW) { 
-                // return _decode(obj.value) as T  // TODO implement _decode method
+                // obj.value = _decode(obj.value)  // TODO implement _decode method
             }
             return obj
         }
         return null
+    }
+
+    function getKey(key: string, id?: number | string){
+        return  !!id? `${key}_${id}` : key
     }
 
     /**
@@ -56,14 +61,12 @@ export namespace storage {
             return 
         }
 
-        if (!!id) key = `${key}_${id}`   
+        key = getKey(key,id)
         let { expire, encrypt } = data
-        delete data.expire 
-        delete data.encrypt 
         const sdata: StorageValue<T> = {
-            value : data as any,
+            value : data.value,
             expire : expire?.valueOf(),
-            encrypt : encrypt?true:false
+            encrypt : (!!encrypt) ? true : false
         }
         
         sys.localStorage.setItem(key, encode(sdata))
@@ -77,7 +80,7 @@ export namespace storage {
 
     export function get<T>(key: string, id?: number | string): T | null {
 
-        if (!!id) key = `${key}_${id}`  
+        key = getKey(key,id) 
 
         const content:string = sys.localStorage.getItem(key)
         if (!content) return null
@@ -96,8 +99,8 @@ export namespace storage {
     }
 
     // 删除某个指定key
-    export function remove(key: string) {
-        sys.localStorage.removeItem(key)
+    export function remove(key: string, id?:any) {
+        sys.localStorage.removeItem(getKey(key,id))
         let keys_string: string = sys.localStorage.getItem(ALL_KEYS)
         if (!!keys_string) { 
             let allKeys = keys_string.split(',').filter((item) => item != key)

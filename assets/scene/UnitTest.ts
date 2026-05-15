@@ -70,7 +70,7 @@ export class TestCode extends Component {
 
     storageTest() {
         let day = dayjs(Date.now())
-        storage.set('123', { a: 2, b: 3}  )
+        storage.set('123', { value: { a: 2, b: 3} }  )
 
         this.scheduleOnce(() => {
             console.log('storage test 4s later ', storage.get('123'))

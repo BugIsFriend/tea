@@ -117,6 +117,8 @@ export class View extends Unit {
             aniFunc(this.node, true)
                 .call(() => this._completed(ViewState.Openged))
                 .start()
+        } else { 
+            this._completed(ViewState.Openged)
         }
     }
 
@@ -128,6 +130,8 @@ export class View extends Unit {
             aniFunc(this.node, false)
                 .call(() => this._completed(ViewState.Closed))
                 .start()
+        } else { 
+            this._completed(ViewState.Closed)
         }
     }
 

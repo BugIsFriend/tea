@@ -1,4 +1,6 @@
-import { Component ,_decorator, Node} from "cc";
+import { Component ,_decorator, Node, js} from "cc";
+import { emmiter } from "./emitter";
+import { unlinkProperty } from "./meta/method";
 const { ccclass} = _decorator
 
 /**
@@ -29,10 +31,15 @@ export class Unit extends Component implements IUnit {
             //@ts-ignore
             comp = this.addComponent(type)
             //@ts-ignore
-            comp?.init(data)
+            js.isChildClassOf(Unit)&&comp.init(data)
+            
         }
         return comp
     }
 
+   protected onDestroy(): void {
+       emmiter.off({ context: this })
+       unlinkProperty(this)
+   }
 
 }

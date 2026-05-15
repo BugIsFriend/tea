@@ -2,7 +2,7 @@
  * author myerse.lee
  * created: 2024-09-25 17:10:15
  */
-import {Component, Asset, AssetManager, assetManager, resources, warn ,_decorator, log} from 'cc'
+import {Component, Asset, AssetManager, assetManager, warn ,_decorator} from 'cc'
 const { ccclass } = _decorator;
 
 type TAsset = {
@@ -70,10 +70,11 @@ export class LoadCom extends Component {
             if (!!version) options = { version: version }
             assetManager.loadBundle(bundleName, options, (error, bundle: AssetManager.Bundle) => {
                 if (!!error) {
-                    bundle = resources
+                    fail?.(error)
                     warn(`Fail: 获取 ${bundleName} bundle 失败， 尝试从 resource bundle 获取目标资源`)
+                } else { 
+                    LoadCom.getAsset<T>(path, bundle, success, fail)
                 }
-                LoadCom.getAsset<T>(path, bundle, success, fail)
             })
         }
     }
