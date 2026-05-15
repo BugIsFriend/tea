@@ -432,7 +432,7 @@
     "_priority": 1073741824,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 567.7440476190476,
+    "_orthoHeight": 476.90500000000003,
     "_near": 1,
     "_far": 2000,
     "_color": {
@@ -1207,7 +1207,7 @@
     },
     "_fillStart": 0,
     "_fillRange": 0,
-    "_isTrimmedMode": true,
+    "_isTrimmedMode": false,
     "_useGrayscale": false,
     "_atlas": null,
     "_id": "0bRABZPEZLx7wOaYduorQK"
