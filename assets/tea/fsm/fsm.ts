@@ -16,7 +16,6 @@ const { ccclass, property, executeInEditMode, executionOrder } = _decorator
 // @executeInEditMode()
 @executionOrder(3)
 export class StateMachine extends Component {
-    owner: Node
 
     curState = '' // 设置状态列表
     currentStateCom: State // 当前的状态类
@@ -79,13 +78,13 @@ export class StateMachine extends Component {
 
     enterState(stateCom: State) {
         this.currentStateCom = stateCom
-        this.currentStateCom.enter(this.owner)
+        this.currentStateCom.enter(this.node)
     }
 
     private _changeState(state: string) {
         if (!this.isInState(state)) {
             let currentStateCom = this.getComponent(this.curState) as State
-            if (currentStateCom) currentStateCom?.exit(this.owner)
+            if (currentStateCom) currentStateCom?.exit(this.node)
 
             let nextStateCom = (this.getComponent(state) || this.addComponent(state)) as State
 
@@ -98,6 +97,6 @@ export class StateMachine extends Component {
     }
 
     protected update(dt: number): void {
-        this.currentStateCom?.execute(this.owner)
+        this.currentStateCom?.execute(this.node)
     }
 }

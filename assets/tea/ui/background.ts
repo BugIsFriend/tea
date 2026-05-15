@@ -4,22 +4,7 @@
  * @Modified by:   myerse.lee
  * @Modified time: 2025-09-30 15:40:49
  * */
-import {
-    _decorator,
-    assetManager,
-    BlockInputEvents,
-    Node,
-    Sprite,
-    SpriteFrame,
-    UITransform,
-    v2,
-    tween,
-    Size,
-    Tween,
-    Input,
-    EventHandler,
-    log
-} from 'cc'
+import {_decorator,assetManager,BlockInputEvents,Node,Sprite,SpriteFrame,UITransform,v2,tween,Size,Tween,Input,EventHandler,log } from 'cc'
 import { BackgroudParam } from '../ui-types'
 import { Unit } from '../unit'
 import { gain } from '../tools'
@@ -91,12 +76,10 @@ export class Background extends Unit {
         this.addBgNode()
         let { touch, intercept, touchClose } = param
         let touchBlock = this.bgUnit.gain(BlockInputEvents)
-        if (this._onTouch !== touch || touchClose) {
-            if (!touch) this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
-            if (touch || touchClose) {
-                this.node.on(Input.EventType.TOUCH_END, this.onTouch, this)
-            }
-            this._onTouch = touch
+
+        this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
+        if (touch || touchClose) {
+            this.node.on(Input.EventType.TOUCH_END, this.onTouch, this)
         }
 
         if (intercept !== touchBlock.enabled) {

@@ -114,8 +114,10 @@ export class UI {
                 this.root.addChild(view.node) 
                 this.uiViews.push(view)
             }
-            let param0 = Object.assign(this.defaultParam, param || view.param || {})
-            view.setBackgroundParam({ ...param0 })
+            let param0 = new BackgroudParam()
+            Object.assign(param0, this.defaultParam)
+            Object.assign(param0, param || view.param || {})
+            view.setBackgroundParam(param0)
             this.backgroundAnimate(true, view)
             view.show()
             return view

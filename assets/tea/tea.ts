@@ -8,8 +8,8 @@
 import { director, find, warn, Node, UITransform, Layers, Prefab, error, instantiate } from 'cc'
 import { singleton } from './meta/class'
 import { LoadCom } from './component/load'
-import { Tip } from './ui/tip/tip'
-import { UI } from './ui'
+import { tip } from './ui/tip/tip'
+import { ui } from './ui'
 import { __debug } from './debug/debug'
 
 /**
@@ -47,13 +47,13 @@ export class Tea {
     }
 
     // tip 单例
-    public get tip() : Tip {
-        return  new Tip()
+    public get tip(){
+        return  tip
     }
 
     // ui 单例
-    public get ui():UI {
-       return new UI() 
+    public get ui() {
+       return ui 
     }
 
     // 测试模块
@@ -63,5 +63,4 @@ export class Tea {
 }
 
 window.tea = new Tea()
-
 

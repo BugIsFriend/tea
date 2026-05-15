@@ -31,13 +31,13 @@ export namespace storage {
         return  JSON.stringify(obj)
     }
 
-    function decode<T>(content:string) { 
+    function decode<T>(content:string): StorageValue<T>{ 
         if (!!content) { 
             let obj = JSON.parse(content) as StorageValue<T>
             if (obj.encrypt && !PREVIEW) { 
                 // return _decode(obj.value) as T  // TODO implement _decode method
             }
-            return obj.value
+            return obj
         }
         return null
     }

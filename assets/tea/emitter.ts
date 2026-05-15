@@ -1,4 +1,4 @@
-import { warn, error, isValid } from 'cc'
+import { warn, error, isValid} from 'cc'
 import { singleton } from './meta/class'
 
 export interface IEmitter {
@@ -25,7 +25,7 @@ export class Emitter {
      */
     private checkEmmit(item: IEmitter) {
         let success = true
-        if (item.context?.isValid || !isValid(item.context) ) {
+        if (!isValid(item.context) ) {
             success = false
             this.off({ context: item.context })
             // @ts-ignore
@@ -71,7 +71,7 @@ export class Emitter {
                 new Promise((resolve, reject) => {
                     timer = setTimeout(() => {   // 待优化 改成 引擎类的定时器
                         resolve(true)
-                        emmiter.emit(id, param)
+                        emmiter.emit(id, ...param)
                     }, dt * 1000)
                 })
                 return { timer }

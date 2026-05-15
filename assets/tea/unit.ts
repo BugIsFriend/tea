@@ -28,7 +28,8 @@ export class Unit extends Component implements IUnit {
         if (!comp) {
             //@ts-ignore
             comp = this.addComponent(type)
-            this?.init(data)
+            //@ts-ignore
+            comp?.init(data)
         }
         return comp
     }
