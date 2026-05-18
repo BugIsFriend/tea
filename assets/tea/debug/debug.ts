@@ -5,7 +5,7 @@
 * @Modified time: 2026-02-26 14:55:35   
 * * */
 
-import { instantiate, Prefab, Node, find, debug } from "cc";
+import { instantiate, Prefab, Node, find, debug, input, Input, macro } from "cc";
 import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
@@ -96,6 +96,17 @@ export class Debug {
 
     public data(): Map<Group,DebugDatas> { 
         return this._gData
+    }
+
+    init() { 
+        input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+    }
+
+    onKeyDown(event) {
+        if (event.keyCode == macro.KEY.q) { // F12
+            this.show()
+        }
     }
 
 }
