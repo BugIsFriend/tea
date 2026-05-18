@@ -10,8 +10,8 @@ type TAsset = {
     asset?: any
 }
 
-@ccclass('LoadCom')
-export class LoadCom extends Component {
+@ccclass('LoadComponent')
+export class LoadComponent extends Component {
     /**
      * @param url 资源路径
      * @param bundle 资源包
@@ -38,7 +38,7 @@ export class LoadCom extends Component {
     // 加载失返回null,自行判断资源有效性
     public static async asynload<T extends Asset>(url: string): Promise<T | null> {
         return new Promise<T | null>((resolve, reject) => {
-            LoadCom.load<T>(url, (asset: T) => {
+            LoadComponent.load<T>(url, (asset: T) => {
                 resolve(asset)
             }, (err) => {
                 warn(`加载资源失败: ${url} , 失败原因: ${err}`)
@@ -61,10 +61,10 @@ export class LoadCom extends Component {
             return;
         }
 
-        let { bundleName, path, version } = LoadCom.parsePath(url)
+        let { bundleName, path, version } = LoadComponent.parsePath(url)
         let tarBundle = assetManager.getBundle(bundleName)
         if (!!tarBundle) {
-            LoadCom.getAsset<T>(path, tarBundle, success, fail)
+            LoadComponent.getAsset<T>(path, tarBundle, success, fail)
         } else {
             let options = {}
             if (!!version) options = { version: version }
@@ -73,7 +73,7 @@ export class LoadCom extends Component {
                     fail?.(error)
                     warn(`Fail: 获取 ${bundleName} bundle 失败， 尝试从 resource bundle 获取目标资源`)
                 } else { 
-                    LoadCom.getAsset<T>(path, bundle, success, fail)
+                    LoadComponent.getAsset<T>(path, bundle, success, fail)
                 }
             })
         }
@@ -82,14 +82,14 @@ export class LoadCom extends Component {
     /** 加载一个资源 */
     public load<T extends Asset>(url: string, success?: (asset: T) => void, fail?: (err: Error) => void) { 
         let done = (asset: T) => { 
-            !this.isValid && warn(`LoadCom 已经失效， 但资源 ${url} 加载成功了， `)
+            !this.isValid && warn(`LoadComponent 已经失效， 但资源 ${url} 加载成功了， `)
             this.isValid && success?.(asset)
         }
         let undone = (err: Error) => { 
-            !this.isValid && warn(`LoadCom 已经失效， 但资源 ${url} 加载成功了， `)
+            !this.isValid && warn(`LoadComponent 已经失效， 但资源 ${url} 加载成功了， `)
             this.isValid && fail?.(err)
         }
-        LoadCom.load(url, done, undone)
+        LoadComponent.load(url, done, undone)
     }
 
     /** 加载资源列表
@@ -98,7 +98,7 @@ export class LoadCom extends Component {
      * @param fail 
      */
     public loads(list:Array<TAsset>, success?: (asset:any[]) => void, fail?: (err:Error) => void) { 
-        let all_promise = list.map((item) => LoadCom.asynload(item.url))
+        let all_promise = list.map((item) => LoadComponent.asynload(item.url))
         let done = (assets: Asset[]) =>  this.isValid && success?.(assets)
         let undone = (err:Error) =>  this.isValid && fail?.(err)
         Promise.all(all_promise).then(done,undone)

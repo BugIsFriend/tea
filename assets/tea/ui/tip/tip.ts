@@ -6,7 +6,7 @@
  * */
 
 import { Node, Layers, Prefab, instantiate, warn, find, UITransform, error,} from 'cc'
-import { LoadCom } from '../../component/load'
+import { LoadComponent } from '../../component/load'
 import { singleton } from '../../meta/class'
 import { TipItem } from './tip-item'
 import { TipBox } from './tip-box'
@@ -21,8 +21,8 @@ export class Tip {
 
     // 初始化Tip
     async init() {
-        this.tip_prefab = await LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipItem')
-        this.tipbox_prefab = await LoadCom.asynload<Prefab>('tea/asset/prefab/tip/TipBox')
+        this.tip_prefab = await LoadComponent.asynload<Prefab>('tea/asset/prefab/tip/TipItem')
+        this.tipbox_prefab = await LoadComponent.asynload<Prefab>('tea/asset/prefab/tip/TipBox')
 
         if( !this.tip_prefab ||  !this.tipbox_prefab) warn('初始资源加载事变, TipItem  TipBox ')
     }

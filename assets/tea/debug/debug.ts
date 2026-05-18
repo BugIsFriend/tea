@@ -6,7 +6,7 @@
 * * */
 
 import { instantiate, Prefab, Node, find, debug } from "cc";
-import { LoadCom } from "../component/load";
+import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
 import { DebugView } from "./debug-view";
@@ -83,7 +83,7 @@ export class Debug {
 
     public show() { 
         if (!this.view) {
-            LoadCom.asynload<Prefab>('tea/asset/prefab/debug/DebugsView').then((prefab) => {
+            LoadComponent.asynload<Prefab>('tea/asset/prefab/debug/DebugsView').then((prefab) => {
                 let debug_node = instantiate(prefab)
                 debug_node.parent = this.root
                 this.view = gain(debug_node, DebugView)

@@ -7,7 +7,7 @@ const { ccclass } = _decorator;
 /**
  * 洞口组件, 用于实现洞口效果
  */
-@ccclass('Hole')
-export class Hole extends Unit { 
+@ccclass('HoleComponent')
+export class HoleComponent extends Unit { 
 
 }

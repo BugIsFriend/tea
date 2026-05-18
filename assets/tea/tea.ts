@@ -7,7 +7,7 @@
 
 import { director, find, warn, Node, UITransform, Layers, Prefab, error, instantiate } from 'cc'
 import { singleton } from './meta/class'
-import { LoadCom } from './component/load'
+import { LoadComponent } from './component/load'
 import { tip } from './ui/tip/tip'
 import { ui } from './ui'
 import { __debug } from './debug/debug'
@@ -22,7 +22,7 @@ export class Tea {
     prefabRoot: Prefab = null
 
     async init() {
-        this.prefabRoot = await LoadCom.asynload<Prefab>('tea/asset/prefab/2DRoot')
+        this.prefabRoot = await LoadComponent.asynload<Prefab>('tea/asset/prefab/2DRoot')
         await this.tip.init()
         this.ui.init()
         this.prefabRoot.addRef() 

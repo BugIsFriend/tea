@@ -9,7 +9,7 @@ import { Background } from './ui/background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2, log } from 'cc'
 import { BackgroudParam, UIAnimate } from './ui-types'
 import { singleton } from './meta/class'
-import { LoadCom } from './component/load'
+import { LoadComponent } from './component/load'
 import { gain } from './tools'
 
 type Param = { asset: string | Prefab | Node; tag?: string }
@@ -64,7 +64,7 @@ export class UI {
         } else if (asset instanceof Prefab) {
             node = instantiate(asset)
         } else if (typeof asset == 'string') {
-            let prefab = await LoadCom.asynload(asset) as Prefab
+            let prefab = await LoadComponent.asynload(asset) as Prefab
             if (!prefab) {
                 throw new Error(`did't find prefab: ${asset}`)
             }

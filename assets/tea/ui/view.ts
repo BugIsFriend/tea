@@ -12,7 +12,7 @@ const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple }
 import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
 import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../ui-types'
 import { Unit } from '../unit'
-import { LoadCom } from '../component/load'
+import { LoadComponent } from '../component/load'
 
 export enum ViewState {
     None,
@@ -66,7 +66,7 @@ export class View extends Unit {
             node = asset
         } else if (typeof asset == 'string' || asset instanceof Prefab) {
             if (typeof asset == 'string') {
-                asset = (await LoadCom.asynload(asset)) as any
+                asset = (await LoadComponent.asynload(asset)) as any
                 if (!asset) return null
             }
             node = instantiate(asset)

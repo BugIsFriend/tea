@@ -130,7 +130,7 @@
    - UI、加载、事件、状态机、调试都有统一入口，后续复用空间大。
 
 3. **组件拆分方向是对的**
-   - `View`、`Background`、`ListView`、`LoadCom` 的职责边界基本清晰。
+   - `View`、`Background`、`ListView`、`LoadComponent` 的职责边界基本清晰。
 
 4. **开发调试便利性不错**
    - `debug`、`UnitTest`、装饰器语法、全局入口这些都降低了开发成本。

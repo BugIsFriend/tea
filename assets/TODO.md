@@ -2,10 +2,10 @@
 
 ## TODO list
 
-   1. debug， 测试模块的组件；参照 zyb 设计思路；
-   2. Dialog;
-   3. Tip
-   4. TipBox
+   1. debug参照 zyb 设计思路；
+   2. Dialog;  [Done]
+   3. Tip      [Done]
+   4. TipBox   [Done]
 
 ### component:组件模块，可以单独使用，尽量少的依赖
 
