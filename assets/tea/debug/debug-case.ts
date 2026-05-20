@@ -1,11 +1,12 @@
 
-import { _decorator, Prefab, Node, instantiate, log, Label, Button, Component, Sprite, Color } from "cc";
+import { _decorator, Prefab, Node, instantiate, log, Label, Button, Component, Sprite, Color, Layout } from "cc";
 import { ICaseData } from "./debug";
 import { seek } from "../meta/method";
+import { Unit } from "../unit";
 const { ccclass, property, executeInEditMode } = _decorator
 
 @ccclass('DebugCase')
-export class DebugCase extends Component { 
+export class DebugCase extends Unit { 
 
     type:0|1 = 1     // 0:tableItem   1: debugItem
 
@@ -14,7 +15,7 @@ export class DebugCase extends Component {
     @seek(Label, 'TxtName') TxtName: Label 
 
     
-    init(debugItem: ICaseData, parent: Node, type?: 0 | 1) { 
+    initData(debugItem: ICaseData, parent: Node, type?: 0 | 1) { 
         this.type = type
         this.debugItem = debugItem
         this.node.parent = parent
@@ -28,7 +29,8 @@ export class DebugCase extends Component {
     protected onLoad(): void {
         this.node.on(Button.EventType.CLICK, () => {
             let desc = this.debugItem.cb?.(this.debugItem)
-            this.TxtName.string ??= desc
+            this.TxtName.string = desc ?? this.debugItem.name 
+            this.gain(Layout).updateLayout( )
         })
     }
 }

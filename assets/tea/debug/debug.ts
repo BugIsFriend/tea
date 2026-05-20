@@ -5,7 +5,7 @@
 * @Modified time: 2026-02-26 14:55:35   
 * * */
 
-import { instantiate, Prefab, Node, find, debug, input, Input, macro } from "cc";
+import { instantiate, Prefab, Node, find, debug, input, Input, macro, isValid } from "cc";
 import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
@@ -37,7 +37,14 @@ export class Debug {
     
     private _mFlowGroups: Map<KeyType, ICaseData[]> = new Map<KeyType, ICaseData[]>()
 
-    public view:DebugView
+    public view: DebugView
+    
+
+
+    _caseId = 0
+    get caseId() {
+        return this._caseId++
+    }
     
     /**
      * 增加一个测试用例；
@@ -45,15 +52,13 @@ export class Debug {
      */
     public addCase(debug_case: ICaseData) { 
  
-        if (!debug_case.id) { 
-            debug_case.id =  Date.now()
-        }
+        if (!debug_case.id) debug_case.id =  this.caseId
 
         debug_case.group ??= 'All'
 
         let mGroup = this._gData.get(debug_case.group)
         if (!mGroup) { 
-            mGroup = new Map<Group, ICaseData>()
+            mGroup = new Map<KeyType, ICaseData>()
             this._gData.set(debug_case.group,mGroup)
         }
         
@@ -82,7 +87,7 @@ export class Debug {
     }
 
     public show() { 
-        if (!this.view) {
+        if (!isValid(this.view)) {
             LoadComponent.asynload<Prefab>('tea/asset/prefab/debug/DebugsView').then((prefab) => {
                 let debug_node = instantiate(prefab)
                 debug_node.parent = this.root

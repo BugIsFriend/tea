@@ -36,24 +36,39 @@ export class DebugView extends Unit {
     public init( data?: any): void {
  
         tea.debug.addCase({ name: 'test', cb: (data) => {
-            log('test debug case')
-            return data.name
-        }
+                log('debug_case '+data.name)
+                return data.name
+            }
         })
-        
+
+        var click = 0
+        tea.debug.addCase({ name: 'test-showfps', cb: (data) => {
+                log('debug_case '+data.name)
+                return data.name +(click++)
+            }
+        })
+
         tea.debug.addCase({
             group:'Storage',
             name: 'test1', cb: (data) => {
-            log('test debug case')
+            log('debug_case '+data.name )
             return data.name
         }})
+        
+        tea.debug.addCase({
+            group:'Storage',
+            name: 'test2', cb: (data) => {
+            log('debug_case '+data.name )
+            return data.name
+            }
+        })
         
         let _data = tea.debug.data()
 
         let first = true
         _data.forEach((mGroup, groupId) => { 
 
-            // TableItem
+            // 创建 组 页签，和 组 对应的容器视图
             let tabItem = this.Category.getChildByName(groupId)
             if (!tabItem) {
                 tabItem = instantiate(this.casePrefab)
@@ -69,17 +84,17 @@ export class DebugView extends Unit {
                 }
                 
                 let comp = gain(tabItem, DebugCase)
-                comp.init(data, this.Category, 0)
+                comp.initData(data, this.Category, 0)
                 comp.setDark(first)
                 layout.active = first
                 first = false
             }
 
-            // DebugItem
+            // 创建 每 组对应的测试用例；
             mGroup.forEach((debugItem, key) => { 
                 let node = instantiate(this.casePrefab)
                 let comp = gain(node, DebugCase)
-                comp.init(debugItem, this.mNodeCategory.get(tabItem))
+                comp.initData(debugItem, this.mNodeCategory.get(tabItem))
             })
         })
         
