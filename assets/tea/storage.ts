@@ -97,14 +97,21 @@ export namespace storage {
             return null
         }
     }
+    
+    export function getAllKeys() {
+        let keys_string: string = sys.localStorage.getItem(ALL_KEYS)
+        if (!!keys_string) { 
+            return keys_string.split(',').filter((item) => !!item)
+        }
+        return []
+    }
 
     // 删除某个指定key
     export function remove(key: string, id?:any) {
         sys.localStorage.removeItem(getKey(key,id))
-        let keys_string: string = sys.localStorage.getItem(ALL_KEYS)
-        if (!!keys_string) { 
-            let allKeys = keys_string.split(',').filter((item) => item != key)
-            keys_string = allKeys.join(',')
+        let allKeys = getAllKeys()
+        if (allKeys.length >0) { 
+            let keys_string = allKeys.filter((item) => item != key).join(',')
             sys.localStorage.setItem(ALL_KEYS, keys_string)
         }
     }

@@ -5,43 +5,58 @@
 * @Modified time: 2026-02-26 14:55:35   
 * * */
 
-import { instantiate, Prefab, Node, find, debug, input, Input, macro, isValid } from "cc";
 import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
 import { DebugView } from "./debug-view";
+import { Unit } from "../unit";
+import { seek } from "../meta/method";
+
+import { instantiate, Prefab, Node, find, input, Input, macro, isValid, Label, Color, Sprite, Button, Layout, _decorator, } from "cc";
+const { ccclass } = _decorator
 
 
+export type DebugTabType = 'Default' | 'Storage' | string
 type KeyType = number | string
-type Group  = string
+type Group  = DebugTabType
 type DebugDatas = Map<KeyType, ICaseData>
+type TDebugPrefab = { container: Prefab, caseItem: Prefab }
 
+
+
+export enum ECase { 
+    TabItem = 0,   // 页签
+    DebugItem = 1, // 测试用例
+}
 
 export interface ICaseData { 
     name: string,                               // 显示名字；
     flow_id?:  KeyType,                         // 如果存在 flow_id 则，优先存储在 流 id 中；流可以建立测试逻辑；
     group?: Group,                              // 当前属于那一组； 0
     id?: KeyType,                               // 测试用例ID；
-    cb?:(duebugData:ICaseData)=>string     // 返回数据需要显示文本；
+    tapCb?: (duebugData: ICaseData) => string   // 点击回调： 返回值会显示在界面上；如果没有返回值，则显示 name
+    data?: any,                                 // 其他数据
 }
 
 export interface IFlowCaseData extends ICaseData { 
     flow_id:  KeyType
 }
 
+
+
 @singleton
 export class Debug { 
 
     // 单个测试用例
-    private _gData: Map<Group,DebugDatas>  = new Map<Group, Map<KeyType,ICaseData>>()
+    private _caseId = 0
+    private _gData: Map<Group, DebugDatas> = new Map<Group, Map<KeyType, ICaseData>>()
     
     private _mFlowGroups: Map<KeyType, ICaseData[]> = new Map<KeyType, ICaseData[]>()
 
     public view: DebugView
+
+    public mapDebugPrefab: Map<Group, TDebugPrefab> = new Map<Group, TDebugPrefab>()  // 增加 自定义界面预设；根据组别显示不同的界面；如果没有设置，则使用默认界面；
     
-
-
-    _caseId = 0
     get caseId() {
         return this._caseId++
     }
@@ -54,7 +69,7 @@ export class Debug {
  
         if (!debug_case.id) debug_case.id =  this.caseId
 
-        debug_case.group ??= 'All'
+        debug_case.group ??= 'Default'
 
         let mGroup = this._gData.get(debug_case.group)
         if (!mGroup) { 
@@ -75,12 +90,13 @@ export class Debug {
         }
     }
 
-    /**
-     * addDataCase: 添加数据测试用例, 用于显示数据的变化；用例，每一帧都要更新；
-     */
-    public addDataCase() {
-        
+    public registerDebugPrefab(groudId: Group, container: Prefab, caseItem: Prefab) {
+        this.mapDebugPrefab.set(groudId, {container, caseItem})
     }
+
+    public getDebugPrefab(groudId: Group): TDebugPrefab {
+        return this.mapDebugPrefab.get(groudId)
+    }  
 
     get root() {
         return find('Canvas/debug', tea.root)
@@ -99,21 +115,37 @@ export class Debug {
         }
     }
 
-    public data(): Map<Group,DebugDatas> { 
-        return this._gData
-    }
-
-    init() { 
+    public init() { 
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     }
 
-    onKeyDown(event) {
+    public data(): Map<Group,DebugDatas> { 
+        return this._gData
+    }
+
+    public clearData() { 
+        this._gData.forEach((value, key) =>  value.clear())
+        this._mFlowGroups.clear()
+    }
+
+    public onKeyDown(event) {
         if (event.keyCode == macro.KEY.q) { // F12
             this.show()
         }
     }
 
+}
+// 自定义CaseItem界面；如果没有设置，则使用默认界面；
+@ccclass('DebugItemBase')
+export class DebugItemBase extends Unit { 
+    caseData: ICaseData
+    container: Node
+    initData(caseData: ICaseData, container?: Node): void { 
+        this.caseData = caseData
+        this.node.parent = container
+        this.container = container
+    }
 }
 
 export const __debug = new Debug()

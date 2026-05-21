@@ -4,117 +4,159 @@
 * @Modified by:   myerse.lee   
 * @Modified time: 2026-02-27 15:39:13   * */
 
-import { _decorator, Prefab, Node, instantiate, log, Label, Component, Layout} from "cc";
+import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
 import { Unit } from "../unit";
-import { ICaseData } from "./debug";
+import { ICaseData, DebugItemBase, DebugTabType, Debug } from "./debug";
 import { gain } from "../tools";
-import { DebugCase } from "./debug-case";
+import { DEBUG, EDITOR } from "cc/env";
+import { DebugItemDefault } from "./debug-item-defualt";
+import { storage } from "../storage";
 const { ccclass,property, executeInEditMode } = _decorator
+
+@ccclass('DebugPrefabsCfg')
+export class DebugPrefabsCfg { 
+    @property(CCString) group: string = ''
+    @property(Prefab) caseItem: Prefab = null;
+    @property(Prefab) container: Prefab = null;
+}
 
 
 @ccclass('DebugView')
 @executeInEditMode
 export class DebugView extends Unit {
 
-    @property(Prefab) casePrefab: Prefab = null;
-    @property(Prefab) LayoutPrefab: Prefab = null;
 
-    @property(Node) Category: Node = null;
-    @property(Node) DebugcaseLayouts: Node = null;
+    @property(Prefab) casePrefab: Prefab = null;
+    @property(Prefab) ContainerPrefab: Prefab = null;
+
+    @property(Node) TabParent: Node = null; // 页签更节点
+    @property(Node) ContainerParent: Node = null;
 
     @property(Node) Root: Node = null;
 
+    @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []
+
+    showGroup: DebugTabType = 'Storage' // 显示那一组；如果没有设置，则显示第一组；
+
     mNodeCategory:Map<Node,Node> = new Map()
 
-
     protected start(): void {
-        this.Category.removeAllChildren()
-        this.DebugcaseLayouts.removeAllChildren()
+        this.TabParent.removeAllChildren()
+        this.ContainerParent.removeAllChildren()
         this.init()
     }
-    
-    public init( data?: any): void {
- 
-        tea.debug.addCase({ name: 'test', cb: (data) => {
-                log('debug_case '+data.name)
-                return data.name
-            }
-        })
 
-        var click = 0
-        tea.debug.addCase({ name: 'test-showfps', cb: (data) => {
-                log('debug_case '+data.name)
-                return data.name +(click++)
-            }
-        })
+    public init(data?: any): void {
 
-        tea.debug.addCase({
-            group:'Storage',
-            name: 'test1', cb: (data) => {
-            log('debug_case '+data.name )
-            return data.name
-        }})
+        this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group,  cfg.container, cfg.caseItem))
         
-        tea.debug.addCase({
-            group:'Storage',
-            name: 'test2', cb: (data) => {
-            log('debug_case '+data.name )
-            return data.name
-            }
-        })
-        
+        this.test()
+
         let _data = tea.debug.data()
 
-        let first = true
         _data.forEach((mGroup, groupId) => { 
 
-            // 创建 组 页签，和 组 对应的容器视图
-            let tabItem = this.Category.getChildByName(groupId)
+            // 创建 页签  组
+            let tabItem = this.TabParent.getChildByName(groupId)
             if (!tabItem) {
+                let show = this.showGroup == groupId
                 tabItem = instantiate(this.casePrefab)
 
-                let layout = instantiate(this.LayoutPrefab)
-                layout.parent = this.DebugcaseLayouts
-                this.mNodeCategory.set(tabItem, layout)
-                
+                this.createContainerView(tabItem,groupId,show)
+
                 let data: ICaseData = {
                     name: groupId,                          // 显示名字；
                     group: groupId,                         // 当前属于那一组； 0
-                    cb: (data: ICaseData) => this.tapCatgeory(tabItem)
+                    tapCb: (data: ICaseData) => this.tapCatgeory(tabItem)
                 }
                 
-                let comp = gain(tabItem, DebugCase)
-                comp.initData(data, this.Category, 0)
-                comp.setDark(first)
-                layout.active = first
-                first = false
+                let tabItemView = gain(tabItem, DebugItemDefault)
+                tabItemView.initData(data, this.TabParent)
+                
+                tabItemView.setDark(show)
             }
 
             // 创建 每 组对应的测试用例；
             mGroup.forEach((debugItem, key) => { 
-                let node = instantiate(this.casePrefab)
-                let comp = gain(node, DebugCase)
-                comp.initData(debugItem, this.mNodeCategory.get(tabItem))
+                let casePrefab = tea.debug.getDebugPrefab(groupId)?.caseItem || this.casePrefab
+                let node = instantiate(casePrefab)
+                let comp:DebugItemBase = node.getComponent(DebugItemBase) || node.addComponent(DebugItemDefault)
+                let container = this.mNodeCategory.get(tabItem)
+                comp.initData(debugItem, container)
             })
         })
-        
     }
 
-    public tapCatgeory(tabItem:Node) { 
+    createContainerView(tabItem: Node, groupId: string, first: boolean) { 
+        let container = tea.debug.getDebugPrefab(groupId)?.container || this.ContainerPrefab
+        
+        let groupNode = instantiate(container)
+        groupNode.parent = this.ContainerParent
+        groupNode.active = first
+        this.mNodeCategory.set(tabItem, groupNode)
+        return groupNode
+    }
+
+    public tapCatgeory(tabItem: Node) { 
         this.mNodeCategory.forEach((value, key) => { 
             let click = (tabItem == key)
             value.active = click
-            gain(key, DebugCase).setDark(click)
+            let debugItem = gain(key, DebugItemDefault)
+            debugItem.setDark(click)
+            click && (this.showGroup = debugItem.TxtName.string)
         })
-        return ''
+        return this.showGroup
     }
 
-    show() { 
+    show(groupId?: string) { 
         this.Root.active = true
+        if (!groupId || this.showGroup != groupId) return
+        this.showGroup = groupId
+         this.tapCatgeory(this.TabParent.getChildByName(groupId))
     }
 
     hide() { 
         this.Root.active = false
+    }
+
+
+
+    // test
+    public test() { 
+        if (EDITOR||DEBUG) {    
+            tea.debug.addCase({ name: 'test', tapCb: (data) => {
+                    log('debug_case '+data.name)
+                    return data.name
+                }
+            })
+
+            var click = 0
+            tea.debug.addCase({ name: 'test-showfps', tapCb: (data) => {
+                    log('debug_case '+data.name)
+                    return data.name +(click++)
+                }
+            })
+
+            storage.set('test_key1', { value: 'test_1', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key2', { value: 'test_2', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key3', { value: 'test_3', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key4', { value: 'test_4', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key11', { value: 'test_11', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key12', { value: 'test_12', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key13', { value: 'test_13', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key14', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key21', { value: 'test_21', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
+            storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
+            storage.getAllKeys().forEach(key => {
+                tea.debug.addCase({ name: key, group: 'Storage', tapCb: (data) => {
+                        return ''
+                    }
+                })
+            })
+
+        }
     }
 
 }
