@@ -1,14 +1,17 @@
 import { _decorator, Component, Node } from 'cc';
+import { DebugItemBase } from './debug';
 const { ccclass, property } = _decorator;
 
 @ccclass('DebugContainer')
 export class DebugContainer extends Component {
-    start() {
 
+
+    public debugItemParent() { 
+        return this.node
     }
 
-    update(deltaTime: number) {
-        
-    }
+    public tapDebugCase(caseItem:DebugItemBase) { }
+
+
 }
 

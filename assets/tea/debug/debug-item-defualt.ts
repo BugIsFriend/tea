@@ -2,6 +2,7 @@ import { _decorator, Button, Color, Label, Layout, Node, Sprite, } from "cc";
 import { ICaseData, DebugItemBase } from "./debug";
 const { ccclass} = _decorator
 import { seek } from "../meta/method";
+import { DebugContainer } from "./debug-container";
 
 
 @ccclass('DebugItemDefault')
@@ -9,7 +10,7 @@ export class DebugItemDefault extends  DebugItemBase {
     
     @seek(Label, 'TxtName') TxtName: Label 
 
-    initData(caseData: ICaseData, container: Node): void { 
+    initData(caseData: ICaseData, container?: DebugContainer): void { 
         super.initData(caseData, container)
         this.TxtName.string = caseData.name 
     }

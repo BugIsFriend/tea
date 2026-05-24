@@ -432,7 +432,7 @@
     "_priority": 1073741824,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 517.4179408766565,
+    "_orthoHeight": 375,
     "_near": 1,
     "_far": 2000,
     "_color": {
@@ -884,7 +884,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "f8UCchTJ5FHpSnDZZxSk7e",
+    "fileId": "67NLTWz5pHl6tmmHihQ5Fc",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -908,7 +908,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -929,7 +929,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 250,
-      "y": -50,
+      "y": -490,
       "z": 0
     }
   },
@@ -968,7 +968,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "dfYhvQgPxCOLkxfFn1C0C1",
+    "fileId": "3aSbl5J/NH74vS/JkjLJby",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -992,7 +992,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1013,7 +1013,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 250,
-      "y": -160,
+      "y": -380,
       "z": 0
     }
   },
@@ -1076,7 +1076,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1136,7 +1136,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "3aSbl5J/NH74vS/JkjLJby",
+    "fileId": "dfYhvQgPxCOLkxfFn1C0C1",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -1160,7 +1160,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1181,7 +1181,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 250,
-      "y": -380,
+      "y": -160,
       "z": 0
     }
   },
@@ -1220,7 +1220,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "67NLTWz5pHl6tmmHihQ5Fc",
+    "fileId": "f8UCchTJ5FHpSnDZZxSk7e",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -1244,7 +1244,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1265,7 +1265,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 250,
-      "y": -490,
+      "y": -50,
       "z": 0
     }
   },
@@ -1482,18 +1482,7 @@
     "gap": 10,
     "count": 10,
     "layout": 0,
-    "dataList": [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-    ]
+    "dataList": []
   },
   {
     "__type__": "cc.ClickEvent",
@@ -1830,7 +1819,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "2cnNSn5fdIWZP5NuAgDdT/",
+    "fileId": "29Fj2AR0FP7p43JGwLOdD8",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -1854,7 +1843,7 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 100,
+      "x": 520,
       "y": -50,
       "z": 0
     }
@@ -1875,7 +1864,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1959,7 +1948,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },
@@ -1998,7 +1987,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "29Fj2AR0FP7p43JGwLOdD8",
+    "fileId": "2cnNSn5fdIWZP5NuAgDdT/",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -2022,7 +2011,7 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 520,
+      "x": 100,
       "y": -50,
       "z": 0
     }
@@ -2043,7 +2032,7 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 29.992858191821334,
       "height": 50.4
     }
   },

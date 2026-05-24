@@ -63,7 +63,7 @@ export function breath(node: Node, repeatTimes: number = -1, timeScale: number =
  * @param node 
  * @param ctor 
  */
-export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }):T {
+export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }|string): T {
     //@ts-ignore
     return node.getComponent(ctor) || node.addComponent(ctor)
 }

@@ -37,17 +37,17 @@
         "__id__": 38
       },
       {
-        "__id__": 40
+        "__id__": 41
       },
       {
-        "__id__": 42
+        "__id__": 43
       },
       {
-        "__id__": 44
+        "__id__": 45
       }
     ],
     "_prefab": {
-      "__id__": 46
+      "__id__": 47
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -101,7 +101,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 47.803,
+      "x": 47.79373856604212,
       "y": 25.106,
       "z": 0
     },
@@ -142,7 +142,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 75.60546875,
+      "width": 75.58747713208425,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -181,7 +181,7 @@
     "_string": "Storage:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 28.106666666666666,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -267,7 +267,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 145.605,
+      "x": 145.58747713208425,
       "y": 25.106,
       "z": 0
     },
@@ -397,7 +397,7 @@
     "_string": "保存",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 28.106666666666666,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -639,7 +639,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 255.605,
+      "x": 255.58747713208425,
       "y": 25.106,
       "z": 0
     },
@@ -769,7 +769,7 @@
     "_string": "删除",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 28.106666666666666,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -995,7 +995,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 315.60546875,
+      "width": 315.58747713208425,
       "height": 50
     },
     "_anchorPoint": {
@@ -1021,7 +1021,11 @@
     "__prefab": {
       "__id__": 39
     },
-    "clickEvents": [],
+    "clickEvents": [
+      {
+        "__id__": 40
+      }
+    ],
     "_interactable": true,
     "_transition": 1,
     "_normalColor": {
@@ -1066,6 +1070,16 @@
     "fileId": "e2PSf+WjZMeahA2tKzdW8L"
   },
   {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 1
+    },
+    "component": "",
+    "_componentId": "de249VwXeZCP5vWy71iV3RU",
+    "handler": "tap",
+    "customEventData": ""
+  },
+  {
     "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
@@ -1075,7 +1089,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 41
+      "__id__": 42
     },
     "_customMaterial": null,
     "_srcBlendFactor": 2,
@@ -1120,7 +1134,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 43
+      "__id__": 44
     },
     "_resizeMode": 1,
     "_layoutType": 1,
@@ -1158,7 +1172,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 45
+      "__id__": 46
     },
     "_id": ""
   },

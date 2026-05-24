@@ -6,11 +6,12 @@
 
 import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
 import { Unit } from "../unit";
-import { ICaseData, DebugItemBase, DebugTabType, Debug } from "./debug";
+import { ICaseData, DebugItemBase, DebugGroupType, Debug } from "./debug";
 import { gain } from "../tools";
 import { DEBUG, EDITOR } from "cc/env";
 import { DebugItemDefault } from "./debug-item-defualt";
 import { storage } from "../storage";
+import { DebugContainer } from "./debug-container";
 const { ccclass,property, executeInEditMode } = _decorator
 
 @ccclass('DebugPrefabsCfg')
@@ -36,7 +37,7 @@ export class DebugView extends Unit {
 
     @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []
 
-    showGroup: DebugTabType = 'Storage' // 显示那一组；如果没有设置，则显示第一组；
+    showGroup: DebugGroupType = 'Storage' // 显示那一组；如果没有设置，则显示第一组；
 
     mNodeCategory:Map<Node,Node> = new Map()
 
@@ -44,6 +45,14 @@ export class DebugView extends Unit {
         this.TabParent.removeAllChildren()
         this.ContainerParent.removeAllChildren()
         this.init()
+    }
+
+
+    initGroupTab(tabItemView:DebugItemDefault, parent:Node,show:boolean, caseData: ICaseData): void { 
+        tabItemView.caseData = caseData
+        tabItemView.node.parent = parent
+        tabItemView.setDark(show)
+        tabItemView.TxtName.string = caseData.name 
     }
 
     public init(data?: any): void {
@@ -61,27 +70,23 @@ export class DebugView extends Unit {
             if (!tabItem) {
                 let show = this.showGroup == groupId
                 tabItem = instantiate(this.casePrefab)
-
-                this.createContainerView(tabItem,groupId,show)
-
-                let data: ICaseData = {
-                    name: groupId,                          // 显示名字；
-                    group: groupId,                         // 当前属于那一组； 0
-                    tapCb: (data: ICaseData) => this.tapCatgeory(tabItem)
-                }
+                this.createContainerView(tabItem, groupId, show)
                 
                 let tabItemView = gain(tabItem, DebugItemDefault)
-                tabItemView.initData(data, this.TabParent)
-                
-                tabItemView.setDark(show)
+                this.initGroupTab(tabItemView, this.TabParent, show, {
+                    name: groupId,
+                    group: groupId,
+                    tapCb: (data: ICaseData) => this.tapCatgeory(tabItem)
+                })
             }
 
             // 创建 每 组对应的测试用例；
             mGroup.forEach((debugItem, key) => { 
-                let casePrefab = tea.debug.getDebugPrefab(groupId)?.caseItem || this.casePrefab
+                let debugCfg = tea.debug.getDebugPrefab(groupId) 
+                let casePrefab = debugCfg?.caseItem || this.casePrefab
                 let node = instantiate(casePrefab)
-                let comp:DebugItemBase = node.getComponent(DebugItemBase) || node.addComponent(DebugItemDefault)
-                let container = this.mNodeCategory.get(tabItem)
+                let comp: DebugItemBase = node.getComponent(debugCfg?.caseItemComp || DebugItemBase) || node.addComponent(DebugItemBase)
+                let container:DebugContainer = gain(this.mNodeCategory.get(tabItem), debugCfg?.containerComp || DebugContainer)
                 comp.initData(debugItem, container)
             })
         })
@@ -120,7 +125,6 @@ export class DebugView extends Unit {
     }
 
 
-
     // test
     public test() { 
         if (EDITOR||DEBUG) {    
@@ -150,7 +154,10 @@ export class DebugView extends Unit {
             storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
             storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
             storage.getAllKeys().forEach(key => {
-                tea.debug.addCase({ name: key, group: 'Storage', tapCb: (data) => {
+                tea.debug.addCase({
+                    name: key, group: 'Storage',
+                    data: storage.get(key),
+                    tapCb: (data) => {
                         return ''
                     }
                 })
