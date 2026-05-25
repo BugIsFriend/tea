@@ -9,20 +9,14 @@ import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
 import { DebugView } from "./debug-view";
-import { Unit } from "../unit";
 
-import { instantiate, Prefab, Node, find, input, Input, macro, isValid, Label, Color, Sprite, Button, Layout, _decorator, } from "cc";
-import { DebugContainer } from "./debug-container";
-const { ccclass } = _decorator
+import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, } from "cc";
 
-
-export type DebugGroupType = 'Default' | 'Storage' | string
+export type DebugGroupType = 'Default' | 'Storage' | 'Mock' |string
 
 type KeyType = number | string
 type DebugDatas = Map<KeyType, ICaseData>
 type TDebugPrefab = { container: Prefab, caseItem: Prefab,  containerComp?:any, caseItemComp?:any }
-
-
 
 export enum ECase { 
     TabItem = 0,   // 页签
@@ -41,8 +35,6 @@ export interface ICaseData {
 export interface IFlowCaseData extends ICaseData { 
     flow_id:  KeyType
 }
-
-
 
 @singleton
 export class Debug { 
