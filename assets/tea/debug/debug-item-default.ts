@@ -1,12 +1,13 @@
 import { _decorator, Button, Color, Label, Layout, Node, Sprite, } from "cc";
-import { ICaseData, DebugItemBase } from "./debug";
+import { ICaseData } from "./debug";
 const { ccclass} = _decorator
 import { seek } from "../meta/method";
 import { DebugContainer } from "./debug-container";
+import { DebugItemBase } from "./debug-item-base";
 
 
 @ccclass('DebugItemDefault')
-export class DebugItemDefault extends  DebugItemBase { 
+export class DebugItemDefault extends DebugItemBase { 
     
     @seek(Label, 'TxtName') TxtName: Label 
 

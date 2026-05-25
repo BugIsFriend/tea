@@ -10,7 +10,6 @@ import { singleton } from "../meta/class";
 import { gain } from "../tools";
 import { DebugView } from "./debug-view";
 import { Unit } from "../unit";
-import { seek } from "../meta/method";
 
 import { instantiate, Prefab, Node, find, input, Input, macro, isValid, Label, Color, Sprite, Button, Layout, _decorator, } from "cc";
 import { DebugContainer } from "./debug-container";
@@ -137,19 +136,6 @@ export class Debug {
     }
 
 }
-// 自定义CaseItem界面；如果没有设置，则使用默认界面；
-@ccclass('DebugItemBase')
-export class DebugItemBase extends Unit { 
-
-
-    caseData: ICaseData
-    container: DebugContainer
-
-    initData(caseData: ICaseData, container?: DebugContainer): void { 
-        this.caseData = caseData
-        this.container = container
-        container?.addDebugItem(this)
-    }
-}
+// 自定义CaseItem界面；如果没有设置，则使用默认界面
 
 export const __debug = new Debug()

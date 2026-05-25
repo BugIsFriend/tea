@@ -6,12 +6,13 @@
 
 import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
 import { Unit } from "../unit";
-import { ICaseData, DebugItemBase, DebugGroupType, Debug } from "./debug";
+import { ICaseData, DebugGroupType } from "./debug";
 import { gain } from "../tools";
 import { DEBUG, EDITOR } from "cc/env";
-import { DebugItemDefault } from "./debug-item-defualt";
+import { DebugItemDefault } from "./debug-item-default";
 import { storage } from "../storage";
 import { DebugContainer } from "./debug-container";
+import { DebugItemBase } from "./debug-item-base";
 const { ccclass,property, executeInEditMode } = _decorator
 
 @ccclass('DebugPrefabsCfg')

@@ -37,17 +37,17 @@
         "__id__": 40
       },
       {
-        "__id__": 43
+        "__id__": 42
       },
       {
-        "__id__": 45
+        "__id__": 44
       },
       {
-        "__id__": 47
+        "__id__": 46
       }
     ],
     "_prefab": {
-      "__id__": 49
+      "__id__": 48
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -1038,76 +1038,6 @@
     "fileId": "a6+o3WeJpH/q0l8an/1Jen"
   },
   {
-    "__type__": "cc.Button",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 41
-    },
-    "clickEvents": [
-      {
-        "__id__": 42
-      }
-    ],
-    "_interactable": true,
-    "_transition": 1,
-    "_normalColor": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_hoverColor": {
-      "__type__": "cc.Color",
-      "r": 211,
-      "g": 211,
-      "b": 211,
-      "a": 255
-    },
-    "_pressedColor": {
-      "__type__": "cc.Color",
-      "r": 54,
-      "g": 170,
-      "b": 39,
-      "a": 255
-    },
-    "_disabledColor": {
-      "__type__": "cc.Color",
-      "r": 124,
-      "g": 124,
-      "b": 124,
-      "a": 255
-    },
-    "_normalSprite": null,
-    "_hoverSprite": null,
-    "_pressedSprite": null,
-    "_disabledSprite": null,
-    "_duration": 0.1,
-    "_zoomScale": 1.2,
-    "_target": null,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "e2PSf+WjZMeahA2tKzdW8L"
-  },
-  {
-    "__type__": "cc.ClickEvent",
-    "target": {
-      "__id__": 1
-    },
-    "component": "",
-    "_componentId": "de249VwXeZCP5vWy71iV3RU",
-    "handler": "tap",
-    "customEventData": ""
-  },
-  {
     "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
@@ -1117,7 +1047,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 44
+      "__id__": 41
     },
     "_customMaterial": null,
     "_srcBlendFactor": 2,
@@ -1162,7 +1092,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 46
+      "__id__": 43
     },
     "_resizeMode": 1,
     "_layoutType": 1,
@@ -1200,13 +1130,69 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 48
+      "__id__": 45
     },
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "0bmPT0x+VGf6BFA8UDwWgA"
+  },
+  {
+    "__type__": "cc.Button",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 47
+    },
+    "clickEvents": [],
+    "_interactable": true,
+    "_transition": 0,
+    "_normalColor": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_hoverColor": {
+      "__type__": "cc.Color",
+      "r": 211,
+      "g": 211,
+      "b": 211,
+      "a": 255
+    },
+    "_pressedColor": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_disabledColor": {
+      "__type__": "cc.Color",
+      "r": 124,
+      "g": 124,
+      "b": 124,
+      "a": 255
+    },
+    "_normalSprite": null,
+    "_hoverSprite": null,
+    "_pressedSprite": null,
+    "_disabledSprite": null,
+    "_duration": 0.1,
+    "_zoomScale": 1.2,
+    "_target": null,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "348LOcK+hBO4ai3gpf4LRc"
   },
   {
     "__type__": "cc.PrefabInfo",

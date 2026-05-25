@@ -1,8 +1,8 @@
-import { _decorator, Button, find, Label, Node, v3 } from "cc";
-import { ICaseData, DebugItemBase } from "./debug";
+import { _decorator, Button, Color, find, Label, Node, Sprite, v3 } from "cc";
+import { ICaseData } from "./debug";
 import { seek } from "../meta/method";
 import { DebugContainer } from "./debug-container";
-import { storage } from "../storage";
+import { DebugItemBase } from "./debug-item-base";
 
 const { ccclass, property } = _decorator;
 
@@ -14,8 +14,7 @@ export class DebugItemStorage extends DebugItemBase {
     @seek(Label,'TxtName') TxtName: Label = null
 
     protected start(): void {
-
-
+        this.node.on(Button.EventType.CLICK, this.tap, this)
     }
 
     public initData(caseData: ICaseData, container?: DebugContainer): void { 
@@ -24,8 +23,13 @@ export class DebugItemStorage extends DebugItemBase {
         this.TxtName.string = caseData.name+'       '
     }
 
+    handleTap(tap:boolean) { 
+        this.node.getComponent(Sprite).color = tap ? Color.fromHEX(new Color(), '#65FC00') : Color.WHITE.clone()
+    }
+
     public tap() { 
         this.container.tapDebugCase(this)
+        this.container.updateView('tap', this)
     }
 
     public tapSave() { 
