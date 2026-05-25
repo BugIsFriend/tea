@@ -148,7 +148,7 @@ export class DebugItemBase extends Unit {
     initData(caseData: ICaseData, container?: DebugContainer): void { 
         this.caseData = caseData
         this.container = container
-        this.node.parent = container?.debugItemParent()
+        container?.addDebugItem(this)
     }
 }
 

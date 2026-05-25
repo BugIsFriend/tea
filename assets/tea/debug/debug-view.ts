@@ -153,10 +153,12 @@ export class DebugView extends Unit {
             storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
             storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
             storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
+            let group = 'Storage'
             storage.getAllKeys().forEach(key => {
                 tea.debug.addCase({
-                    name: key, group: 'Storage',
-                    data: storage.get(key),
+                    group,
+                    name: key,
+                    data: storage.getDataWithExpire(key),
                     tapCb: (data) => {
                         return ''
                     }

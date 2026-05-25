@@ -10,7 +10,13 @@ export class DebugContainer extends Component {
         return this.node
     }
 
-    public tapDebugCase(caseItem:DebugItemBase) { }
+    public addDebugItem(item: DebugItemBase) { 
+        item.node.parent = this.debugItemParent()
+    }
+
+    public tapDebugCase(caseItem: DebugItemBase) { }
+    
+    public updateView(action?: string, caseItem?: DebugItemBase) { }
 
 
 }

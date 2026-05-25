@@ -2,6 +2,7 @@ import { _decorator, Button, find, Label, Node, v3 } from "cc";
 import { ICaseData, DebugItemBase } from "./debug";
 import { seek } from "../meta/method";
 import { DebugContainer } from "./debug-container";
+import { storage } from "../storage";
 
 const { ccclass, property } = _decorator;
 
@@ -28,11 +29,11 @@ export class DebugItemStorage extends DebugItemBase {
     }
 
     public tapSave() { 
-        
+        this.container.updateView('save', this)
     }
 
     public tapDelete() { 
-
+        this.container.updateView('delete', this)
     }
 
 

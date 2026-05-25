@@ -78,7 +78,30 @@ export namespace storage {
         }
     }
 
-    export function get<T>(key: string, id?: number | string): T | null {
+    function isExpired(expire: number): boolean {
+        // ! 这个时间有必要使用服务器时间吗？如果本地时间被修改了，过期时间就不准确了；如果有服务器时间的话，就不受本地时间修改的影响了；
+        return !!expire && Date.now() > expire
+    }
+
+    export function getDataWithExpire<T>(key: string, id?: number | string):StorageValue<T>{
+        key = getKey(key,id) 
+        const content:string = sys.localStorage.getItem(key)
+        if (!content) return null
+        try {
+            const data: StorageValue<T> = decode(content)
+            if (isExpired(data.expire)) {
+                remove(key)
+                return null
+            }
+            return data
+        } catch {
+            sys.localStorage.removeItem(key)
+            return null
+        }
+    }
+
+    // 获取数据，如果数据过期了或者不存在，返回 null
+    export function get<T>(key: string, id?: number | string, ignoreExpire?: boolean): T | null {
 
         key = getKey(key,id) 
 
@@ -86,8 +109,7 @@ export namespace storage {
         if (!content) return null
         try {
             const data: StorageValue<T> = decode(content)
-            // ! 这个时间有必要使用服务器时间吗？如果本地时间被修改了，过期时间就不准确了；如果有服务器时间的话，就不受本地时间修改的影响了；
-            if (!!data.expire && Date.now() > data.expire) {
+            if (isExpired(data.expire)) {
                 remove(key)
                 return null
             }

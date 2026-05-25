@@ -3,9 +3,10 @@
 ## TODO list
 
    1. debug参照 zyb 设计思路；
-   2. Dialog;  [Done]
-   3. Tip      [Done]
-   4. TipBox   [Done]
+   2. mock 模块， scoket_mock/http_mock mock 假数据
+   3. Dialog;  [Done]
+   4. Tip      [Done]
+   5. TipBox   [Done]
 
 ### component:组件模块，可以单独使用，尽量少的依赖
 
