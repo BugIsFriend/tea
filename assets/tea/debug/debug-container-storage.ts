@@ -1,4 +1,4 @@
-import { _decorator, Component, EditBox, find, Label, Layout, Node, UITransform } from 'cc';
+import { _decorator, Component, EditBox, find, Label, Layout, Node, ScrollView, UITransform, Vec2 } from 'cc';
 import { DebugContainer } from './debug-container';
 import { seek } from '../meta/method';
 import { storage } from '../storage';
@@ -22,6 +22,22 @@ export class DebugContainerStorage extends DebugContainer {
 
     public debugItemParent() {
         return find('ListView/view/content', this.node)
+    }
+
+    onSearchReturn(editBox: EditBox) { 
+        editBox.string
+
+        this.debugItemParent().children.forEach((child,idx,arr) => {
+            let item = child.getComponent(DebugItemBase)
+            if (item?.caseData.name == editBox.string) {
+                item?.handleTap(true)
+                this.tapDebugCase(item)
+                let listview = find('ListView', this.node).getComponent(ScrollView)
+                listview.scrollToPercentVertical(1-idx/arr.length, 0.5, true)
+            } else { 
+                item?.handleTap(false)
+            }
+        }) 
     }
 
     public addDebugItem(item: DebugItemBase) {
