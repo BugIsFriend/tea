@@ -25,8 +25,6 @@ export class DebugContainerStorage extends DebugContainer {
     }
 
     onSearchReturn(editBox: EditBox) { 
-        editBox.string
-
         this.debugItemParent().children.forEach((child,idx,arr) => {
             let item = child.getComponent(DebugItemBase)
             if (item?.caseData.name == editBox.string) {
