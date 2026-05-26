@@ -2,11 +2,13 @@
 
 ## TODO list
 
-   1. debug参照 zyb 设计思路；
-   2. mock 模块， scoket_mock/http_mock mock 假数据  添加debug 支持实时mock 假数据
-   3. Dialog;  [Done]
-   4. Tip      [Done]
-   5. TipBox   [Done]
+   1. mock 模块， scoket_mock/http_mock mock 假数据  添加debug 支持实时mock 假数据
+   2. debug 实时修改摸个某个对象某个属性的值；用于测试；
+
+   3. debug参照 zyb 设计思路；[done]
+   4. Dialog;  [Done]
+   5. Tip      [Done]
+   6. TipBox   [Done]
 
 ### component:组件模块，可以单独使用，尽量少的依赖
 

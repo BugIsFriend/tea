@@ -5,6 +5,15 @@ import { storage } from '../storage';
 import { DebugItemBase } from './debug-item-base';
 const { ccclass, property } = _decorator;
 
+function formatDisplayData(data: unknown) {
+    if (typeof data === 'string') {
+        return data
+    }
+
+    const json = JSON.stringify(data, null, 2)
+    return json ?? String(data)
+}
+
 @ccclass('DebugContainerStorage')
 export class DebugContainerStorage extends DebugContainer {
 
@@ -24,11 +33,8 @@ export class DebugContainerStorage extends DebugContainer {
     }
 
     public tapDebugCase(caseItem: DebugItemBase) {
-        
-
         this.TxtKey.string = `Key: ${caseItem.caseData.name}`
-
-        this.DataViewEditBox.string = JSON.stringify(caseItem.caseData.data)
+        this.DataViewEditBox.string = formatDisplayData(caseItem.caseData.data)
     }
 
     public updateView(action?: 'delete' | 'save'| string, caseItem?: DebugItemBase) {  

@@ -22,7 +22,7 @@ export function debug_case( param: ICaseData) {
 
         let d_case: ICaseData = param
         
-        d_case.cb = (...args: any[]) => oldvalue.apply(target, args)
+        d_case.tapCb = (...args: any[]) => oldvalue.apply(target, args)
         __debug.addCase(d_case)
         
         
