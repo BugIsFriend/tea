@@ -142,18 +142,18 @@ export class DebugView extends Unit {
                 }
             })
 
-            storage.set('test_key1', { value: 'test_1', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key2', { value: 'test_2', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key3', { value: 'test_3', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key4', { value: 'test_4', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key11', { value: 'test_11', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key12', { value: 'test_12', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key13', { value: 'test_13', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key14', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key21', { value: 'test_21', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
-            storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key1', { value: 'test_1', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key2', { value: 'test_2', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key3', { value: 'test_3', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key4', { value: 'test_4', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key11', { value: 'test_11', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key12', { value: 'test_12', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key13', { value: 'test_13', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key14', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key21', { value: 'test_21', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
+            // storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
             let group = 'Storage'
             storage.getAllKeys().forEach(key => {
                 tea.debug.addCase({

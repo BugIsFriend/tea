@@ -12,7 +12,7 @@ import { singleton } from './meta/class'
 import { LoadComponent } from './component/load'
 import { gain } from './tools'
 
-type Param = { asset: string | Prefab | Node; tag?: string }
+type Param = { asset: string | Prefab | Node; tag?: string; animate?: UIAnimate }
 
 @singleton
 export class UI {
@@ -86,6 +86,13 @@ export class UI {
      */
     load(asset: string | Prefab | Node, tag?: string): UI {
         this.loadParam = { asset, tag }
+        return this
+    }
+
+    setAnimate(animate: UIAnimate) {
+        if (this.loadParam) {
+            this.loadParam.animate = animate
+        }
         return this
     }
 

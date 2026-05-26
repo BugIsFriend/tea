@@ -101,7 +101,7 @@ export namespace storage {
     }
 
     // 获取数据，如果数据过期了或者不存在，返回 null
-    export function get<T>(key: string, id?: number | string, ignoreExpire?: boolean): T | null {
+    export function get<T>(key: string, id?: number | string): T | null {
 
         key = getKey(key,id) 
 

@@ -1,16 +1,15 @@
-import { _decorator, Component, EditBox, find, Label, Layout, Node, ScrollView, UITransform, Vec2 } from 'cc';
+import { _decorator, EditBox, find, Label, Layout, ScrollView, UITransform } from 'cc';
 import { DebugContainer } from './debug-container';
 import { seek } from '../meta/method';
 import { storage } from '../storage';
 import { DebugItemBase } from './debug-item-base';
 const { ccclass, property } = _decorator;
 
-function formatDisplayData(data: unknown) {
+function formatDisplayData(data: object) {
     if (typeof data === 'string') {
         return data
     }
-
-    const json = JSON.stringify(data, null, 2)
+    const json = JSON.stringify(data, (key, value) => key === 'expire' ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : value, 2)
     return json ?? String(data)
 }
 
@@ -51,34 +50,33 @@ export class DebugContainerStorage extends DebugContainer {
         this.DataViewEditBox.string = formatDisplayData(caseItem.caseData.data)
     }
 
-    public updateView(action?: 'delete' | 'save'| string, caseItem?: DebugItemBase) {  
+    public updateView(action?: 'delete' | 'save'| 'tap' | string, caseItem?: DebugItemBase) {  
         
-        if (action == 'tap') { 
-            this.debugItemParent().children.forEach((child) => {
-                let item = child.getComponent(DebugItemBase)
-                item?.handleTap(item === caseItem)
-            })  
-            return 
-        }
-
-        if (action == 'delete') { 
-             this.TxtKey.string = ''
-            this.DataViewEditBox.string = ''
-            storage.remove(caseItem.name)
-            caseItem.node.parent = null
-        }   
-
-        if (action == 'save') { 
-            try {
-                let data = JSON.parse(this.DataViewEditBox.string)
-                caseItem.caseData.data = data
-                storage.set(caseItem.caseData.name, { value: data, expire:data.expire })
-            } catch (error) {
-                console.error('Invalid JSON string')
+        let tar_key = caseItem?.caseData.name
+        switch (action) {
+            case 'delete':
+                    this.TxtKey.string = ''
+                    this.DataViewEditBox.string = ''
+                    storage.remove(tar_key)
+                    caseItem.node.parent = null
+                break
+            case 'save':
+                    try {
+                        let data = JSON.parse(this.DataViewEditBox.string,(key, value) => key === 'expire' ? dayjs(value).valueOf() : value)
+                        caseItem.caseData.data = data
+                        storage.set(tar_key, { value: data.value, expire:data.expire })
+                    } catch (error) {
+                        console.error('Invalid JSON string')
+                        return
+                    }
+                break
+            case 'tap':
+                    this.debugItemParent().children.forEach((child) => {
+                        let item = child.getComponent(DebugItemBase)
+                        item?.handleTap(item === caseItem)
+                    })  
                 return
-            }
         }
-        
      }
 
 }
