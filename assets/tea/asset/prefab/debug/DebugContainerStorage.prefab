@@ -445,7 +445,7 @@
       "b": 187,
       "a": 255
     },
-    "_string": "Enter text here...",
+    "_string": "search ...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -1314,7 +1314,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 20,
-      "y": -32.492,
+      "y": -35.237,
       "z": 0
     },
     "_lrot": {
