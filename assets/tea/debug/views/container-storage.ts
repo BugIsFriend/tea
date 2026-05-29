@@ -1,8 +1,8 @@
 import { _decorator, EditBox, find, Label, Layout, ScrollView, UITransform } from 'cc';
-import { DebugContainer } from './debug-container';
-import { seek } from '../meta/method';
-import { storage } from '../storage';
-import { DebugItemBase } from './debug-item-base';
+import { DebugContainer } from './container';
+import { seek } from '../../meta/method';
+import { storage } from '../..//storage';
+import { DebugItemBase } from './item-base';
 const { ccclass, property } = _decorator;
 
 function formatDisplayData(data: object) {

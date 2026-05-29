@@ -9,8 +9,6 @@ import { seek } from '../../meta/method';
 import { ITipBox } from './tip-base';
 const { ccclass } = _decorator;
 
-
-
 @ccclass('TipBox')
 export class TipBox extends Component {
 
@@ -31,8 +29,8 @@ export class TipBox extends Component {
         this.msg = msg
         this.TxtContent.string = msg.content
         if(msg.title) {  this.TxtTitle.string =  msg.title}
-        if(msg.ok || msg.ok.txt)  this.TxtOk.string =  msg.ok.txt
-        if(msg.cancel || msg.cancel.txt) this.TxtCancel.string = msg.cancel.txt
+        if( msg?.ok?.txt )  this.TxtOk.string =  msg.ok.txt
+        if( msg?.cancel?.txt ) this.TxtCancel.string = msg.cancel.txt
 
 
         this.TxtTitle.node.active = !!msg.title

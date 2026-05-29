@@ -5,12 +5,14 @@
  * @Modified time: 2025-09-30 17:17:42
  * */
 
-import { director, find, warn, Node, UITransform, Layers, Prefab, error, instantiate } from 'cc'
+import { director, find, warn, Node,  Prefab, instantiate } from 'cc'
 import { singleton } from './meta/class'
 import { LoadComponent } from './component/load'
 import { tip } from './ui/tip/tip'
-import { ui } from './ui'
+import { ui } from './ui/ui'
 import { __debug } from './debug/debug'
+import { emmiter } from './emitter'
+
 
 /**
  *  框架层代码
@@ -54,6 +56,10 @@ export class Tea {
     // ui 单例
     public get ui() {
        return ui 
+    }
+
+    public get emitter() {
+        return emmiter
     }
 
     // 测试模块

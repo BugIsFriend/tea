@@ -17,11 +17,12 @@ export class LoadComponent extends Component {
      * @param bundle 资源包
      * @return 失败返回 null
      */
-    static getAsset<T extends Asset>(url: string, bundle: AssetManager.Bundle, success?:(asset: T) => void, fail?:(err) => void) {
-        bundle.load<T>(url, (err: any, assest: T) => err ? (fail?.(err)) : (success?.( assest)))
+    static getAsset<T extends Asset>(url: string, bundle?: AssetManager.Bundle, success?: (asset: T) => void, fail?: (err) => void) {
+        bundle.load<T>(url, (err: any, assest: T) => err ? fail?.(err) : success?.(assest) ) 
     }
 
     static parsePath(url: string): { bundleName: string; path: string, isRemote?: boolean, version?: string } {
+
         let _path = url.split('/')
         let bundle_name = _path[0]
         let path = _path.slice(1).join('/')
@@ -61,21 +62,28 @@ export class LoadComponent extends Component {
             return;
         }
 
+        // 加载没有路径资源 使用uuid
+        if (!url.includes('/')) { 
+            assetManager.loadAny(url, (err: Error | null, assest: T) => !!err ? fail?.(err) : success?.(assest) )
+            return 
+        }
+
         let { bundleName, path, version } = LoadComponent.parsePath(url)
         let tarBundle = assetManager.getBundle(bundleName)
+
         if (!!tarBundle) {
-            LoadComponent.getAsset<T>(path, tarBundle, success, fail)
-        } else {
-            let options = {}
-            if (!!version) options = { version: version }
-            assetManager.loadBundle(bundleName, options, (error, bundle: AssetManager.Bundle) => {
-                if (!!error) {
-                    fail?.(error)
-                    warn(`Fail: 获取 ${bundleName} bundle 失败， 尝试从 resource bundle 获取目标资源`)
-                } else { 
-                    LoadComponent.getAsset<T>(path, bundle, success, fail)
-                }
-            })
+                    LoadComponent.getAsset<T>(path, tarBundle, success, fail)
+            } else {
+                let options = {}
+                if (!!version) options = { version: version }
+                assetManager.loadBundle(bundleName, options, (error, bundle: AssetManager.Bundle) => {
+                    if (!!error) {
+                        fail?.(error)
+                        warn(`Fail: 获取 ${bundleName} bundle 失败， 尝试从 resource bundle 获取目标资源`)
+                    } else { 
+                        LoadComponent.getAsset<T>(path, bundle, success, fail)
+                    }
+                })
         }
     }
 

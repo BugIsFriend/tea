@@ -2,12 +2,12 @@
  * author: myerse.lee
  * created: 2024-09-25 17:10:15
  */
-import {_decorator, Sprite, Node, UITransform, Prefab, Enum, Graphics, Mask, instantiate, Vec3, Size, SpriteFrame, EventTouch, tween, Label, EventHandler, Pool, v2, v3, Widget, CCInteger, Component, lerp, math, error } from 'cc'
+import {_decorator, Sprite, Node, UITransform, Prefab, Enum, Graphics, Mask, instantiate, Vec3, Size, SpriteFrame, EventTouch, tween, Label, EventHandler, Pool, v2, v3, Widget, CCInteger, Component, lerp, math, error, UI } from 'cc'
 
 import { Unit } from '../../unit'
 import { ItemParam, MoveDirection, ItemLayout } from './listview-item'
 import { EDITOR } from 'cc/env'
-import { Background } from '../background'
+import { gain } from '../../tools'
 const { ccclass, property, executeInEditMode, requireComponent } = _decorator
 
 const FlowDirection = Enum({ Vertical: 0, Horizontal: 1 })
@@ -187,7 +187,6 @@ export class ListView extends Unit {
         if (!this.view) {
             this.view = new Node('view')
             this.node.addChild(this.view)
-            this.view.addComponent(UITransform)
             this.view.layer = this.node.layer
 
             this.view.addComponent(Widget)
@@ -201,8 +200,14 @@ export class ListView extends Unit {
             this.content.layer = this.node.layer
             this.content.addComponent(UITransform)
         }
+        
+        this.viewUITransform =  gain(this.view,UITransform)  //this.view.addComponent(UITransform)
+        this.contentUITransform =gain(this.content,UITransform) // this.content.addComponent(UITransform)
     }
 
+    viewUITransform: UITransform
+    contentUITransform: UITransform
+    
     updateView() {
         let size = this.gain(UITransform).contentSize
         if (this.bgNode) {
@@ -215,7 +220,7 @@ export class ListView extends Unit {
         if (this.view) {
             let posx = (this.left - this.right) / 2
             let posy = (this.top - this.bottom) / 2
-            this.view.getComponent(UITransform).setContentSize(size.clone())
+            this.viewUITransform.setContentSize(size.clone())
             this.view.position = new Vec3(posx, posy, 0)
         }
 
@@ -232,7 +237,7 @@ export class ListView extends Unit {
     updateContentSize(itemSize: Size) {
         if (this.content) {
             let uitransform = this.content.getComponent(UITransform)
-            let v_size = this.view.getComponent(UITransform).contentSize.clone()
+            let v_size = this.viewUITransform.contentSize.clone()
             let size = uitransform.contentSize.clone()
             let { gap, left = 0, right, top, bottom, dataList } = this.itemParam
             if (this.flowDirection === FlowDirection.Vertical) {
@@ -261,7 +266,7 @@ export class ListView extends Unit {
         let startSize = this.itemStartInfo
         let { gap } = this.itemParam
 
-        let viewSize = this.view.getComponent(UITransform).contentSize
+        let viewSize = this.viewUITransform.contentSize
         if (this.flowDirection === FlowDirection.Vertical) {
             let x = 0
             if (this.itemParam.layout == ItemLayout.Center) x = viewSize.width / 2
@@ -442,23 +447,20 @@ export class ListView extends Unit {
     }
 
     calculateContentPos(dx: number, dy: number, endEvent?: EventTouch, isTouchEnd: boolean = false) {
-        // let dirction = MoveDirection.None
-        let viewSize = this.view.getComponent(UITransform).contentSize
-        let contentSize = this.content.getComponent(UITransform).contentSize
         let [s_pos, total_s, dt_s] = [0, 0, 0]
 
         if (this.flowDirection === FlowDirection.Vertical) {
-            s_pos = viewSize.height / 2
+            s_pos = this.viewUITransform.contentSize.height / 2
             dt_s = this.content.position.y - s_pos // 已经移动位移
-            total_s = contentSize.height - viewSize.height // 总移动位移
+            total_s = this.contentUITransform.contentSize.height - this.viewUITransform.contentSize.height // 总移动位移
 
             if (dy != 0) this.moveDir = dy > 0 ? MoveDirection.Up : MoveDirection.Down
 
             this._updateContentPos(total_s, dt_s, dy, s_pos, isTouchEnd, endEvent)
         } else if (this.flowDirection === FlowDirection.Horizontal) {
-            s_pos = -viewSize.width / 2
+            s_pos = -this.viewUITransform.contentSize.width / 2
             dt_s = this.content.position.x - s_pos // 已经移动位移`
-            total_s = contentSize.width - viewSize.width // 总移动位移
+            total_s = this.contentUITransform.contentSize.width - this.viewUITransform.contentSize.width // 总移动位移
 
             if (dx != 0) this.moveDir = dx > 0 ? MoveDirection.Right : MoveDirection.Left
 

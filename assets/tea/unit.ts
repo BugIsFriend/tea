@@ -31,7 +31,7 @@ export class Unit extends Component implements IUnit {
             //@ts-ignore
             comp = this.addComponent(type)
             //@ts-ignore
-            js.isChildClassOf(Unit)&&comp.init(data)
+            js.isChildClassOf(comp.constructor, Unit) && comp?.init(data)
             
         }
         return comp

@@ -1,9 +1,9 @@
 import { _decorator, Button, Color, Label, Layout, Node, Sprite, } from "cc";
-import { ICaseData } from "./debug";
+import { ICaseData } from "../debug";
 const { ccclass} = _decorator
-import { seek } from "../meta/method";
-import { DebugContainer } from "./debug-container";
-import { DebugItemBase } from "./debug-item-base";
+import { seek } from "../../meta/method";
+import { DebugContainer } from "./container";
+import { DebugItemBase } from "./item-base";
 
 
 @ccclass('DebugItemDefault')

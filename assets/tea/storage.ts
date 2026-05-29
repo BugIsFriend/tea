@@ -72,7 +72,7 @@ export namespace storage {
         sys.localStorage.setItem(key, encode(sdata))
 
         let values = sys.localStorage.getItem(ALL_KEYS) || ''
-        if (!values.includes(key)) {
+        if (!values && values.split(',').indexOf(key) == -1) {
             values += `,${key}`
             sys.localStorage.setItem(ALL_KEYS, values)
         }
@@ -90,7 +90,7 @@ export namespace storage {
         try {
             const data: StorageValue<T> = decode(content)
             if (isExpired(data.expire)) {
-                remove(key)
+                remove(key, id)
                 return null
             }
             return data
@@ -110,7 +110,7 @@ export namespace storage {
         try {
             const data: StorageValue<T> = decode(content)
             if (isExpired(data.expire)) {
-                remove(key)
+                remove(key, id)
                 return null
             }
             return data.value

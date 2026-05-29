@@ -1,11 +1,10 @@
 import { _decorator, Color, CCBoolean, ITweenOption, Node, Tween, tween, UITransform, v3, Vec3 } from 'cc'
 const { ccclass, property } = _decorator
-import { ui } from './ui'
-import { enum2map } from './tools'
+import { enum2map } from '../tools'
 const _dt = 0.15
 
 const ease: ITweenOption = { easing: 'sineIn' }
-// TODO 优化弹出动画表现
+
 var Animates = {
     none: function (node: Node, show: boolean) {
         return tween(node)
@@ -20,7 +19,7 @@ var Animates = {
     },
 
     bottom: function (node: Node, show: boolean, dt: number = _dt) {
-        let y = -ui.root.getComponent(UITransform).contentSize.height
+        let y = -tea.ui.root.getComponent(UITransform).contentSize.height
         let tPos = new Vec3(0, y, 0)
         if (show) {
             node.setPosition(new Vec3(0, y, 0))
@@ -30,7 +29,7 @@ var Animates = {
     },
 
     top: function (node: Node, show: boolean, dt: number = _dt) {
-        let y = ui.root.getComponent(UITransform).contentSize.height
+        let y = tea.ui.root.getComponent(UITransform).contentSize.height
         let tPos = new Vec3(0, y, 0)
         if (show) {
             node.setPosition(new Vec3(0, y, 0))
@@ -40,7 +39,7 @@ var Animates = {
     },
 
     left: function (node: Node, show: boolean, dt: number = _dt) {
-        let l = -ui.root.getComponent(UITransform).contentSize.width
+        let l = -tea.ui.root.getComponent(UITransform).contentSize.width
         let tPos = new Vec3(l, 0, 0)
         if (show) {
             node.setPosition(tPos)
@@ -50,7 +49,7 @@ var Animates = {
     },
 
     right: function (node: Node, show: boolean, dt: number = _dt) {
-        let r = ui.root.getComponent(UITransform).contentSize.width
+        let r = tea.ui.root.getComponent(UITransform).contentSize.width
         let tPos = new Vec3(r, 0, 0)
         if (show) {
             node.setPosition(tPos)

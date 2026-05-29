@@ -1,5 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
-import { DebugItemBase } from './debug-item-base';
+import { DebugItemBase } from './item-base';
 const { ccclass, property } = _decorator;
 
 @ccclass('DebugContainer')

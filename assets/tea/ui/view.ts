@@ -4,15 +4,22 @@
 * @Modified by:   myerse.lee   
 * @Modified time: 2026-04-01 18:46:45   * */
 
-import { ui } from '../ui'
+import { ui } from './ui'
 import { Background } from './background'
-import { ViewCategory } from './category'
 
-const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
-import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
-import { BackgroudParam, NumberAnimateMap, UIAnimate } from '../ui-types'
+
 import { Unit } from '../unit'
 import { LoadComponent } from '../component/load'
+import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
+import { BackgroudParam, NumberAnimateMap, UIAnimate } from './ui-types'
+const { ccclass, property, executionOrder, executeInEditMode, disallowMultiple } = _decorator
+
+export const ViewCategory = {
+    None: 0, // 自行管理
+    View:200,  // 普通 View 平铺在场景上面
+    PopView: 300, // 弹框 用动画 对象统一管理
+    Dialog: 400,  // 对话框
+}
 
 export enum ViewState {
     None,

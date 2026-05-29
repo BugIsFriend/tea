@@ -1,8 +1,8 @@
 import { _decorator, Button, Color, find, Label, Node, Sprite, v3 } from "cc";
-import { ICaseData } from "./debug";
-import { seek } from "../meta/method";
-import { DebugContainer } from "./debug-container";
-import { DebugItemBase } from "./debug-item-base";
+import { ICaseData } from "../debug";
+import { seek } from "../../meta/method";
+import { DebugContainer } from "./container";
+import { DebugItemBase } from "./item-base";
 
 const { ccclass, property } = _decorator;
 

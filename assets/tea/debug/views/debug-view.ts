@@ -5,14 +5,12 @@
 * @Modified time: 2026-02-27 15:39:13   * */
 
 import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
-import { Unit } from "../unit";
-import { ICaseData, DebugGroupType } from "./debug";
-import { gain } from "../tools";
-import { DEBUG, EDITOR } from "cc/env";
-import { DebugItemDefault } from "./debug-item-default";
-import { storage } from "../storage";
-import { DebugContainer } from "./debug-container";
-import { DebugItemBase } from "./debug-item-base";
+import { Unit } from "../../unit";
+import { ICaseData, DebugGroupType } from "../debug";
+import { gain } from "../../tools";
+import { DebugItemDefault } from "./item-default";
+import { DebugContainer } from "./container";
+import { DebugItemBase } from "./item-base";
 const { ccclass,property, executeInEditMode } = _decorator
 
 @ccclass('DebugPrefabsCfg')
@@ -59,8 +57,6 @@ export class DebugView extends Unit {
     public init(data?: any): void {
 
         this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group,  cfg.container, cfg.caseItem))
-        
-        this.test()
 
         let _data = tea.debug.data()
 
@@ -125,48 +121,5 @@ export class DebugView extends Unit {
         this.Root.active = false
     }
 
-
-    // test
-    public test() { 
-        if (EDITOR||DEBUG) {    
-            tea.debug.addCase({ name: 'test', tapCb: (data) => {
-                    log('debug_case '+data.name)
-                    return data.name
-                }
-            })
-
-            var click = 0
-            tea.debug.addCase({ name: 'test-showfps', tapCb: (data) => {
-                    log('debug_case '+data.name)
-                    return data.name +(click++)
-                }
-            })
-
-            // storage.set('test_key1', { value: 'test_1', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key2', { value: 'test_2', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key3', { value: 'test_3', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key4', { value: 'test_4', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key11', { value: 'test_11', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key12', { value: 'test_12', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key13', { value: 'test_13', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key14', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key21', { value: 'test_21', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
-            // storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
-            let group = 'Storage'
-            storage.getAllKeys().forEach(key => {
-                tea.debug.addCase({
-                    group,
-                    name: key,
-                    data: storage.getDataWithExpire(key),
-                    tapCb: (data) => {
-                        return ''
-                    }
-                })
-            })
-
-        }
-    }
 
 }

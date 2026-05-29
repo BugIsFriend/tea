@@ -8,9 +8,9 @@
 import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain } from "../tools";
-import { DebugView } from "./debug-view";
 
 import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, } from "cc";
+import { DebugView } from "./views/debug-view";
 
 export type DebugGroupType = 'Default' | 'Storage' | 'Mock' |string
 
@@ -49,6 +49,13 @@ export class Debug {
 
     public mapDebugPrefab: Map<DebugGroupType, TDebugPrefab> = new Map<DebugGroupType, TDebugPrefab>()  // 增加 自定义界面预设；根据组别显示不同的界面；如果没有设置，则使用默认界面；
     
+
+    addGroup(groupId: DebugGroupType) { 
+        if (!this._gData.has(groupId)) { 
+            this._gData.set(groupId, new Map<KeyType, ICaseData>())
+        }
+    }
+
     get caseId() {
         return this._caseId++
     }
@@ -108,6 +115,9 @@ export class Debug {
     }
 
     public init() { 
+
+        this.addGroup('Default')
+        this.addGroup('Storage')
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     }

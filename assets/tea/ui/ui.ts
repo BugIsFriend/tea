@@ -4,13 +4,13 @@
  * @Modified by:   myerse.lee
  * @Modified time: 2025-09-30 16:43:12
  * */
-import { View, ViewState } from './ui/view'
-import { Background } from './ui/background'
+import { View, ViewState } from './view'
+import { Background } from './background'
 import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2, log } from 'cc'
 import { BackgroudParam, UIAnimate } from './ui-types'
-import { singleton } from './meta/class'
-import { LoadComponent } from './component/load'
-import { gain } from './tools'
+import { singleton } from '../meta/class'
+import { LoadComponent } from '../component/load'
+import { gain } from '../tools'
 
 type Param = { asset: string | Prefab | Node; tag?: string; animate?: UIAnimate }
 
@@ -102,7 +102,7 @@ export class UI {
      * @param closeCb
      * @param param
      */
-    public async show(animate?: UIAnimate, closeCb?: Function, param?: BackgroudParam): Promise<View>
+    public async show(animate?:  UIAnimate, closeCb?: Function, param?: BackgroudParam): Promise<View>
 
     public async show(view: View, closeCb?: Function, param?: BackgroudParam): Promise<View>
 

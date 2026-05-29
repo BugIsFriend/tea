@@ -5,9 +5,10 @@
  * @Modified time: 2025-09-30 15:40:49
  * */
 import {_decorator,assetManager,BlockInputEvents,Node,Sprite,SpriteFrame,UITransform,v2,tween,Size,Tween,Input,EventHandler,log } from 'cc'
-import { BackgroudParam } from '../ui-types'
+import { BackgroudParam } from './ui-types'
 import { Unit } from '../unit'
 import { gain } from '../tools'
+import { LoadComponent } from '../component/load'
 const { ccclass, property, executionOrder, executeInEditMode} = _decorator
 
 @ccclass('Background')
@@ -25,6 +26,8 @@ export class Background extends Unit {
 
     public bgNode: Node
     public bgUnit: Unit
+
+    static bgspf: SpriteFrame = null
 
     protected onLoad(): void {
         this.addBgNode(true)
@@ -66,9 +69,16 @@ export class Background extends Unit {
         // 添加组件
         this.bgUnit.gain(BlockInputEvents)
 
-        assetManager.loadAny('7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941', (err, spriteFrame: SpriteFrame) => {
-            if (!err) this.bgUnit.gain(Sprite).spriteFrame = spriteFrame
-        })
+        if (!Background.bgspf) {
+            LoadComponent.asynload<SpriteFrame>('7d8f9b89-4fd1-4c9f-a3ab-38ec7cded7ca@f9941').then((spriteFrame) => {
+                Background.bgspf = spriteFrame
+                Background.bgspf.addRef()
+                this.bgUnit.gain(Sprite).spriteFrame = spriteFrame
+            })
+        } else { 
+            this.bgUnit.gain(Sprite).spriteFrame =  Background.bgspf
+        }
+
        load && this.updateView()
     }
 
@@ -77,7 +87,7 @@ export class Background extends Unit {
         let { touch, intercept, touchClose } = param
         let touchBlock = this.bgUnit.gain(BlockInputEvents)
 
-        this.node.off(Node.EventType.TOUCH_START, this.onTouch, this)
+        this.node.off(Node.EventType.TOUCH_END, this.onTouch, this)
         if (touch || touchClose) {
             this.node.on(Input.EventType.TOUCH_END, this.onTouch, this)
         }

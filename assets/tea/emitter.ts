@@ -1,4 +1,4 @@
-import { warn, error, isValid} from 'cc'
+import { warn, error, isValid, director} from 'cc'
 import { singleton } from './meta/class'
 
 export interface IEmitter {

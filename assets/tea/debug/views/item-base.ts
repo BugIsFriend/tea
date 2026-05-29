@@ -1,7 +1,7 @@
 import { _decorator} from "cc";
-import { Unit } from "../unit";
-import { ICaseData } from "./debug";
-import { DebugContainer } from "./debug-container";
+import { Unit } from "../../unit";
+import { ICaseData } from "../debug";
+import { DebugContainer } from "./container";
 const { ccclass } = _decorator;
 @ccclass('DebugItemBase')
 export class DebugItemBase extends Unit { 
