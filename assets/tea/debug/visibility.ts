@@ -3,10 +3,9 @@ import { Unit } from "../unit";
 
 
 enum eVisibility { 
-    Position,       // 显示位置；
-    Ray,            // 显示射线
-    BoundingBox,    // 包围盒；
+    Position = 1 << 1,       // 显示位置；
     
+    BoundingBox = 1<<3,    // 包围盒；
 }
 
 /**

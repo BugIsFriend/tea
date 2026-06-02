@@ -58,11 +58,11 @@ export class LoadComponent extends Component {
 
         // 处理远程资源加载
         if (url.startsWith('http://') || url.startsWith('https://')) { 
-            assetManager.loadRemote<T>(url, (err: any, assest: T) => err ? (fail?.(err)) : (success?.(assest)))
+            assetManager.loadRemote<T>(url, (err: any, assest: T) => err ? (fail?.(err)) : success?.(assest) )
             return;
         }
 
-        // 加载没有路径资源 使用uuid
+        // 加载没有路径资源: 使用uuid, 可能存在bug
         if (!url.includes('/')) { 
             assetManager.loadAny(url, (err: Error | null, assest: T) => !!err ? fail?.(err) : success?.(assest) )
             return 
@@ -72,7 +72,7 @@ export class LoadComponent extends Component {
         let tarBundle = assetManager.getBundle(bundleName)
 
         if (!!tarBundle) {
-                    LoadComponent.getAsset<T>(path, tarBundle, success, fail)
+                LoadComponent.getAsset<T>(path, tarBundle, success, fail)
             } else {
                 let options = {}
                 if (!!version) options = { version: version }

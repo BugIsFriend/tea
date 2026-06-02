@@ -4,7 +4,18 @@ import { _decorator, CCInteger,Label,Node ,Prefab, Size, size, UITransform, Colo
 
 const {ccclass,executeInEditMode,property} = _decorator
 
-
+/**
+ *  一个简单的滚轮选择组件，支持数据源和纯数字两种模式； 支持滚轮惯性滚动； 支持滚轮项渐变显示； 支持编辑器预览；
+ *  使用时需要设置 content 节点，content 节点上不需要添加任何组件，组件会自动添加 UITransform 组件； content 的锚点需要设置为 (0.5, 0.5)； content 的位置会被组件控制，外部不需要控制 content 的位置；
+ *  itemSize 用于设置滚轮项的大小，itemSize 的宽度会被设置到 content 上，itemSize 的高度会被设置到每个滚轮项上； 
+ *  pickItemPrefab 用于设置滚轮项的预制体，如果没有设置，组件会自动创建一个包含 Label 和 Sprite 组件的节点作为滚轮项； 
+ *  滚轮项的 Label 组件用于显示滚轮项的文本内容，滚轮项的 Sprite 组件用于显示滚轮项的背景颜色； 
+ *  可以通过 setData 方法设置滚轮的数据源和文本显示函数；
+ *  可以通过 getPicked 方法获取当前选中的数据； 
+ *  可以通过 stopImmediately 方法立即停止滚轮的滚动，并且将滚轮停在最近的项上；
+ *  可以通过 onTouchStart、onTouchMove、onTouchEnd 方法监听滚轮的触摸事件； 
+ *  可以通过 update 方法实现滚轮的惯性滚动效果；
+ */
 @ccclass
 @executeInEditMode
 export class PickerView extends Unit {

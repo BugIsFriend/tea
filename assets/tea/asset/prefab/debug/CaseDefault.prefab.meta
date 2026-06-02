@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "c4200131-f470-4f49-9e29-74c3ab3ca11d",
+  "uuid": "d912bb6d-1a11-43e7-acca-523f7661b863",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "DebugCaseStorage"
+    "syncNodeName": "CaseDefault"
   }
 }

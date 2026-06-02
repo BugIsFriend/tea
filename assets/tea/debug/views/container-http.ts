@@ -5,23 +5,30 @@ import { storage } from '../..//storage';
 import { DebugItemBase, formatDisplayData } from './item-base';
 const { ccclass, property } = _decorator;
 
-@ccclass('DebugContainerStorage')
-export class DebugContainerStorage extends DebugContainer {
 
+
+@ccclass('DebugContainerHttp')
+export class DebugContainerHttp extends DebugContainer {
+
+    
     @seek(Label, 'DataView/TxtKey') TxtKey: Label;
     @seek(EditBox, 'DataView/TxtView') DataViewEditBox: EditBox;
 
+    @seek(EditBox, 'FilterView/FilterEditBox') FilterEditBox: EditBox;
+
+    @seek(Label, 'HttpVIew/ResponseData/ScrollView/content/view/content') TxtResponse: Label;
+
     public debugItemParent() {
-        return find('ListView/view/content', this.node)
+        return find('ListViewUrl/view/content', this.node)
     }
 
     onSearchReturn(editBox: EditBox) { 
         this.debugItemParent().children.forEach((child,idx,arr) => {
             let item = child.getComponent(DebugItemBase)
-            if (item?.caseData.name == editBox.string) {
+            if (item?.caseData.name == this.FilterEditBox.string) {
                 item?.handleTap(true)
                 this.tapDebugCase(item)
-                let listview = find('ListView', this.node).getComponent(ScrollView)
+                let listview = find('ListViewUrl', this.node).getComponent(ScrollView)
                 listview.scrollToPercentVertical(1-idx/arr.length, 0.5, true)
             } else { 
                 item?.handleTap(false)
@@ -40,6 +47,12 @@ export class DebugContainerStorage extends DebugContainer {
     public tapDebugCase(caseItem: DebugItemBase) {
         this.TxtKey.string = `Key: ${caseItem.caseData.name}`
         this.DataViewEditBox.string = formatDisplayData(caseItem.caseData.data)
+    }
+
+    public tapSend() { 
+        // TODO 发送http 请求；
+
+
     }
 
     public updateView(action?: 'delete' | 'save'| 'tap' | string, caseItem?: DebugItemBase) {  
