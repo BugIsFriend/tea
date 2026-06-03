@@ -1,8 +1,9 @@
 /*  
-* @Author: myerse.lee   
-* @Date: 2026-02-27 15:39:13   
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:47:30   
 * @Modified by:   myerse.lee   
-* @Modified time: 2026-02-27 15:39:13   * */
+* @Modified time: 2026-06-03 10:47:30   
+* */
 
 import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
 import { Unit } from "../../unit";

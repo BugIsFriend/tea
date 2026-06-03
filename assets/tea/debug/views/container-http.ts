@@ -1,11 +1,16 @@
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:46:57   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:46:57   
+* */
+
 import { _decorator, EditBox, find, Label, Layout, ScrollView, UITransform } from 'cc';
 import { DebugContainer } from './container';
 import { seek } from '../../meta/method';
 import { storage } from '../..//storage';
 import { DebugItemBase, formatDisplayData } from './item-base';
 const { ccclass, property } = _decorator;
-
-
 
 @ccclass('DebugContainerHttp')
 export class DebugContainerHttp extends DebugContainer {

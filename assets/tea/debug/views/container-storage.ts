@@ -1,3 +1,10 @@
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:47:07   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:47:07   
+* */
+
 import { _decorator, EditBox, find, Label, Layout, ScrollView, UITransform } from 'cc';
 import { DebugContainer } from './container';
 import { seek } from '../../meta/method';

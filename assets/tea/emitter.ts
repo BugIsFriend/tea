@@ -1,4 +1,11 @@
-import { warn, error, isValid, director} from 'cc'
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:47:56   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:47:56   
+* */
+
+import { warn, error, isValid, director } from 'cc'
 import { singleton } from './meta/class'
 
 export interface IEmitter {
@@ -9,7 +16,6 @@ export interface IEmitter {
     }
     priority?: number
 }
-
 
 @singleton
 export class Emitter {

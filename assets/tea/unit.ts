@@ -1,4 +1,11 @@
-import { Component ,_decorator, Node, js} from "cc";
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:48:13   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:48:13   
+* */
+
+import { Component, _decorator, Node, js } from "cc";
 import { emmiter } from "./emitter";
 import { unlinkProperty } from "./meta/method";
 const { ccclass} = _decorator

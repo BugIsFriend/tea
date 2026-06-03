@@ -1,4 +1,10 @@
-import { _decorator, Button, Color, find, Label, Node, Sprite, v3 } from "cc";
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:46:33   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:46:33   
+* */
+import { _decorator, Button, Color, Label, Sprite, v3 } from "cc";
 import { ICaseData } from "../debug";
 import { seek } from "../../meta/method";
 import { DebugContainer } from "./container";

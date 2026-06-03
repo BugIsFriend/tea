@@ -6,36 +6,46 @@
 
 import { Unit } from "../unit";
 import { _decorator } from "cc";
-const { ccclass } = _decorator;
+import { HttpMethod, HttpURL } from "./http-url";
+const { ccclass ,property} = _decorator;
 
+@ccclass('HttpComponent')
+export class HttpComponent extends Unit {
 
-@ccclass('HttpComponent') 
-export class HttpComponent extends Unit { 
-
-    public async get(url: string, data?: any): Promise<any> {
-        return this.request('GET', url, data)
+    @property({ type: [HttpURL] }) urls: HttpURL[] = []
+    
+    onLoad() { 
+        // 发起请求；
     }
 
-    public async post(url: string, data?: any): Promise<any> {
-        return this.request('POST', url, data)
+    public get(url: HttpURL, cb?: (err: Error | null, data: any) => void) {
+        url.method = HttpMethod.GET
+        let _cb = (err: Error | null, data: any) => this.isValid && cb && cb(err, data)
+        HttpComponent.request(url).then(data => _cb(null,data), err => _cb(err,null))
     }
 
-    private async request(method: string, url: string, data?: any): Promise<any> {
+    public post(url: HttpURL, cb?: (err: Error | null, data: any) => void) {
+        url.method = HttpMethod.POST
+        let _cb = (err: Error | null, data: any) => this.isValid && cb && cb(err, data)
+        return HttpComponent.request(url).then(data => _cb(null,data),err => _cb(err,null))
+    }
+
+    static async request(url: HttpURL): Promise<any> {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest()
-            xhr.open(method, url, true)
+            xhr.open(url.method, url.getURL(), true)
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4) {
                     if (xhr.status >= 200 && xhr.status < 300) {
                         resolve(xhr.responseText)
                     } else {
-                        reject(new Error(`HTTP ${method} request to ${url} failed with status ${xhr.status}`))
+                        reject(new Error(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`))
                     }
                 }
             }
-            if (method === 'POST' && data) {
+            if (url.method === 'POST' && url.postdata != null) {
                 xhr.setRequestHeader('Content-Type','application/json')
-                xhr.send(JSON.stringify(data))
+                xhr.send(JSON.stringify(url.postdata))
             } else {
                 xhr.send()
             }

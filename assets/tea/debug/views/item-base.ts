@@ -1,4 +1,11 @@
-import { _decorator} from "cc";
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:46:06   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:46:06   
+* */
+
+import { _decorator } from "cc";
 import { Unit } from "../../unit";
 import { ICaseData } from "../debug";
 import { DebugContainer } from "./container";

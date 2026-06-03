@@ -1,3 +1,10 @@
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:46:17   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:46:17   
+* */
+
 import { _decorator, Button, Color, Label, Layout, Node, Sprite, } from "cc";
 import { ICaseData } from "../debug";
 const { ccclass} = _decorator

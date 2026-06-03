@@ -1,7 +1,11 @@
+/*  
+* @Author: myerse.lee  
+* @Date: 2026-06-03 10:46:44   
+* @Modified by:   myerse.lee   
+* @Modified time: 2026-06-03 10:46:44   
+* */
+
 import { Unit } from "../unit";
-
-
-
 enum eVisibility { 
     Position = 1 << 1,       // 显示位置；
     
