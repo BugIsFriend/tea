@@ -19,13 +19,14 @@ export enum HttpMethod {
 @ccclass('HttpURL')
 export class HttpURL {
 
-    @property(EventHandler) eventHandler: EventHandler = null
 
     @property({type: Enum(HttpMethod)}) method: HttpMethod = HttpMethod.GET
 
     @property url_test: string = ''
 
     @property url_prod: string = ''
+    
+    @property(EventHandler) eventHandler: EventHandler = null
 
     public path: string = ''
 
