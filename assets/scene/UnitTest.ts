@@ -4,6 +4,7 @@ import { storage } from '../tea/storage'
 import { publish, seek, subscribe } from '../tea/meta/method'
 import { EDITOR } from 'cc/env'
 import { UIAnimate } from '../tea/ui/ui-types'
+import { DebugGroupType } from '../tea/debug/debug'
 const { ccclass,  executeInEditMode } = _decorator
 
 @ccclass('TestCode')
@@ -22,6 +23,8 @@ export class TestCode extends Component {
         this.storageTest()
 
         this.seekTest()
+
+        this.debugViewTest()
 
         console.log('sss', typeof UIAnimate.bottom)
         if (!EDITOR) {
@@ -68,10 +71,7 @@ export class TestCode extends Component {
 
     storageTest() {
         let day = dayjs(Date.now())
-
-        this.scheduleOnce(() => {
-            console.log('storage test 4s later ', storage.get('123'))
-        }, 4)
+        storage.set('123', { value: {name: 'test', age:29, gengder:20} , expire: day.add(1, 'day').valueOf() })
     }
 
     dayjsTest() {
@@ -121,20 +121,7 @@ export class TestCode extends Component {
             }
         })
 
-        storage.set('test_key1', { value: 'test_1', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key2', { value: 'test_2', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key3', { value: 'test_3', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key4', { value: 'test_4', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key11', { value: 'test_11', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key12', { value: 'test_12', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key13', { value: 'test_13', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key14', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key21', { value: 'test_21', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key22', { value: 'test_22', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key23', { value: 'test_23', expire: Date.now() + 1000 * 60 * 60 })
-        storage.set('test_key24', { value: 'test_41', expire: Date.now() + 1000 * 60 * 60 })
-
-        let group = 'Storage'
+        let group = DebugGroupType.Storage
         storage.getAllKeys().forEach(key => {
             tea.debug.addCase({
                 group,

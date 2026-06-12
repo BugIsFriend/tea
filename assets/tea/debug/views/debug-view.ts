@@ -35,18 +35,18 @@ export class DebugView extends Unit {
 
     @property(Node) Root: Node = null;
 
-    @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []
+    @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []  // 增加增加 group, 并且增加对应的 container 和 caseItem 的 prefab 定义；如果没有设置，则使用默认的 ContainerPrefab 和 casePrefab；
 
-    showGroup: DebugGroupType = 'Storage' // 显示那一组；如果没有设置，则显示第一组；
+    showGroup: DebugGroupType = DebugGroupType.Storage // 显示那一组；如果没有设置，则显示第一组；
 
     mNodeCategory:Map<Node,Node> = new Map()
 
-    protected start(): void {
+
+    onLoad() { 
         this.TabParent.removeAllChildren()
         this.ContainerParent.removeAllChildren()
         this.init()
     }
-
 
     initGroupTab(tabItemView:DebugItemDefault, parent:Node,show:boolean, caseData: ICaseData): void { 
         tabItemView.caseData = caseData
@@ -57,7 +57,7 @@ export class DebugView extends Unit {
 
     public init(data?: any): void {
 
-        this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group,  cfg.container, cfg.caseItem))
+        this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group as DebugGroupType,  cfg.container, cfg.caseItem))
 
         let _data = tea.debug.data()
 
@@ -83,14 +83,14 @@ export class DebugView extends Unit {
                 let debugCfg = tea.debug.getDebugPrefab(groupId) 
                 let casePrefab = debugCfg?.caseItem || this.casePrefab
                 let node = instantiate(casePrefab)
-                let comp: DebugItemBase = node.getComponent(debugCfg?.caseItemComp || DebugItemBase) || node.addComponent(DebugItemBase)
+                let comp: DebugItemBase = node.getComponent(debugCfg?.caseItemComp || DebugItemDefault) || node.addComponent(DebugItemDefault)
                 let container:DebugContainer = gain(this.mNodeCategory.get(tabItem), debugCfg?.containerComp || DebugContainer)
                 comp.initData(debugItem, container)
             })
         })
     }
 
-    createContainerView(tabItem: Node, groupId: string, first: boolean) { 
+    createContainerView(tabItem: Node, groupId: DebugGroupType, first: boolean) { 
         let container = tea.debug.getDebugPrefab(groupId)?.container || this.ContainerPrefab
         
         let groupNode = instantiate(container)
@@ -106,12 +106,12 @@ export class DebugView extends Unit {
             value.active = click
             let debugItem = gain(key, DebugItemDefault)
             debugItem.setDark(click)
-            click && (this.showGroup = debugItem.TxtName.string)
+            click && (this.showGroup = debugItem.TxtName.string as DebugGroupType)
         })
         return this.showGroup
     }
 
-    show(groupId?: string) { 
+    show(groupId?: DebugGroupType) { 
         this.Root.active = true
         if (!groupId || this.showGroup != groupId) return
         this.showGroup = groupId

@@ -7,12 +7,17 @@
 
 import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
-import { gain } from "../tools";
+import { gain, keys } from "../tools";
 
-import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, } from "cc";
+import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, } from "cc";
 import { DebugView } from "./views/debug-view";
 
-export type DebugGroupType = 'Default' | 'Storage' | 'Mock' |string
+export enum DebugGroupType {
+    Default = 'Default',
+    Storage = 'Storage',
+    Http = 'Http',
+    Mock = 'Mock'
+}
 
 type KeyType = number | string
 type DebugDatas = Map<KeyType, ICaseData>
@@ -39,9 +44,10 @@ export interface IFlowCaseData extends ICaseData {
 @singleton
 export class Debug { 
 
+    private  showGroupId = 0
     public view: DebugView
 
-    // 单个测试用例
+    // caseData 中没有 id，则自动生成一个 id
     private _caseId = 0
     private _gData: Map<DebugGroupType, DebugDatas> = new Map<DebugGroupType, Map<KeyType, ICaseData>>()    // 测试用例
     
@@ -49,7 +55,6 @@ export class Debug {
 
     public mapDebugPrefab: Map<DebugGroupType, TDebugPrefab> = new Map<DebugGroupType, TDebugPrefab>()  // 增加 自定义界面预设；根据组别显示不同的界面；如果没有设置，则使用默认界面；
     
-
     addGroup(groupId: DebugGroupType) { 
         if (!this._gData.has(groupId)) { 
             this._gData.set(groupId, new Map<KeyType, ICaseData>())
@@ -68,7 +73,7 @@ export class Debug {
  
         if (!debug_case.id) debug_case.id =  this.caseId
 
-        debug_case.group ??= 'Default'
+        debug_case.group ??= DebugGroupType.Default
 
         let mGroup = this._gData.get(debug_case.group)
         if (!mGroup) { 
@@ -107,17 +112,17 @@ export class Debug {
                 let debug_node = instantiate(prefab)
                 debug_node.parent = this.root
                 this.view = gain(debug_node, DebugView)
-                this.view.show()
+                this.view.show(this.showGroupId)
             })
         } else { 
-            this.view.show()
+            this.view.show(this.showGroupId)
         }
     }
 
-    public init() { 
-
-        this.addGroup('Default')
-        this.addGroup('Storage')
+    public init() {
+        
+        keys(DebugGroupType,'string').forEach(groupId => this.addGroup(groupId as DebugGroupType))
+        
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     }
@@ -131,9 +136,12 @@ export class Debug {
         this._mFlowGroups.clear()
     }
 
-    public onKeyDown(event) {
+    public onKeyDown(event:EventKeyboard) {
         if (event.keyCode == macro.KEY.q) { // F12
             this.show()
+        }
+        if(event.keyCode >= macro.KEY.f1 && event.keyCode <= macro.KEY.f12) { // F12
+            this.showGroupId = event.keyCode - macro.KEY.f1
         }
     }
 

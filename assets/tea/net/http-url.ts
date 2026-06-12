@@ -2,9 +2,10 @@
 * @Author: myerse.lee   
 * @Date: 2026-04-01 18:45:32   
 * @Modified by:   myerse.lee   
-* @Modified time: 2026-04-01 18:45:32   * */
+* @Modified time: 2026-04-01 18:45:32   
+* * */
 
-import { _decorator, EventHandler,Enum } from "cc";
+import { _decorator, EventHandler,Enum, CCFloat, CCInteger, CCString, CCBoolean } from "cc";
 import { PREVIEW } from "cc/env";
 const { ccclass, property } = _decorator;
 
@@ -12,21 +13,28 @@ const { ccclass, property } = _decorator;
 export enum HttpMethod {
     GET = 'GET',
     POST = 'POST', 
-    PUT = 'PUT',
-    DELETE = 'DELETE'
+    // PUT = 'PUT',
+    // DELETE = 'DELETE'
 }
 
 @ccclass('HttpURL')
 export class HttpURL {
 
-
     @property({type: Enum(HttpMethod)}) method: HttpMethod = HttpMethod.GET
 
-    @property url_test: string = ''
+    @property({type: CCFloat, tooltip: '请求超时时间，单位秒，-1表示不设置超时'})  timeout: number = -1 
 
-    @property url_prod: string = ''
+    @property({type: CCInteger, tooltip: '重复次数, 0表示不重复, -1表示无限重复, 其他正整数表示重复次数'}) repeat: number = 0 
+
+    @property({tooltip: '测试环境URL'}) url_test: string = ''
+
+    @property({tooltip: '生产环境URL'}) url_prod: string = ''
+
+    @property  mock: boolean = false
     
-    @property(EventHandler) eventHandler: EventHandler = null
+    @property({visible() { return this.mock },multiline:true, editorOnly:true, tooltip: '模拟数据,输入 JSON 字符传'}) mockData: string = ''
+    
+    @property({type: EventHandler, tooltip: '事件处理器'}) eventHandler: EventHandler = null
 
     public path: string = ''
 
@@ -38,7 +46,7 @@ export class HttpURL {
         return PREVIEW ? this.url_test : this.url_prod
     }
 
-    private parseParts(url: string) {
+    public static parseParts(url: string) {
         let source = url || ''
         let hash = ''
         const hashIndex = source.indexOf('#')
@@ -89,14 +97,14 @@ export class HttpURL {
     }
 
     public parseURL(url: string = this.getURL()) {
-        const { path, query } = this.parseParts(url)
+        const { path, query } = HttpURL.parseParts(url)
         this.path = path
         this.params = this.parseParams(query)
         return { path: this.path, params: this.params }
     }
 
     public setParam(key: string, value: string, url: string = this.getURL()): string {
-        const parts = this.parseParts(url)
+        const parts = HttpURL.parseParts(url)
         const params = this.parseParams(parts.query)
         params[key] = value
 
