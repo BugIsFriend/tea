@@ -29,9 +29,6 @@ export class Tea {
         await this.tip.init()
         this.ui.init()
         this.debug.init()
-
-        this.adjustUIView()
-
         this.prefabRoot.addRef() 
     }
 
@@ -58,12 +55,9 @@ export class Tea {
 
     adjustUIView() { 
         let ui_transform = gain(this.root, UITransform)  // 设计分辨率
-
         let designSize = View.instance.getDesignResolutionSize()
         
-
         // 为了 UI 不变形，固定宽高比小的长度； 宽度比大于高度比； 高度分辨率保持设计分辨率，宽度分辨率和屏幕一致
-
 
         // 横屏游戏
         if (screen.width > screen.height) {
