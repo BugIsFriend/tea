@@ -42,8 +42,14 @@ export class HttpURL {
 
     public postdata: any = null
 
+    constructor(url_prod:string,url_test?:string) { 
+        this.url_test = url_prod
+        this.url_prod = url_test ||''
+    }
+
     public getURL(): string {
-        return PREVIEW ? this.url_test : this.url_prod
+        if(PREVIEW) return  this.url_test || this.url_prod
+        return this.url_prod
     }
 
     public static parseParts(url: string) {
@@ -63,15 +69,29 @@ export class HttpURL {
         }
 
         let origin = ''
-        let path = source || '/'
+        let path = ''
+
+        // 1. 绝对 URL：scheme://host[/path]
         const absoluteMatch = source.match(/^([a-zA-Z][a-zA-Z\d+\-.]*:\/\/[^/]+)(\/.*)?$/)
+        // 2. 协议相对 URL：//host[/path]
+        const protocolRelativeMatch = source.match(/^(\/\/[^/]+)(\/.*)?$/)
+        // 3. 裸域名：host[:port][/path]，host 必须含至少一个 '.'
+        const bareHostMatch = source.match(/^([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?::\d+)?)(\/.*)?$/)
+
         if (absoluteMatch) {
             origin = absoluteMatch[1]
-            path = absoluteMatch[2] || '/'
+            path = absoluteMatch[2] || ''
+        } else if (protocolRelativeMatch) {
+            origin = protocolRelativeMatch[1]
+            path = protocolRelativeMatch[2] || ''
+        } else if (bareHostMatch) {
+            origin = bareHostMatch[1]
+            path = bareHostMatch[2] || ''
+        } else {
+            path = source
         }
 
-        if (!path) path = '/'
-        if (!path.startsWith('/')) path = `/${path}`
+        if (path && !path.startsWith('/')) path = `/${path}`
 
         return { origin, path, query, hash }
     }
@@ -96,15 +116,23 @@ export class HttpURL {
             .join('&')
     }
 
-    public parseURL(url: string = this.getURL()) {
-        const { path, query } = HttpURL.parseParts(url)
+    public parse() {
+        const { path, query } = HttpURL.parseParts(this.getURL())
         this.path = path
         this.params = this.parseParams(query)
         return { path: this.path, params: this.params }
     }
 
-    public setParam(key: string, value: string, url: string = this.getURL()): string {
-        const parts = HttpURL.parseParts(url)
+    // TODO 设置对象；
+    public setParams(params: object) {
+        for (const key in params) {
+            const value = params[key];
+            this.setParam(key,value)
+        }
+     }
+
+    public setParam(key: string, value: any): string {
+        const parts = HttpURL.parseParts(this.getURL())
         const params = this.parseParams(parts.query)
         params[key] = value
 

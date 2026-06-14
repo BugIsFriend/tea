@@ -132,7 +132,7 @@ export namespace storage {
     export function remove(key: string, id?:any) {
         sys.localStorage.removeItem(getKey(key,id))
         let allKeys = getAllKeys()
-        if (allKeys.length >0) { 
+        if ( allKeys.length > 0 ) { 
             let keys_string = allKeys.filter((item) => item != key).join(',')
             sys.localStorage.setItem(ALL_KEYS, keys_string)
         }

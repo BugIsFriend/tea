@@ -31,7 +31,7 @@ export class Unit extends Component implements IUnit {
      *  获取一个 Unit 组件，如果没有该组件则添加一个,首次添加会尝试调用 init 方法；
      * @returns 
      */
-    public gain<T extends Component>(type: { new(): T; } | string, data?: any): any {
+    public gain<T extends Component>(type: { new(): T; } | string, data?: any): T {
         //@ts-ignore
         let comp = this.getComponent(type)
         if (!comp) {

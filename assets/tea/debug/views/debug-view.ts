@@ -33,7 +33,6 @@ export class DebugView extends Unit {
     @property(Node) TabParent: Node = null; // 页签更节点
     @property(Node) ContainerParent: Node = null;
 
-    @property(Node) Root: Node = null;
 
     @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []  // 增加增加 group, 并且增加对应的 container 和 caseItem 的 prefab 定义；如果没有设置，则使用默认的 ContainerPrefab 和 casePrefab；
 
@@ -112,14 +111,14 @@ export class DebugView extends Unit {
     }
 
     show(groupId?: DebugGroupType) { 
-        this.Root.active = true
+        this.node.active = true
         if (!groupId || this.showGroup != groupId) return
         this.showGroup = groupId
          this.tapCatgeory(this.TabParent.getChildByName(groupId))
     }
 
     hide() { 
-        this.Root.active = false
+        this.node.active = false
     }
 
 

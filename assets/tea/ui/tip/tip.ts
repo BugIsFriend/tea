@@ -23,7 +23,6 @@ export class Tip {
     async init() {
         this.tip_prefab = await LoadComponent.asynload<Prefab>('tea/asset/prefab/tip/TipItem')
         this.tipbox_prefab = await LoadComponent.asynload<Prefab>('tea/asset/prefab/tip/TipBox')
-
         if( !this.tip_prefab ||  !this.tipbox_prefab) warn('初始资源加载事变, TipItem  TipBox ')
     }
     

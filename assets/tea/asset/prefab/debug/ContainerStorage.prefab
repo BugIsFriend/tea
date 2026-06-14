@@ -448,7 +448,7 @@
     "_string": "search ...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 20.880000000000003,
+    "_actualFontSize": 26.206896551724135,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1532,8 +1532,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 43.078586972992994,
-      "height": 31.5
+      "width": 43.06727680407072,
+      "height": 31.500000000000007
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1571,7 +1571,7 @@
     "_string": "Key",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26.1,
+    "_actualFontSize": 32.758620689655174,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 25,
@@ -1754,8 +1754,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 149.999947383486,
-      "height": 31.5
+      "width": 149.96052631578948,
+      "height": 31.500000000000007
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1793,7 +1793,7 @@
     "_string": "点击显示内容",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26.1,
+    "_actualFontSize": 32.758620689655174,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 25,

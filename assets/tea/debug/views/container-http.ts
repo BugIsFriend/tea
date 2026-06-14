@@ -5,7 +5,7 @@
 * @Modified time: 2026-06-03 10:46:57   
 * */
 
-import { _decorator, EditBox, find, Label, Layout, ScrollView, UITransform } from 'cc';
+import { _decorator, EditBox, find, js, Label, Layout, ScrollView, UITransform } from 'cc';
 import { DebugContainer } from './container';
 import { seek } from '../../meta/method';
 import { storage } from '../..//storage';
@@ -22,8 +22,15 @@ export class DebugContainerHttp extends DebugContainer {
     @property(EditBox) TxtParam: EditBox = null ;
     @property(EditBox) TxtRunCode: EditBox = null ;
     @property(EditBox) TxtPost: EditBox = null ;
-    @property(EditBox) TxtResponse: EditBox = null ;
+    @property(EditBox) TxtResponse: EditBox = null;
+    
 
+    url:HttpURL
+
+
+    onEditBegan(edit: EditBox) {
+        edit.getComponentInChildren(Label).node.active = true  
+    }
 
     public debugItemParent() {
         return find('ListViewUrl/view/content', this.node)
@@ -36,14 +43,27 @@ export class DebugContainerHttp extends DebugContainer {
     public tapBtnAdd() {
         let url = this.TxtSearch.string
         if (!!url && url.trim()) { 
-            console.log(HttpURL.parseParts(url))
+            this.url = new HttpURL(url)
+            let parseUrl = this.url.parse()
+            console.log('add:  ', parseUrl)
+            if (!js.isEmptyObject(parseUrl.params)) { 
+                this.TxtParam.string = formatDisplayData(parseUrl.params)
+            }
         }
      }
     
     public tapBtnFilter() { }
 
+    // 保存参数
     public tapSave() { 
-
+        let param = null
+        try {
+            param = JSON.parse(this.TxtParam.string)
+        } catch (error) {
+            console.warn('JSON 解析错误')
+        }
+        if (!!param) this.url.setParams(param)
+        this.TxtSearch.string = this.url.getURL()
     }
 
     public tapSend() {

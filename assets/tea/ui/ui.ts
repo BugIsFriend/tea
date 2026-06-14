@@ -6,7 +6,7 @@
  * */
 import { View, ViewState } from './view'
 import { Background } from './background'
-import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2, log } from 'cc'
+import { director, find, instantiate, Layers, Node, Prefab, UITransform, warn, Color, Vec2, log, Widget } from 'cc'
 import { BackgroudParam, UIAnimate } from './ui-types'
 import { singleton } from '../meta/class'
 import { LoadComponent } from '../component/load'
@@ -47,9 +47,11 @@ export class UI {
         background.node.layer = Layers.BitMask.UI_2D
         background.node.name = 'CommonBgView' + idx
         background.node.active = false
-        background.addComponent(UITransform)
+        background.gain(UITransform)
         background.setParam({ active: false, touch: false, intercept: false, color: this.defaultParam.color })
         background.updateUITransform(size_canvas.clone())
+        
+        background.gain(UITransform).setContentSize(gain(this.root,UITransform).contentSize.clone())
 
         this.root.addChild(background.node)
         

@@ -9,7 +9,7 @@ import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain, keys } from "../tools";
 
-import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, } from "cc";
+import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, UITransform, } from "cc";
 import { DebugView } from "./views/debug-view";
 
 export enum DebugGroupType {
@@ -44,7 +44,7 @@ export interface IFlowCaseData extends ICaseData {
 @singleton
 export class Debug { 
 
-    private  showGroupId = 0
+    private  showGroupId:DebugGroupType = DebugGroupType.Default
     public view: DebugView
 
     // caseData 中没有 id，则自动生成一个 id
@@ -112,6 +112,7 @@ export class Debug {
                 let debug_node = instantiate(prefab)
                 debug_node.parent = this.root
                 this.view = gain(debug_node, DebugView)
+                this.view.gain(UITransform).setContentSize(gain(this.root,UITransform).contentSize.clone())
                 this.view.show(this.showGroupId)
             })
         } else { 
@@ -120,7 +121,6 @@ export class Debug {
     }
 
     public init() {
-        
         keys(DebugGroupType,'string').forEach(groupId => this.addGroup(groupId as DebugGroupType))
         
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
@@ -140,7 +140,8 @@ export class Debug {
         if (event.keyCode == macro.KEY.q) { // F12
             this.show()
         }
-        if(event.keyCode >= macro.KEY.f1 && event.keyCode <= macro.KEY.f12) { // F12
+        if (event.keyCode >= macro.KEY.f1 && event.keyCode <= macro.KEY.f12) { // F12
+            //@ts-ignore
             this.showGroupId = event.keyCode - macro.KEY.f1
         }
     }
