@@ -454,7 +454,7 @@
     "_string": "input url",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 24,
+    "_actualFontSize": 21,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -769,8 +769,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 35.574003179022604,
-      "height": 37.800000000000004
+      "width": 35.5859375,
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -808,7 +808,7 @@
     "_string": "Add",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -1155,8 +1155,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.42844945647391,
-      "height": 37.800000000000004
+      "width": 44.443359375,
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1194,7 +1194,7 @@
     "_string": "Filter",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -2417,7 +2417,7 @@
     "_string": "修改请求参数",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2736,7 +2736,7 @@
     "_string": "Run Code:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 23,
+    "_actualFontSize": 19,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -3117,7 +3117,7 @@
     "_string": "run code",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3653,7 +3653,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 41.56619661830095,
+      "width": 41.572265625,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -3692,7 +3692,7 @@
     "_string": "Get:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26.353823088455773,
+    "_actualFontSize": 22,
     "_fontSize": 22,
     "_fontFamily": "Arial",
     "_lineHeight": 35,
@@ -3899,7 +3899,7 @@
     "component": "",
     "_componentId": "ba974PUd2RCeKXpXdnxmoEG",
     "handler": "toggleGetOrPost",
-    "customEventData": ""
+    "customEventData": "get"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -4213,7 +4213,7 @@
     "_string": "Post:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26,
+    "_actualFontSize": 21,
     "_fontSize": 22,
     "_fontFamily": "Arial",
     "_lineHeight": 35,
@@ -4420,7 +4420,7 @@
     "component": "",
     "_componentId": "ba974PUd2RCeKXpXdnxmoEG",
     "handler": "toggleGetOrPost",
-    "customEventData": ""
+    "customEventData": "post"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -4694,7 +4694,7 @@
     "_string": "保存请求参数",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 17,
+    "_actualFontSize": 15,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -5245,7 +5245,7 @@
     "_string": "post data",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 23,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -5721,7 +5721,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 48.000893278921644,
+      "width": 48.005859375,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -5760,7 +5760,7 @@
     "_string": "Mock:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 21.562218890554725,
+    "_actualFontSize": 18,
     "_fontSize": 18,
     "_fontFamily": "Arial",
     "_lineHeight": 35,
@@ -5966,7 +5966,7 @@
     },
     "component": "",
     "_componentId": "ba974PUd2RCeKXpXdnxmoEG",
-    "handler": "toggleGetOrPost",
+    "handler": "toggleMock",
     "customEventData": ""
   },
   {
@@ -6142,7 +6142,7 @@
     "_string": "Send",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -6776,7 +6776,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "EditBox",
+    "_name": "EditResponse",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -6905,7 +6905,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 488,
-      "height": 40
+      "height": 307.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7064,7 +7064,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 488,
-      "height": 307.79999999999995
+      "height": 307.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7102,7 +7102,7 @@
     "_string": "勾选 mock， 输入JSON 数据，点击 Send 模拟发送数据...\n\n\n\n\n\n\n\n",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -7173,7 +7173,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 490,
-      "height": 40
+      "height": 307.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7998,6 +7998,9 @@
     },
     "TxtResponse": {
       "__id__": 286
+    },
+    "mock": {
+      "__id__": 238
     },
     "_id": ""
   },

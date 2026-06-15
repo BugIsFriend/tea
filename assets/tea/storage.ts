@@ -9,7 +9,8 @@
 import { sys, warn } from "cc"
 import { PREVIEW } from "cc/env"
 
-export interface IValue extends Object {
+interface IValue extends Object {
+    __key?:string                           // 自动保存设置的可以
     value:any
     expire?: Dayjs|number,
     encrypt?: boolean
@@ -18,6 +19,8 @@ export interface IValue extends Object {
 export namespace storage {
 
     const ALL_KEYS = '__ALL_KEYS'
+
+    export const DEBUG_KEYS = ['DebugStorage_']
 
     type StorageValue<T> = {
         value: T
@@ -63,6 +66,7 @@ export namespace storage {
 
         key = getKey(key,id)
         let { expire, encrypt } = data
+        data.value['__key'] = key
         const sdata: StorageValue<T> = {
             value : data.value,
             expire : expire?.valueOf(),
@@ -101,7 +105,7 @@ export namespace storage {
     }
 
     // 获取数据，如果数据过期了或者不存在，返回 null
-    export function get<T>(key: string, id?: number | string): T | null {
+    export function get<T extends {__key?:string} >(key: string, id?: number | string): T {
 
         key = getKey(key,id) 
 
@@ -118,6 +122,11 @@ export namespace storage {
             sys.localStorage.removeItem(key)
             return null
         }
+    }
+
+    export function getValues(prefix: string) { 
+        let keys = storage.getAllKeys().filter(key=>key.startsWith(prefix))
+        return keys.map( key=> storage.get(key))
     }
     
     export function getAllKeys() {
