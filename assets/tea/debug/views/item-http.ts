@@ -14,8 +14,8 @@ const { ccclass, property } = _decorator;
 
 
 // 定制 DebugItem界面；如果没有设置，则使用默认界面；
-@ccclass('DebugItemStorage')
-export class DebugItemStorage extends DebugItemBase { 
+@ccclass('DebugItemHttp')
+export class DebugItemHttp extends DebugItemBase { 
 
     @seek(Label,'TxtName') TxtName: Label = null
 
@@ -36,6 +36,10 @@ export class DebugItemStorage extends DebugItemBase {
     public tap() { 
         this.container.tapDebugCase(this)
         this.container.updateView('tap', this)
+    }
+
+    public tapSave() { 
+        this.container.updateView('save', this)
     }
 
     public tapDelete() { 

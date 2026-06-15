@@ -120,18 +120,6 @@ export class TestCode extends Component {
                 return data.name +(click++)
             }
         })
-
-        let group = DebugGroupType.Storage
-        storage.getAllKeys().forEach(key => {
-            tea.debug.addCase({
-                group,
-                name: key,
-                data: storage.getDataWithExpire(key),
-                tapCb: (data) => {
-                    return ''
-                }
-            })
-        })
     }
 
 

@@ -6,7 +6,7 @@
 * * */
 
 import { Unit } from "../unit";
-import { _decorator } from "cc";
+import { _decorator, log } from "cc";
 import { HttpMethod, HttpURL } from "./http-url";
 const { ccclass, property } = _decorator;
 
@@ -30,31 +30,42 @@ export class HttpComponent extends Unit {
 
     public get(url: HttpURL, cb?: (err: Error | null, data: any) => void, block?: boolean) {
         this.pushUrl(url)
-
         url.method = HttpMethod.GET
-        let _cb = (err: Error | null, data: any) => this.isValid && cb && cb(err, data)
-        HttpComponent.request(url, block).then(data => _cb(null,data), err => _cb(err,null))
-    }
-
-    private handleResponse(url: HttpURL, err: Error | null, data: any) { 
-        if (this.isValid) {
-            // 处理响应数据，更新界面等
-        } else {
-            
-         }
-
+        let _cb = (response: IResponseData) => { 
+            if (this.isValid) { 
+                let err = null
+                if (response.errNo || response.errMsg) { 
+                    err = {
+                        errNo: response.errNo,
+                        errMsg: response.errMsg
+                    }
+                }
+                cb?.(err, response.data)
+            }
+        }
+        return HttpComponent.request(url, block).then(_cb, _cb)
     }
 
     public post(url: HttpURL, cb?: (err: Error | null, data: any) => void, block?: boolean) {
         this.pushUrl(url)
-
         url.method = HttpMethod.POST
-        let _cb = (err: Error | null, data: any) => this.isValid && cb && cb(err, data)
-        return HttpComponent.request(url, block).then(data => _cb(null,data),err => _cb(err,null))
+        let _cb = (response: IResponseData) => { 
+            if (this.isValid) { 
+                let err = null
+                if (response.errNo || response.errMsg) { 
+                    err = {
+                        errNo: response.errNo,
+                        errMsg: response.errMsg
+                    }
+                }
+                cb?.(err, response.data)
+            }
+        }
+        return HttpComponent.request(url, block).then(_cb, _cb)
     }
 
     // 目前返回支持json格式的响应数据，后续可根据需要扩展其他响应类型的处理
-    static async request(url: HttpURL, block?: boolean): Promise<any> {
+    static async request(url: HttpURL, block?: boolean): Promise<IResponseData> {
         // block && 触发loading 组件显示；
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest()
@@ -63,10 +74,11 @@ export class HttpComponent extends Unit {
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4) {
                     if (xhr.status >= 200 && xhr.status < 300) {
-                        url.eventHandler?.emit([xhr])
+                        url.eventHandler?.emit([xhr.response])
                         resolve(xhr.response)
                     } else {
-                        reject(new Error(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`))
+                        log(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`)
+                        reject(xhr.response)
                     }
                 }
             }

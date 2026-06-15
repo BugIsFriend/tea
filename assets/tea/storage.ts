@@ -20,7 +20,7 @@ export namespace storage {
 
     const ALL_KEYS = '__ALL_KEYS'
 
-    export const DEBUG_KEYS = ['DebugStorage_']
+    export const DEBUG_KEYS = ['HttpStorage_', 'ShowGroup_']
 
     type StorageValue<T> = {
         value: T
@@ -66,7 +66,6 @@ export namespace storage {
 
         key = getKey(key,id)
         let { expire, encrypt } = data
-        data.value['__key'] = key
         const sdata: StorageValue<T> = {
             value : data.value,
             expire : expire?.valueOf(),
@@ -76,8 +75,8 @@ export namespace storage {
         sys.localStorage.setItem(key, encode(sdata))
 
         let values = sys.localStorage.getItem(ALL_KEYS) || ''
-        if (!values && values.split(',').indexOf(key) == -1) {
-            values += `,${key}`
+        if (!values || values.split(',').indexOf(key) == -1) {
+            values += `${!!values?',':''}${key}`
             sys.localStorage.setItem(ALL_KEYS, values)
         }
     }
@@ -124,15 +123,22 @@ export namespace storage {
         }
     }
 
-    export function getValues(prefix: string) { 
+    export function getPairs(prefix: string) { 
         let keys = storage.getAllKeys().filter(key=>key.startsWith(prefix))
-        return keys.map( key=> storage.get(key))
+        return keys.map(key => { 
+            return {key:key, value:storage.get(key)}
+        })
     }
     
-    export function getAllKeys() {
+    export function getAllKeys(omitPrefixs?:string[]) {
         let keys_string: string = sys.localStorage.getItem(ALL_KEYS)
         if (!!keys_string) { 
-            return keys_string.split(',').filter((item) => !!item)
+            return keys_string.split(',').filter((item) => { 
+                if (!!item && !!omitPrefixs) { 
+                    return !omitPrefixs.some(value=>item.startsWith(value))
+                }
+                return  !!item
+            })
         }
         return []
     }

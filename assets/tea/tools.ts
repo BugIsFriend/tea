@@ -5,7 +5,7 @@
  * @Last Modified time: 2026-04-01 18:59:33
  */
 
-import { isValid, tween, Node, v3, Component } from "cc";
+import { isValid, tween, Node, v3, Component, js } from "cc";
 
 export type KT = number | string
 
@@ -59,14 +59,37 @@ export function breath(node: Node, repeatTimes: number = -1, timeScale: number =
 }
 
 /**
- **  从节点或者组件 如果没有该组件则添加一个，有别于 getComponent 只是获取；
+ **  找当前节点是否存在 类的继承链上的组件，没有则增加一个该组件；
  * @param node 
  * @param ctor 
  */
-export function gain<T extends Component>(node: Node|Component, ctor?: { new(): T }|string): T {
+export function gain<T extends Component>(node: Node | Component, ctor?: { new(): T } | string, classChain: boolean = true): T {
+
+    if (classChain) { 
+        let comClass: T = null
+        if (typeof ctor === 'string') {
+            //@ts-ignore
+            comClass = js.getClassByName(ctor as string)
+        } else { 
+            //@ts-ignore
+            comClass = ctor
+        }
+
+        let comps = node instanceof Node? node.components: node.node.components
+
+        for (let i = 0; i < comps.length; i++) {
+            const comp = comps[i];
+            //@ts-ignore
+            if (comp instanceof comClass) {
+                return comp as T;
+            }
+        }
+    }
+
     //@ts-ignore
     return node.getComponent(ctor) || node.addComponent(ctor)
 }
+
 
 /**
  * 打乱数组顺序

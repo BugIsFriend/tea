@@ -58,12 +58,12 @@ export class DebugContainerHttp extends DebugContainer {
         let url = this.TxtSearch.string 
         if (!!url) { 
             let urlPrix =   this.urlPrix + !!url.trim()
-            let values = storage.getValues(urlPrix)
-            let tar = values[0]?.__key
+            let values = storage.getPairs(urlPrix)
+            let tar = values[0]?.key
             for (let i = 0; i < values.length; i++) {
                 const element = values[i];
-                if (urlPrix == element.__key) { 
-                    tar = element.__key
+                if (urlPrix == element.key) { 
+                    tar = element.key
                     break;
                 }
             }
@@ -83,7 +83,7 @@ export class DebugContainerHttp extends DebugContainer {
     }
 
     public toggleMock() { 
-        tea.tip.show('input mock JSON data')
+        this.mock.isChecked && tea.tip.show('input mock JSON data')
     }
 
     // 保存参数
@@ -105,14 +105,15 @@ export class DebugContainerHttp extends DebugContainer {
     public tapSend() {
         if (this.mock.isChecked) {
             if (!this.TxtResponse.string) {
-                tea.tip.show('input mock JSON data')
+                tea.tip.show('请求失败：请输入 JSON 数据')
+            } else { 
+
             }
         } else { 
             HttpComponent.request(this.url).then((response) => { 
                 this.TxtResponse.string = formatDisplayData(response)
             })
         }
-
     }
 
     public addDebugItem(item: DebugItemBase) {

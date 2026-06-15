@@ -17,6 +17,11 @@ export class DebugItemBase extends Unit {
     caseData: ICaseData
     container: DebugContainer
 
+    /**
+     * 当前组测试用例已被创建，并加入到组容器里
+     * @param caseData 
+     * @param container 
+     */
     initData(caseData: ICaseData, container?: DebugContainer): void { 
         this.caseData = caseData
         this.container = container

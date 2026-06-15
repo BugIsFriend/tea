@@ -5,18 +5,27 @@
 * @Modified time: 2026-06-03 10:47:30   
 * */
 
-import { _decorator, Prefab, Node, instantiate, log, Component, CCString} from "cc";
+import { _decorator, Prefab, Node, instantiate, log, Component, CCString, Enum, Label} from "cc";
 import { Unit } from "../../unit";
 import { ICaseData, DebugGroupType } from "../debug";
-import { gain } from "../../tools";
+import { enum2map, gain, keys } from "../../tools";
 import { DebugItemDefault } from "./item-default";
 import { DebugContainer } from "./container";
 import { DebugItemBase } from "./item-base";
 const { ccclass,property, executeInEditMode } = _decorator
 
+enum eDebugItemComps  { 
+    DebugItemBase = 'DebugItemBase',
+    DebugItemDefault = 'DebugItemDefault',
+    DebugItemStorage = 'DebugItemStorage',
+    DebugItemHttp = 'DebugItemHttp'
+}
+
 @ccclass('DebugPrefabsCfg')
 export class DebugPrefabsCfg { 
     @property(CCString) group: string = ''
+    @property({ type: Enum(eDebugItemComps) }) caseItemCtr: eDebugItemComps = eDebugItemComps.DebugItemBase;
+    
     @property(Prefab) caseItem: Prefab = null;
     @property(Prefab) container: Prefab = null;
 }
@@ -56,7 +65,7 @@ export class DebugView extends Unit {
 
     public init(data?: any): void {
 
-        this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group as DebugGroupType,  cfg.container, cfg.caseItem))
+        this.prefabCfg.forEach(cfg => tea.debug.registerDebugPrefab(cfg.group as DebugGroupType,  cfg.container, cfg.caseItem, null, cfg.caseItemCtr ))
 
         let _data = tea.debug.data()
 
@@ -77,14 +86,14 @@ export class DebugView extends Unit {
                 })
             }
 
-            // 创建 每 组对应的测试用例；
+            // 创建 每个组 对应的测试用例；
             mGroup.forEach((debugItem, key) => { 
                 let debugCfg = tea.debug.getDebugPrefab(groupId) 
                 let casePrefab = debugCfg?.caseItem || this.casePrefab
                 let node = instantiate(casePrefab)
-                let comp: DebugItemBase = node.getComponent(debugCfg?.caseItemComp || DebugItemDefault) || node.addComponent(DebugItemDefault)
-                let container:DebugContainer = gain(this.mNodeCategory.get(tabItem), debugCfg?.containerComp || DebugContainer)
-                comp.initData(debugItem, container)
+                let itemComp: DebugItemBase = gain(node, debugCfg?.caseItemComp || DebugItemBase)
+                let container: DebugContainer = gain(this.mNodeCategory.get(tabItem), debugCfg?.containerComp || DebugContainer)
+                itemComp.initData(debugItem, container)
             })
         })
     }
@@ -112,9 +121,16 @@ export class DebugView extends Unit {
 
     show(groupId?: DebugGroupType) { 
         this.node.active = true
-        if (!groupId || this.showGroup != groupId) return
-        this.showGroup = groupId
-         this.tapCatgeory(this.TabParent.getChildByName(groupId))
+        if (!groupId || this.showGroup == groupId) return
+        let children = this.TabParent.children
+        for (const child of children) {
+            if (child.getComponentInChildren(Label)?.string == groupId) { 
+                this.tapCatgeory(child)
+                this.showGroup = groupId
+                return groupId
+            }
+        }
+        return -1
     }
 
     hide() { 

@@ -9,14 +9,16 @@ import { LoadComponent} from "../component/load";
 import { singleton } from "../meta/class";
 import { gain, keys } from "../tools";
 
-import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, UITransform, } from "cc";
+import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, UITransform, KeyCode, } from "cc";
 import { DebugView } from "./views/debug-view";
+import { storage } from "../storage";
 
 export enum DebugGroupType {
-    Default = 'Default',
-    Storage = 'Storage',
-    Http = 'Http',
-    Mock = 'Mock'
+    Default = 'Default',    // 默认
+    Storage = 'Storage',    // 本地存储
+    Http = 'Http',          // Http请求
+    Socket = 'Socket',      // 网络消息
+    Memory = 'Memory'       // 内存对象
 }
 
 type KeyType = number | string
@@ -94,8 +96,8 @@ export class Debug {
         }
     }
 
-    public registerDebugPrefab(groudId: DebugGroupType, container: Prefab, caseItem: Prefab, containerComp?:any, caseItemComp?:any) {
-        this.mapDebugPrefab.set(groudId, {container, caseItem, containerComp:containerComp, caseItemComp:caseItemComp})
+    public registerDebugPrefab(groudId: DebugGroupType, container: Prefab, caseItem: Prefab, containerCtr?:any, caseItemCtr?:any) {
+        this.mapDebugPrefab.set(groudId, {container, caseItem, containerComp:containerCtr, caseItemComp:caseItemCtr})
     }
 
     public getDebugPrefab(groudId: DebugGroupType): TDebugPrefab {
@@ -121,10 +123,17 @@ export class Debug {
     }
 
     public init() {
-        keys(DebugGroupType,'string').forEach(groupId => this.addGroup(groupId as DebugGroupType))
+        keys(DebugGroupType, 'string').forEach(groupId => this.addGroup(groupId as DebugGroupType))
+        this.refreshCaseData()
         
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+
+        let key = storage.DEBUG_KEYS[1]+'last_show_'
+        if (storage.get(key)) { 
+             //@ts-ignore
+             this.showGroupId = storage.get(key)
+        }
     }
 
     public data(): Map<DebugGroupType,DebugDatas> { 
@@ -137,13 +146,54 @@ export class Debug {
     }
 
     public onKeyDown(event:EventKeyboard) {
-        if (event.keyCode == macro.KEY.q) { // F12
-            this.show()
+        if (event.keyCode == KeyCode.KEY_Q) { // F12
+            this.view?.node.active? this.hide():this.show()
         }
-        if (event.keyCode >= macro.KEY.f1 && event.keyCode <= macro.KEY.f12) { // F12
-            //@ts-ignore
-            this.showGroupId = event.keyCode - macro.KEY.f1
+        if (event.keyCode > KeyCode.DIGIT_0 && event.keyCode <= KeyCode.DIGIT_9) { // F12
+            if (this.view?.node.active) { 
+                let keys = Object.keys(DebugGroupType)
+                let tar_group = keys[event.keyCode - KeyCode.DIGIT_1]  as DebugGroupType
+
+                if (tar_group) { 
+                    let key = storage.DEBUG_KEYS[1]+'last_show'
+                    storage.set(key,{value:tar_group})
+                    this.showGroupId =  tar_group
+                    this.show()
+                }
+            }
         }
+    }
+
+    public hide() { 
+        this.view?.hide()
+    }
+
+    refreshCaseData() { 
+
+        // storage debug case
+        this._gData.forEach((mGroup, group) => { 
+            this._gData.set(group, mGroup)
+        })
+
+        storage.getAllKeys(storage.DEBUG_KEYS).forEach(key => {
+            tea.debug.addCase({
+                group:DebugGroupType.Storage,
+                name: key,
+                data: storage.getDataWithExpire(key),
+                tapCb: (data) => {
+                    return ''
+                }
+            })
+        })
+
+        // http http case
+        storage.getPairs(storage.DEBUG_KEYS[0]).forEach(pair => {
+            tea.debug.addCase({
+                group:DebugGroupType.Http,
+                name: pair.key,
+                data: pair.value
+            })
+        })
     }
 
 }

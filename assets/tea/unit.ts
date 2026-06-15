@@ -8,6 +8,7 @@
 import { Component, _decorator, Node, js } from "cc";
 import { emmiter } from "./emitter";
 import { unlinkProperty } from "./meta/method";
+import { gain } from "./tools";
 const { ccclass} = _decorator
 
 /**
@@ -25,18 +26,17 @@ export class Unit extends Component implements IUnit {
      * 组将被创建出来后，做一些初始化工作；
      * @param creator 
      */
-    public init(data?: any): void {}
-    
+    public init(data?: any): void { }
     /**
      *  获取一个 Unit 组件，如果没有该组件则添加一个,首次添加会尝试调用 init 方法；
      * @returns 
      */
-    public gain<T extends Component>(type: { new(): T; } | string, data?: any): T {
+    public gain<T extends Component>(compClass: { new(): T; } | string, data?: any, classChain: boolean = true): T {
         //@ts-ignore
-        let comp = this.getComponent(type)
+        let comp = this.getComponent(compClass)
         if (!comp) {
             //@ts-ignore
-            comp = this.addComponent(type)
+            comp = gain(this.node, compClass)
             //@ts-ignore
             js.isChildClassOf(comp.constructor, Unit) && comp?.init(data)
             

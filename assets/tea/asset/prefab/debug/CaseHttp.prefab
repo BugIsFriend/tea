@@ -38,13 +38,10 @@
       },
       {
         "__id__": 29
-      },
-      {
-        "__id__": 31
       }
     ],
     "_prefab": {
-      "__id__": 33
+      "__id__": 31
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -178,7 +175,7 @@
     "_string": "http:",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 19,
+    "_actualFontSize": 18,
     "_fontSize": 18,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -394,7 +391,7 @@
     "_string": "删除",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 16.158170914542726,
+    "_actualFontSize": 15,
     "_fontSize": 15,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -732,24 +729,6 @@
     "fileId": "e2467uyp5Jjr7vvz6mXsiB"
   },
   {
-    "__type__": "de249VwXeZCP5vWy71iV3RU",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 30
-    },
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "0bmPT0x+VGf6BFA8UDwWgA"
-  },
-  {
     "__type__": "cc.Button",
     "_name": "",
     "_objFlags": 0,
@@ -759,7 +738,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 32
+      "__id__": 30
     },
     "clickEvents": [],
     "_interactable": true,

@@ -451,7 +451,7 @@
     "_string": "Close",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 23.95802098950525,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1016,6 +1016,7 @@
   {
     "__type__": "DebugPrefabsCfg",
     "group": "Default",
+    "caseItemCtr": "DebugItemDefault",
     "caseItem": {
       "__uuid__": "d912bb6d-1a11-43e7-acca-523f7661b863",
       "__expectedType__": "cc.Prefab"
@@ -1028,6 +1029,7 @@
   {
     "__type__": "DebugPrefabsCfg",
     "group": "Storage",
+    "caseItemCtr": "DebugItemStorage",
     "caseItem": {
       "__uuid__": "c4200131-f470-4f49-9e29-74c3ab3ca11d",
       "__expectedType__": "cc.Prefab"
@@ -1040,8 +1042,9 @@
   {
     "__type__": "DebugPrefabsCfg",
     "group": "Http",
+    "caseItemCtr": "DebugItemHttp",
     "caseItem": {
-      "__uuid__": "d912bb6d-1a11-43e7-acca-523f7661b863",
+      "__uuid__": "4f0a8fe8-6c6e-4674-be7a-08064345faef",
       "__expectedType__": "cc.Prefab"
     },
     "container": {
