@@ -129,7 +129,7 @@ export class Debug {
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
 
-        let key = storage.DEBUG_KEYS[1]+'last_show_'
+        let key = storage.DEBUG_KEYS[1]+'last_show'
         if (storage.get(key)) { 
              //@ts-ignore
              this.showGroupId = storage.get(key)
@@ -179,7 +179,7 @@ export class Debug {
             tea.debug.addCase({
                 group:DebugGroupType.Storage,
                 name: key,
-                data: storage.getDataWithExpire(key),
+                data: storage.get(key),
                 tapCb: (data) => {
                     return ''
                 }
@@ -187,7 +187,7 @@ export class Debug {
         })
 
         // http http case
-        storage.getPairs(storage.DEBUG_KEYS[0]).forEach(pair => {
+        storage.getValues(storage.DEBUG_KEYS[0]).forEach(pair => {
             tea.debug.addCase({
                 group:DebugGroupType.Http,
                 name: pair.key,

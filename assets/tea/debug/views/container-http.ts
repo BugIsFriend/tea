@@ -11,9 +11,13 @@ import { storage } from '../..//storage';
 import { DebugItemBase, formatDisplayData } from './item-base';
 import { HttpMethod, HttpURL } from '../../net/http-url';
 import { HttpComponent } from '../../net/http-component';
+import { gain } from '../../tools';
 const { ccclass, property } = _decorator;
 
 //https://www.fengniaojianzhan.com/fengniao/p/7309884543599429452?actId=7309884543599429452&groupId=0&enforceWK=1
+
+type THttpDebugData = {__key?: string, url: string, method?: HttpMethod, postData?:any , mockData?:any, isMock?:boolean}
+
 @ccclass('DebugContainerHttp')
 export class DebugContainerHttp extends DebugContainer {
 
@@ -24,12 +28,17 @@ export class DebugContainerHttp extends DebugContainer {
     @property(EditBox) TxtPost: EditBox = null;
     @property(EditBox) TxtResponse: EditBox = null;
 
-    @property(Toggle) mock: Toggle = null;
+    @property(Toggle) toggleGet: Toggle = null;
+    @property(Toggle) togglePost: Toggle = null;
+    @property(Toggle) toggleMock: Toggle = null;
     
     url:HttpURL
-    method:HttpMethod = HttpMethod.GET
     urlPrix:string = storage.DEBUG_KEYS[0]
 
+    
+    public get method() : HttpMethod {
+        return this.toggleGet.isChecked ? HttpMethod.GET : HttpMethod.POST
+    }
 
     onEditBegan(edit: EditBox) {
         edit.getComponentInChildren(Label).node.active = true  
@@ -39,26 +48,52 @@ export class DebugContainerHttp extends DebugContainer {
         return find('ListViewUrl/view/content', this.node)
     }
 
+    setUrlData(data: THttpDebugData, tapItem:boolean = false) { 
+        data.url.trim()
+        this.url = new HttpURL(data.url)
+        this.url.method = data.method
+
+        let k_url = this.urlPrix + data.url
+        let s_data = storage.get<THttpDebugData>(k_url)
+
+        let parseUrl = this.url.parse()
+
+        if (!js.isEmptyObject(parseUrl.params)) { 
+            this.TxtParam.string = formatDisplayData(parseUrl.params)
+        }
+
+        if (tapItem && s_data) {
+            if (s_data.method == HttpMethod.POST) {
+                this.togglePost.isChecked = true
+                s_data.postData && (this.TxtPost.string = formatDisplayData(data.postData))
+            } else {
+                this.toggleGet.isChecked = true
+                this.TxtPost.string = ''
+            }
+
+            this.toggleMock.isChecked = s_data.isMock
+            s_data.isMock && s_data.mockData && (this.TxtResponse.string = formatDisplayData(s_data.mockData))
+        } else { 
+
+        }
+        
+        storage.set(k_url, { value: Object.assign(s_data,data)})
+    }
+
     public tapBtnAdd() {
         let url = this.TxtSearch.string
-        if (!!url) { 
-            url = this.TxtSearch.string.trim()
-            this.url = new HttpURL(url)
-            let parseUrl = this.url.parse()
-            if (!js.isEmptyObject(parseUrl.params)) { 
-                this.TxtParam.string = formatDisplayData(parseUrl.params)
-            }
-            console.log('add:  ', parseUrl)
-            this.url.method = HttpMethod.GET
-            storage.set(this.urlPrix + url, { value: url, method:this.url.method })
+        let k_url = this.urlPrix + url
+        let s_data = storage.get<THttpDebugData>(k_url)
+        if (!s_data) { 
+            this.setUrlData({ url, method: HttpMethod.GET })
         }
-     }
+    }
     
     public tapBtnFilter() {
         let url = this.TxtSearch.string 
         if (!!url) { 
             let urlPrix =   this.urlPrix + !!url.trim()
-            let values = storage.getPairs(urlPrix)
+            let values = storage.getValues(urlPrix)
             let tar = values[0]?.key
             for (let i = 0; i < values.length; i++) {
                 const element = values[i];
@@ -74,46 +109,84 @@ export class DebugContainerHttp extends DebugContainer {
         }
     }
 
-    public toggleGetOrPost(EditBox: EditBox, method: 'get' | 'post') {
+    public toggleGetOrPost(toggle: Toggle) {
         if (!this.url) return;
-
-        this.method = method == 'get' ? HttpMethod.GET : HttpMethod.POST
-        let s_url =  this.url.getURL()
-        storage.set(this.urlPrix + s_url, { value: s_url, method:this.url.method })
+        this.setUrlData({url:this.url.getURL(), method :this.method})
     }
 
-    public toggleMock() { 
-        this.mock.isChecked && tea.tip.show('input mock JSON data')
+    public tapMockToggle() { 
+        if(!this.url) return 
+        if (this.toggleMock.isChecked) {
+            let k_url = this.urlPrix + this.url.getURL()
+            //@ts-ignore
+            let mockData = storage.get(k_url)?.mockData
+            if (!!mockData) {
+                this.TxtResponse.string = formatDisplayData(mockData)
+            } else { 
+                tea.tip.show('input mock JSON data')
+            }
+        } 
+        this.setUrlData({url:this.url.getURL(), isMock: this.toggleMock.isChecked})
+
     }
 
     // 保存参数
     public tapSave() { 
-        let param = null
-        try {
-            param = JSON.parse(this.TxtParam.string)
-        } catch (error) {
-            console.warn('JSON 解析错误')
+        if (!this.url) return;
+        let [param,postData,mockData] = [null,null,null]
+        
+        // 参数 数据
+        if (!!this.TxtParam.string) { 
+            param = this.TxtParam.string?.trim()
+            try {
+                param = JSON.parse(param)
+            } catch (error) {
+                console.warn('JSON 解析 param 错误')
+            }
+            !!param&&this.url.setParams(param)
         }
-        if (!!param) this.url.setParams(param)
+        
+        // post 数据
+        if (!!this.TxtPost.string && this.method == HttpMethod.POST) {
+            postData = this.TxtPost.string?.trim()
+            try {
+                postData = JSON.parse(postData)
+            } catch (error) {
+                console.warn('JSON 解析 postData 错误')
+            }
+        } 
+
+        // mock 数据
+        if (this.toggleMock.isChecked && !!this.TxtResponse.string) { 
+            mockData = this.TxtResponse.string?.trim()
+            try {
+                mockData = JSON.parse(mockData)
+            } catch (error) {
+                console.warn('JSON 解析 postData 错误')
+            }
+        }
+
         let url = this.url.getURL()
         this.TxtSearch.string = url
         if (!!url) { 
-            storage.set(this.urlPrix+url, { value: url, method:this.url.method })
+            this.setUrlData({url, method:this.method, postData, mockData})
         }
     }
 
     public tapSend() {
-        if (this.mock.isChecked) {
-            if (!this.TxtResponse.string) {
-                tea.tip.show('请求失败：请输入 JSON 数据')
-            } else { 
-
-            }
-        } else { 
-            HttpComponent.request(this.url).then((response) => { 
-                this.TxtResponse.string = formatDisplayData(response)
-            })
+        if (this.toggleMock.isChecked && !this.TxtResponse.string) { 
+            tea.tip.show('请输入  Mock JSON Data')
+            return
         }
+
+        if (this.method == HttpMethod.POST && !this.TxtPost.string) { 
+            tea.tip.show('请输入  Post JSON Data')
+            return
+        }
+
+        HttpComponent.request(this.url).then((response) => { 
+            this.TxtResponse.string = formatDisplayData(response)
+        })
     }
 
     public addDebugItem(item: DebugItemBase) {
@@ -147,7 +220,10 @@ export class DebugContainerHttp extends DebugContainer {
                 break
             case 'tap':
                     this.debugItemParent().children.forEach((child) => {
-                        let item = child.getComponent(DebugItemBase)
+                        let item = gain(child,DebugItemBase)
+                        if (item === caseItem) { 
+                            this.setUrlData(item.caseData.data, true)
+                        }
                         item?.handleTap(item === caseItem)
                     })  
                 return

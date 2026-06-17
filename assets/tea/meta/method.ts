@@ -83,6 +83,9 @@ export function seek<ParamType>(param: ParamType, url?: string) {
                 }
                 this.__decoratorkey__[mapKey] = result
             }
+            if (!this.__decoratorkey__[mapKey]) { 
+                console.error(`未找到属${key}性对应的目标`)
+            }
             return this.__decoratorkey__[mapKey]
         }
         return Object.defineProperty(target, key, { set: set, get: get })

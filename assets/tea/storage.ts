@@ -86,30 +86,14 @@ export namespace storage {
         return !!expire && Date.now() > expire
     }
 
-    export function getDataWithExpire<T>(key: string, id?: number | string):StorageValue<T>{
-        key = getKey(key,id) 
-        const content:string = sys.localStorage.getItem(key)
-        if (!content) return null
-        try {
-            const data: StorageValue<T> = decode(content)
-            if (isExpired(data.expire)) {
-                remove(key, id)
-                return null
-            }
-            return data
-        } catch {
-            sys.localStorage.removeItem(key)
-            return null
-        }
-    }
-
     // 获取数据，如果数据过期了或者不存在，返回 null
     export function get<T extends {__key?:string} >(key: string, id?: number | string): T {
-
         key = getKey(key,id) 
-
         const content:string = sys.localStorage.getItem(key)
-        if (!content) return null
+        if (!content) { 
+            remove(key, id)
+            return null
+        }
         try {
             const data: StorageValue<T> = decode(content)
             if (isExpired(data.expire)) {
@@ -118,16 +102,19 @@ export namespace storage {
             }
             return data.value
         } catch {
-            sys.localStorage.removeItem(key)
+            remove(key, id)
             return null
         }
     }
 
-    export function getPairs(prefix: string) { 
-        let keys = storage.getAllKeys().filter(key=>key.startsWith(prefix))
-        return keys.map(key => { 
-            return {key:key, value:storage.get(key)}
+    export function getValues(prefix: string) { 
+        let values = []
+        let keys = storage.getAllKeys().filter(key => key.startsWith(prefix))
+        keys.forEach(key => { 
+            let v = storage.get(key)
+            !!v&&values.push({key:key, value:v})
         })
+        return values
     }
     
     export function getAllKeys(omitPrefixs?:string[]) {

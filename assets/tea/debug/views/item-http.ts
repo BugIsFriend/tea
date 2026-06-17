@@ -17,16 +17,18 @@ const { ccclass, property } = _decorator;
 @ccclass('DebugItemHttp')
 export class DebugItemHttp extends DebugItemBase { 
 
-    @seek(Label,'TxtName') TxtName: Label = null
+    @seek(Label,'TxtHttp') TxtHttp: Label = null
 
     protected start(): void {
         this.node.on(Button.EventType.CLICK, this.tap, this)
+        //@ts-ignore
+        console.log(this.__decoratorkey__)
     }
 
     public initData(caseData: ICaseData, container?: DebugContainer): void { 
         super.initData(caseData, container)
         this.node.position  = v3(20, 0, 0)
-        this.TxtName.string = caseData.name+'       '
+        this.TxtHttp.string = caseData.data.url
     }
 
     handleTap(tap:boolean) { 
