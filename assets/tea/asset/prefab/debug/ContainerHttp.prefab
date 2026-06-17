@@ -3114,7 +3114,7 @@
       "b": 187,
       "a": 255
     },
-    "_string": "run code",
+    "_string": "tea.tip.show('默认执行该段提示代码')",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -6891,7 +6891,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 488,
-      "height": 307.8
+      "height": 40
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7159,7 +7159,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 490,
-      "height": 307.8
+      "height": 40
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -51,7 +51,6 @@ export class DebugContainerHttp extends DebugContainer {
     setUrlData(data: THttpDebugData, tapItem:boolean = false) { 
         data.url.trim()
         this.url = new HttpURL(data.url)
-        this.url.method = data.method
 
         let k_url = this.urlPrix + data.url
         let s_data = storage.get<THttpDebugData>(k_url)
@@ -73,11 +72,17 @@ export class DebugContainerHttp extends DebugContainer {
 
             this.toggleMock.isChecked = s_data.isMock
             s_data.isMock && s_data.mockData && (this.TxtResponse.string = formatDisplayData(s_data.mockData))
-        } else { 
-
         }
+
+        //@ts-ignore
+        !s_data && (s_data = {})
         
-        storage.set(k_url, { value: Object.assign(s_data,data)})
+        storage.set(k_url, { value: Object.assign(s_data, data) })
+        
+        this.url.mock = s_data?.isMock
+        this.url.mockData = s_data?.mockData
+        this.url.method = data.method
+        this.url = s_data.postData
     }
 
     public tapBtnAdd() {
@@ -174,6 +179,9 @@ export class DebugContainerHttp extends DebugContainer {
     }
 
     public tapSend() {
+        
+        this.tapSave()  // 发送前触发下 save
+
         if (this.toggleMock.isChecked && !this.TxtResponse.string) { 
             tea.tip.show('请输入  Mock JSON Data')
             return
@@ -184,8 +192,13 @@ export class DebugContainerHttp extends DebugContainer {
             return
         }
 
+        this.url.mock = this.toggleMock.isChecked
         HttpComponent.request(this.url).then((response) => { 
             this.TxtResponse.string = formatDisplayData(response)
+            let code = this.TxtRunCode.string
+            if (!!code) { 
+                eval(code)
+            }
         })
     }
 
@@ -196,12 +209,7 @@ export class DebugContainerHttp extends DebugContainer {
         this.debugItemParent().getComponent(UITransform).height = (item.node.getComponent(UITransform).height +gap)* num
     }
 
-    public tapUrlDebugCase(caseItem: DebugItemBase) {
-        // this.DataViewEditBox.string = formatDisplayData(caseItem.caseData.data)
-    }
-
     public updateView(action?: 'delete' | 'save'| 'tap' | string, caseItem?: DebugItemBase) {  
-        
         let tar_key = caseItem?.caseData.name
         switch (action) {
             case 'delete':
@@ -222,13 +230,26 @@ export class DebugContainerHttp extends DebugContainer {
                     this.debugItemParent().children.forEach((child) => {
                         let item = gain(child,DebugItemBase)
                         if (item === caseItem) { 
+                            this.clear()
                             this.setUrlData(item.caseData.data, true)
                         }
                         item?.handleTap(item === caseItem)
                     })  
                 return
         }
-     }
+    }
+    
+    public clear() {
+        this.TxtParam.string = '';
+        this.TxtRunCode.string = '';
+        this.TxtPost.string = '';
+        this.TxtResponse.string = '';
+
+        this.toggleGet.isChecked= true;
+        this.togglePost.isChecked= false;
+        this.toggleMock.isChecked = false;
+        this.url.clear()
+    }
 
 }
 

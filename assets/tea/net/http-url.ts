@@ -43,7 +43,11 @@ export class HttpURL {
     public postdata: any = null
 
     constructor(url_prod:string,url_test?:string) { 
-        this.url_test = url_prod
+        this.setUrl(url_prod,url_test)
+    }
+
+    setUrl(url_prod?: string, url_test?: string) { 
+        this.url_test = url_prod ||''
         this.url_prod = url_test ||''
     }
 
@@ -148,6 +152,20 @@ export class HttpURL {
         this.path = parts.path
         this.params = params
         return nextURL
+    }
+
+    clear() { 
+        this.setUrl()
+        this.method = HttpMethod.GET
+        this.mock = false
+        this.mockData = ''
+        this.eventHandler = null
+        this.repeat = 0
+        this.timeout = -1
+        
+        this.path = ''
+        this.params = {}
+        this.postdata = null
     }
 
 }

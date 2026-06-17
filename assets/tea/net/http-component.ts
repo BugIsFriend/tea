@@ -68,25 +68,34 @@ export class HttpComponent extends Unit {
     static async request(url: HttpURL, block?: boolean): Promise<IResponseData> {
         // block && 触发loading 组件显示；
         return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest()
-            xhr.open(url.method, url.getURL(), true)
-            xhr.responseType = 'json'; 
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4) {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        url.eventHandler?.emit([xhr.response])
-                        resolve(xhr.response)
-                    } else {
-                        log(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`)
-                        reject(xhr.response)
+            if (!!url.mock && !!url.mockData) {
+                resolve({
+                    errNo: null,
+                    errMsg: null,
+                    data: url.mockData
+                })
+            } else { 
+                let xhr = new XMLHttpRequest()
+                xhr.open(url.method, url.getURL(), true)
+                xhr.responseType = 'json'; 
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            url.eventHandler?.emit([xhr.response])
+                            resolve(xhr.response)
+                        } else {
+                            log(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`)
+                            reject(xhr.response)
+                        }
                     }
                 }
-            }
-            if (url.method === 'POST' && url.postdata != null) {
-                xhr.setRequestHeader('Content-Type','application/json')
-                xhr.send(JSON.stringify(url.postdata))
-            } else {
-                xhr.send()
+                if (url.method === 'POST' && url.postdata != null) {
+                    xhr.setRequestHeader('Content-Type','application/json')
+                    xhr.send(JSON.stringify(url.postdata))
+                } else {
+                    xhr.send()
+                }
+
             }
         })
     }
