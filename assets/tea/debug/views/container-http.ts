@@ -213,9 +213,7 @@ export class DebugContainerHttp extends DebugContainer {
         HttpComponent.request(this.url).then((response) => { 
             this.TxtResponse.string = formatDisplayData(response)
             let code = this.TxtRunCode.string
-            if (!!code) { 
-                eval(code)
-            }
+            eval(code || `tea.tip.show('http 请求成功')`)
         })
     }
 

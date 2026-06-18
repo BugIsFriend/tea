@@ -2579,7 +2579,7 @@
       "b": 187,
       "a": 255
     },
-    "_string": "tea.tip.show('默认执行该段提示代码')",
+    "_string": "tea.tip.show('http 请求成功')",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 18,
