@@ -1155,7 +1155,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.443359375,
+      "width": 60.029296875,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -1191,7 +1191,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "Filter",
+    "_string": "search",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -7632,7 +7632,7 @@
       "b": 5,
       "a": 255
     },
-    "_string": "勾选 mock， 输入JSON 数据，点击 Send 模拟发送数据...\n\n\n\n\n\n\n\n",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_actualFontSize": 15,

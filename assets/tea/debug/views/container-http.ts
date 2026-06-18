@@ -105,22 +105,28 @@ export class DebugContainerHttp extends DebugContainer {
     }
     
     public tapBtnFilter() {
-        let url = this.TxtSearch.string 
+        let url = this.TxtSearch.string.trim()
         if (!!url) { 
-            let urlPrix = this.getStorageKey(url.trim())
-            let values = storage.getValues(urlPrix)
-            let tar = values[0]?.key
-            for (let i = 0; i < values.length; i++) {
-                const element = values[i];
-                if (urlPrix == element.key) { 
-                    tar = element.key
-                    break;
+            let likes = []
+            this.debugItemParent().children.forEach((child) => {
+                let item = gain(child, DebugItemBase)
+                let data: THttpDebugData = item.caseData.data
+                item?.handleTap(false)
+                if (data.url === url) {
+                    likes.splice(0,1,item)
+                } else if (data.url.includes(url)) { 
+                    likes.push(item)
                 }
+            })
+
+            if (likes.length > 0) {
+                this.clear()
+                this.setUrlData(likes[0].caseData.data, true)
+                likes[0]?.handleTap(true)
+            } else { 
+                tea.tip.show('没有所有到匹配 htttp 请求')
             }
-            
-            if (!!tar) { 
-                // TODO  goto tar url item
-            }
+
         }
     }
 
