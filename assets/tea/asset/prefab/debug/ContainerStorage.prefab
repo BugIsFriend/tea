@@ -448,7 +448,7 @@
     "_string": "search ...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 26.206896551724135,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -819,7 +819,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 250,
-      "y": -255,
+      "y": -265,
       "z": 0
     },
     "_lrot": {
@@ -989,7 +989,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 500,
-      "height": 510
+      "height": 530
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1134,7 +1134,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 500,
-      "height": 510
+      "height": 530
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1361,7 +1361,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 600,
-      "height": 580
+      "height": 600
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1436,7 +1436,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": 0,
+    "_bottom": -20,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
@@ -1532,8 +1532,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 43.06727680407072,
-      "height": 31.500000000000007
+      "width": 43.07861328125,
+      "height": 31.5
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1571,7 +1571,7 @@
     "_string": "Key",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 32.758620689655174,
+    "_actualFontSize": 25,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 25,
@@ -1754,8 +1754,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 149.96052631578948,
-      "height": 31.500000000000007
+      "width": 150,
+      "height": 31.5
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1793,7 +1793,7 @@
     "_string": "点击显示内容",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 32.758620689655174,
+    "_actualFontSize": 25,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 25,
@@ -2218,7 +2218,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1200,
-      "height": 620
+      "height": 640
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

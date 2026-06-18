@@ -5,7 +5,7 @@
 * @Modified time: 2026-04-01 18:45:32   
 * * */
 
-import { _decorator, EventHandler,Enum, CCFloat, CCInteger, CCString, CCBoolean } from "cc";
+import { _decorator, EventHandler,Enum, CCFloat, CCInteger, CCString, CCBoolean, js } from "cc";
 import { PREVIEW } from "cc/env";
 const { ccclass, property } = _decorator;
 
@@ -32,7 +32,7 @@ export class HttpURL {
 
     @property  mock: boolean = false
     
-    @property({visible() { return this.mock },multiline:true, editorOnly:true, tooltip: '模拟数据,输入 JSON 字符传'}) mockData: string = ''
+    @property({visible() { return this.mock },multiline:true, editorOnly:true, tooltip: '模拟数据,输入 JSON 字符传'}) mockString: string = ''
     
     @property({type: EventHandler, tooltip: '事件处理器'}) eventHandler: EventHandler = null
 
@@ -41,6 +41,7 @@ export class HttpURL {
     public params: Record<string, string> = {}
 
     public postdata: any = null
+    public _mockData:any = null
 
     constructor(url_prod:string,url_test?:string) { 
         this.setUrl(url_prod,url_test)
@@ -154,11 +155,25 @@ export class HttpURL {
         return nextURL
     }
 
+    get mockData() { 
+        if (!this._mockData && !!this.mockString) { 
+             this._mockData =  JSON.parse(this.mockString)
+        }
+        return this._mockData
+    }
+
+    set mockData(_mockData: Object) { 
+        if(!_mockData || js.isEmptyObject(_mockData)) return 
+        this._mockData = _mockData
+        this.mockString = JSON.stringify(_mockData)
+    }
+
     clear() { 
         this.setUrl()
         this.method = HttpMethod.GET
         this.mock = false
-        this.mockData = ''
+        this.mockString = ''
+        this._mockData = null
         this.eventHandler = null
         this.repeat = 0
         this.timeout = -1

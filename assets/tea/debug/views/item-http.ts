@@ -40,10 +40,6 @@ export class DebugItemHttp extends DebugItemBase {
         this.container.updateView('tap', this)
     }
 
-    public tapSave() { 
-        this.container.updateView('save', this)
-    }
-
     public tapDelete() { 
         this.container.updateView('delete', this)
     }

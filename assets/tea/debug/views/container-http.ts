@@ -14,8 +14,6 @@ import { HttpComponent } from '../../net/http-component';
 import { gain } from '../../tools';
 const { ccclass, property } = _decorator;
 
-//https://www.fengniaojianzhan.com/fengniao/p/7309884543599429452?actId=7309884543599429452&groupId=0&enforceWK=1
-
 type THttpDebugData = {__key?: string, url: string, method?: HttpMethod, postData?:any , mockData?:any, isMock?:boolean}
 
 @ccclass('DebugContainerHttp')
@@ -26,6 +24,7 @@ export class DebugContainerHttp extends DebugContainer {
     @property(EditBox) TxtParam: EditBox = null;
     @property(EditBox) TxtRunCode: EditBox = null;
     @property(EditBox) TxtPost: EditBox = null;
+    @property(EditBox) TxtMock: EditBox = null;
     @property(EditBox) TxtResponse: EditBox = null;
 
     @property(Toggle) toggleGet: Toggle = null;
@@ -33,7 +32,9 @@ export class DebugContainerHttp extends DebugContainer {
     @property(Toggle) toggleMock: Toggle = null;
     
     url:HttpURL
-    urlPrix:string = storage.DEBUG_KEYS[0]
+    urlPrix: string = storage.DEBUG_KEYS[0]
+    
+    curDebugItem:DebugItemBase
 
     
     public get method() : HttpMethod {
@@ -48,11 +49,16 @@ export class DebugContainerHttp extends DebugContainer {
         return find('ListViewUrl/view/content', this.node)
     }
 
+    public getStorageKey(url: string) { 
+        return this.urlPrix + url
+    }
+
     setUrlData(data: THttpDebugData, tapItem:boolean = false) { 
         data.url.trim()
         this.url = new HttpURL(data.url)
 
-        let k_url = this.urlPrix + data.url
+        let k_url = this.getStorageKey(data.url)
+
         let s_data = storage.get<THttpDebugData>(k_url)
 
         let parseUrl = this.url.parse()
@@ -71,7 +77,11 @@ export class DebugContainerHttp extends DebugContainer {
             }
 
             this.toggleMock.isChecked = s_data.isMock
-            s_data.isMock && s_data.mockData && (this.TxtResponse.string = formatDisplayData(s_data.mockData))
+            if (!s_data.isMock) {
+                this.TxtMock.string = ''
+            } else { 
+                s_data.mockData && (this.TxtMock.string = formatDisplayData(s_data.mockData))
+            }
         }
 
         //@ts-ignore
@@ -81,13 +91,13 @@ export class DebugContainerHttp extends DebugContainer {
         
         this.url.mock = s_data?.isMock
         this.url.mockData = s_data?.mockData
-        this.url.method = data.method
-        this.url = s_data.postData
+        this.url.method = s_data.method
+        this.url.postdata = s_data.postData
     }
 
     public tapBtnAdd() {
         let url = this.TxtSearch.string
-        let k_url = this.urlPrix + url
+        let k_url = this.getStorageKey(url.trim())
         let s_data = storage.get<THttpDebugData>(k_url)
         if (!s_data) { 
             this.setUrlData({ url, method: HttpMethod.GET })
@@ -97,7 +107,7 @@ export class DebugContainerHttp extends DebugContainer {
     public tapBtnFilter() {
         let url = this.TxtSearch.string 
         if (!!url) { 
-            let urlPrix =   this.urlPrix + !!url.trim()
+            let urlPrix = this.getStorageKey(url.trim())
             let values = storage.getValues(urlPrix)
             let tar = values[0]?.key
             for (let i = 0; i < values.length; i++) {
@@ -122,17 +132,16 @@ export class DebugContainerHttp extends DebugContainer {
     public tapMockToggle() { 
         if(!this.url) return 
         if (this.toggleMock.isChecked) {
-            let k_url = this.urlPrix + this.url.getURL()
+            let k_url = this.getStorageKey(this.url.getURL())
             //@ts-ignore
             let mockData = storage.get(k_url)?.mockData
             if (!!mockData) {
-                this.TxtResponse.string = formatDisplayData(mockData)
+                this.TxtMock.string = formatDisplayData(mockData)
             } else { 
                 tea.tip.show('input mock JSON data')
             }
         } 
         this.setUrlData({url:this.url.getURL(), isMock: this.toggleMock.isChecked})
-
     }
 
     // 保存参数
@@ -162,12 +171,12 @@ export class DebugContainerHttp extends DebugContainer {
         } 
 
         // mock 数据
-        if (this.toggleMock.isChecked && !!this.TxtResponse.string) { 
-            mockData = this.TxtResponse.string?.trim()
+        if (this.toggleMock.isChecked && !!this.TxtMock.string) { 
+            mockData = this.TxtMock.string?.trim()
             try {
                 mockData = JSON.parse(mockData)
             } catch (error) {
-                console.warn('JSON 解析 postData 错误')
+                console.warn('JSON 解析 mockData 错误')
             }
         }
 
@@ -182,7 +191,7 @@ export class DebugContainerHttp extends DebugContainer {
         
         this.tapSave()  // 发送前触发下 save
 
-        if (this.toggleMock.isChecked && !this.TxtResponse.string) { 
+        if (this.toggleMock.isChecked && !this.TxtMock.string) { 
             tea.tip.show('请输入  Mock JSON Data')
             return
         }
@@ -213,17 +222,10 @@ export class DebugContainerHttp extends DebugContainer {
         let tar_key = caseItem?.caseData.name
         switch (action) {
             case 'delete':
-                    // this.TxtKey.string = ''
-                    // this.DataViewEditBox.string = ''
                     storage.remove(tar_key)
                     caseItem.node.parent = null
-                break
-            case 'save':
-                    try {
-                        // let data = JSON.parse(this.DataViewEditBox.string,(key, value) => key === 'expire' ? dayjs(value).valueOf() : value)
-                    } catch (error) {
-                        console.error('Invalid JSON string')
-                        return
+                    if (this.curDebugItem == caseItem) { 
+                        this.clear()
                     }
                 break
             case 'tap':
@@ -248,7 +250,7 @@ export class DebugContainerHttp extends DebugContainer {
         this.toggleGet.isChecked= true;
         this.togglePost.isChecked= false;
         this.toggleMock.isChecked = false;
-        this.url.clear()
+        this.url?.clear()
     }
 
 }
