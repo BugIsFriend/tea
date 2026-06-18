@@ -123,8 +123,10 @@ export class DebugContainerHttp extends DebugContainer {
                 this.clear()
                 this.setUrlData(likes[0].caseData.data, true)
                 likes[0]?.handleTap(true)
+                // scroll to target position;
+                tea.tip.show('找到匹配 Http 请求')
             } else { 
-                tea.tip.show('没有所有到匹配 htttp 请求')
+                tea.tip.show('没有找到匹配 htttp 请求')
             }
 
         }
