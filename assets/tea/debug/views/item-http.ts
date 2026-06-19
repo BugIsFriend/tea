@@ -17,7 +17,7 @@ const { ccclass, property } = _decorator;
 @ccclass('DebugItemHttp')
 export class DebugItemHttp extends DebugItemBase { 
 
-    @seek(Label,'TxtHttp') TxtHttp: Label = null
+    @seek(Label) TxtHttp: Label = null
 
     protected start(): void {
         this.node.on(Button.EventType.CLICK, this.tap, this)

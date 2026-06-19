@@ -7,7 +7,7 @@ const { ccclass } = _decorator;
 @ccclass('TipItem')
 export class TipItem extends TipBase {
 
-    @seek(RichText, 'TxtContent') TxtContent:RichText
+    @seek(RichText) TxtContent:RichText
 
 
     show(content: string) { 

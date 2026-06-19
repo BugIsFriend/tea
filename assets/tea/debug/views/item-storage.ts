@@ -17,7 +17,7 @@ const { ccclass, property } = _decorator;
 @ccclass('DebugItemStorage')
 export class DebugItemStorage extends DebugItemBase { 
 
-    @seek(Label,'TxtName') TxtName: Label = null
+    @seek(Label) TxtName: Label = null
 
     protected start(): void {
         this.node.on(Button.EventType.CLICK, this.tap, this)

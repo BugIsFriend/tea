@@ -5,48 +5,27 @@
  * @Last Modified time: 2026-02-27 17:05:46
 * * */
 
-import { Component, find, js, Node, error, log } from 'cc'
+import { Component, js, Node} from 'cc'
 import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
 
-type ParamTypeObj<T> = { type: T[] }
 
-export type ParamTypeComp<T extends Component> = T | ParamTypeObj<T>
-export type ParamType<T extends MixType> = T | ParamTypeObj<T>
+// type ParamTypeObj<T> = { type: T[] }
 
-function getTarget<T extends MixType>(ctor: { new(): T }, comp: any, key?:string, url?:string): T {
-    if (js.isChildClassOf(ctor, Node)) {
-        if (!url && !!key) { 
-            log(` seek Node by key: ${key} in ${comp}`)
-            return comp.node.getChildByName(key) as T
-        }
-        return comp.node
-    } else { 
-        let tarcom = comp.getComponent(ctor)
-        if (!tarcom) error(` there isn't ${ctor.name}  in  ${comp.node.name} Node`)
-        return tarcom
-    }
-}
+// export type ParamTypeComp<T extends Component> = T | ParamTypeObj<T>
+// export type ParamType<T extends MixType> = T | ParamTypeObj<T>
 
 function initDecoratorKey(obj: any) {
     if (!obj.__decoratorkey__) obj.__decoratorkey__ = {}
 }
 
 /**
- *  获取当前节点的组件或者子节点的组件； 通过url参数指定获取组件的节点
- * @param param: Component|Node|[Component|Node]
- * @param url : 路径：指向当前节点对应的子节点； 若不存在 
- * ! 非数组
- * @example 1： @seek(Node) xNode: Node;                获取子节点名字为xNode的节点； 
- * @example 2： @seek(Node,'xxx/xx') xNode: Node;       获取子节点为'xxx/xx'的节点 
- * @example 3： @seek(Label) label: Label;              获取Label组件；
- * @example 4： @seek(Label,'xxx/xx') label: Label;     获取子节点为'xxx/xx'的节点的 Label 组件；
- * ! 数组 需要链接key的前缀(最后一个字符前面的部分) 
- * @example 5： @seek([Node]) nodes: Node[];            获取所有子节点  名字包含'node' 的节点；
- * @example 6： @seek([Label]) lables: Label[];         获取所有子节点 名字包含 'lable' 的节点上的 Label 组件；
- * */
-export function seek<ParamType>(param: ParamType, url?: string) {
+ * 
+ * @param url 获取 以属性名为名的节点， 并且该节点是 url 指定节点的子节点；
+ *            若 url 为空，则该节点是当前节点的子节点
+ */
+export function seek(tType: any = Node, parentUrl:string = '') {
     return function (target, key) {
         const mapKey = '_##_' + key
 
@@ -58,33 +37,59 @@ export function seek<ParamType>(param: ParamType, url?: string) {
         const get = function () {
             initDecoratorKey(this)
             if (!!this.__decoratorkey__[mapKey]) return this.__decoratorkey__[mapKey]
+            //@ts-ignore
 
-            let node = !!url ? find(url, this.node) : this.node
-            if (!Array.isArray(param)) {
-                //@ts-ignore
-                this.__decoratorkey__[mapKey] = getTarget(param, node, key,url) // 找到对应的
-            } else {
-                let result = []
-                //@ts-ignore
-                let tpyeInfo = param[0]
+            if (!!parentUrl && !parentUrl.endsWith('/')) parentUrl += '/'
 
-                let prefix = key.substring(0, key.length - 1).toLowerCase()
-                if (tpyeInfo === Node) {
-                    node.children.forEach((child) => {
-                        let name = child.name.toLowerCase()
-                        name.includes(prefix) && result.push(child)
-                    })
-                } else {
-                    node.children.forEach((child) => {
-                        let name = child.name.toLowerCase()
-                        let com = child.getComponent(tpyeInfo)
-                        name.includes(prefix) && com && result.push(com)
-                    })
-                }
-                this.__decoratorkey__[mapKey] = result
+            let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
+            let tarNode = parent.getChildByName(key)
+
+            this.__decoratorkey__[mapKey] = js.isChildClassOf(tType,Node) ? tarNode : tarNode?.getComponent(tType)
+
+            if (!this.__decoratorkey__[mapKey]) console.warn(`未找到属${key}性对应的目标`)
+            return this.__decoratorkey__[mapKey]
+        }
+        return Object.defineProperty(target, key, { set: set, get: get })
+    }
+}
+
+/**
+ *  找到以 key.substring(0,key.lenght-1) 为前缀的所有子节或者 子节点的组件；
+ * @param tType 
+ * @param parentUrl 
+ * @returns 
+ */
+export function seeks(tType: any = Node, parentUrl: string ='') { 
+    return function (target, key) {
+        const mapKey = '_##_' + key
+
+        const set = function (value) {
+            initDecoratorKey(this)
+            this.__decoratorkey__[mapKey] = value
+        }
+
+        const get = function () {
+            initDecoratorKey(this)
+            if (!!this.__decoratorkey__[mapKey]) return this.__decoratorkey__[mapKey]
+           
+            //@ts-ignore
+            let prefix = key.substring(0, key.length - 1).toLowerCase()
+
+
+            if (!!parentUrl && !parentUrl.endsWith('/')) parentUrl += '/'
+
+            let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
+            
+            let tarChildren:any[] = parent.children.filter(node => node.name.toLowerCase().includes(prefix))
+            
+            if (js.isChildClassOf(tType, Component)) { 
+                tarChildren = tarChildren.map(child=>child.getComponent(tType))
             }
-            if (!this.__decoratorkey__[mapKey]) { 
-                console.error(`未找到属${key}性对应的目标`)
+            
+            this.__decoratorkey__[mapKey] = tarChildren
+
+            if (!tarChildren || tarChildren.length == 0 ) { 
+                console.warn(`未找到目标 Node 或者组件 `)
             }
             return this.__decoratorkey__[mapKey]
         }

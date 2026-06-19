@@ -14,10 +14,12 @@ export class TipBox extends Component {
 
     msg: ITipBox
     
-    @seek(Label, 'TxtTitle') TxtTitle:Label
+    @seek(Label) TxtTitle: Label
+    
     @seek(Label, 'BtnOk') TxtOk:Label
-    @seek(Label, 'BtnClose') TxtCancel:Label   
-    @seek(Label, 'TxtContent') TxtContent: Label
+    @seek(Label, 'BtnClose') TxtCancel: Label   
+    
+    @seek(Label) TxtContent: Label
 
     @seek(Node) BtnCancel:Node
     @seek(Node) BtnOk:Node

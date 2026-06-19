@@ -16,7 +16,7 @@ import { DebugItemBase } from "./item-base";
 @ccclass('DebugItemDefault')
 export class DebugItemDefault extends DebugItemBase { 
     
-    @seek(Label, 'TxtName') TxtName: Label 
+    @seek(Label) TxtName: Label 
 
     initData(caseData: ICaseData, container?: DebugContainer): void { 
         super.initData(caseData, container)

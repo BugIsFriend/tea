@@ -15,8 +15,8 @@ const { ccclass, property } = _decorator;
 @ccclass('DebugContainerStorage')
 export class DebugContainerStorage extends DebugContainer {
 
-    @seek(Label, 'DataView/TxtKey') TxtKey: Label;
-    @seek(EditBox, 'DataView/TxtView') DataViewEditBox: EditBox;
+    @seek(Label, 'DataView') TxtKey: Label;
+    @seek(EditBox, 'DataView') DataViewEditBox: EditBox;
 
     public debugItemParent() {
         return find('ListView/view/content', this.node)

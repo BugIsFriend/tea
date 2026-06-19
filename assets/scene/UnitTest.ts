@@ -1,16 +1,15 @@
 import { _decorator, color, Component, log, Sprite, tween, v3, warn } from 'cc'
 import { emmiter } from '../tea/emitter'
 import { storage } from '../tea/storage'
-import { publish, seek, subscribe } from '../tea/meta/method'
+import { publish, seek, seeks, subscribe } from '../tea/meta/method'
 import { EDITOR } from 'cc/env'
 import { UIAnimate } from '../tea/ui/ui-types'
-import { DebugGroupType } from '../tea/debug/debug'
 const { ccclass,  executeInEditMode } = _decorator
 
 @ccclass('TestCode')
 @executeInEditMode
 export class TestCode extends Component {
-    @seek([Sprite]) sprites: Sprite[]
+    @seeks(Sprite) sprites: Sprite[]
 
     // @seek(View) view: View
 
