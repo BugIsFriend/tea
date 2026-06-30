@@ -17,8 +17,8 @@ export enum DebugGroupType {
     Default = 'Default',    // 默认
     Storage = 'Storage',    // 本地存储
     Http = 'Http',          // Http请求
-    Socket = 'Socket',      // 网络消息
-    Memory = 'Memory'       // 内存对象
+    Memory = 'Memory',       // 内存对象
+    Socket = 'Socket'      // 网络消息
 }
 
 type KeyType = number | string

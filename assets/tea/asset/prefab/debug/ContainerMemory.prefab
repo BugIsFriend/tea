@@ -35,10 +35,13 @@
       },
       {
         "__id__": 140
+      },
+      {
+        "__id__": 142
       }
     ],
     "_prefab": {
-      "__id__": 142
+      "__id__": 144
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -99,8 +102,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -350.9,
-      "y": -47.738,
+      "x": -367.315,
+      "y": -35.367,
       "z": 0
     },
     "_lrot": {
@@ -448,7 +451,7 @@
     "_string": "input url",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 25,
+    "_actualFontSize": 21,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -763,7 +766,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 60.02111434936524,
+      "width": 60.029296875,
       "height": 37.8
     },
     "_anchorPoint": {
@@ -802,7 +805,7 @@
     "_string": "search",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.53333333333333,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -1144,8 +1147,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -577,
-      "y": -90,
+      "x": -593.415,
+      "y": -72.081,
       "z": 0
     },
     "_lrot": {
@@ -1204,8 +1207,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 225,
-      "y": -270,
+      "x": 226,
+      "y": -280,
       "z": 0
     },
     "_lrot": {
@@ -1374,8 +1377,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 450,
-      "height": 540
+      "width": 452,
+      "height": 560
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1519,8 +1522,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 450,
-      "height": 540
+      "width": 452,
+      "height": 560
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1624,7 +1627,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "HttpVIew",
+    "_name": "MemoryObjectVIew",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1649,8 +1652,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -106.857,
-      "y": -16.86,
+      "x": -129.703,
+      "y": -4.084,
       "z": 0
     },
     "_lrot": {
@@ -1678,7 +1681,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "EditResponse",
+    "_name": "MemoryObjectNode",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1706,8 +1709,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 6.515,
-      "y": -5.516,
+      "x": 6.5,
+      "y": -2,
       "z": 0
     },
     "_lrot": {
@@ -1735,7 +1738,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "SpriteSplash",
+    "_name": "Bg",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1801,7 +1804,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 605
+      "height": 625
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2084,7 +2087,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "EditResponse",
+    "_name": "TxtMemObject",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2213,7 +2216,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 398,
-      "height": 585.2000000000002
+      "height": 25.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2372,7 +2375,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 398,
-      "height": 585.2000000000002
+      "height": 25.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2407,10 +2410,10 @@
       "b": 5,
       "a": 255
     },
-    "_string": "勾选 mock， 输入JSON 数据，点击 Send 模拟发送数据...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "_string": "内存对象结构",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 24.040479760119943,
+    "_actualFontSize": 15,
     "_fontSize": 15,
     "_fontFamily": "Arial",
     "_lineHeight": 20,
@@ -2481,7 +2484,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 585.2000000000002
+      "height": 25.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2752,7 +2755,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 605
+      "height": 625
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2897,7 +2900,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 605
+      "height": 625
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3050,7 +3053,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 605
+      "height": 625
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3135,8 +3138,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 700,
-      "height": 615
+      "width": 723.1,
+      "height": 630
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3279,6 +3282,27 @@
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "d4CU2pyGNJFJh5sJJ+KQDj"
+  },
+  {
+    "__type__": "e691e4zTItCq7OnmdZUZrrX",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 143
+    },
+    "EditBoxMemoryObject": {
+      "__id__": 98
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "d9mGqPAbtBj5GXO0vM6sXo"
   },
   {
     "__type__": "cc.PrefabInfo",

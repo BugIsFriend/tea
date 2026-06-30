@@ -39,7 +39,9 @@ export function seek(tType: any = Node, parentUrl:string = '') {
             if (!!this.__decoratorkey__[mapKey]) return this.__decoratorkey__[mapKey]
             //@ts-ignore
 
-            if (!!parentUrl && !parentUrl.endsWith('/')) parentUrl += '/'
+            if (!!parentUrl && parentUrl.endsWith('/')) { 
+                parentUrl = parentUrl.slice(0, parentUrl.length -1)
+            }
 
             let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
             let tarNode = parent.getChildByName(key)
@@ -76,7 +78,9 @@ export function seeks(tType: any = Node, parentUrl: string ='') {
             let prefix = key.substring(0, key.length - 1).toLowerCase()
 
 
-            if (!!parentUrl && !parentUrl.endsWith('/')) parentUrl += '/'
+            if (!!parentUrl && parentUrl.endsWith('/')) { 
+                parentUrl = parentUrl.slice(0, parentUrl.length -1)
+            }
 
             let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
             

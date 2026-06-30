@@ -258,6 +258,5 @@ export class DebugContainerHttp extends DebugContainer {
         this.toggleMock.isChecked = false;
         this.url?.clear()
     }
-
 }
 

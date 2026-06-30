@@ -106,7 +106,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -327.426,
-      "y": -47.738,
+      "y": -37.237,
       "z": 0
     },
     "_lrot": {
@@ -1537,7 +1537,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -577,
-      "y": -90,
+      "y": -79.499,
       "z": 0
     },
     "_lrot": {
@@ -2072,7 +2072,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -46,
-      "y": -16.86,
+      "y": -6.359,
       "z": 0
     },
     "_lrot": {
@@ -6069,7 +6069,7 @@
       "b": 187,
       "a": 255
     },
-    "_string": "post data",
+    "_string": "mock data",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_actualFontSize": 21,
