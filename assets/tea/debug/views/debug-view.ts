@@ -7,23 +7,25 @@
 
 import { _decorator, Prefab, Node, instantiate, log, Component, CCString, Enum, Label} from "cc";
 import { Unit } from "../../unit";
-import { ICaseData, DebugGroupType } from "../debug";
 import { enum2map, gain, keys } from "../../tools";
 import { DebugItemDefault } from "./item-default";
 import { DebugContainer } from "./container";
 import { DebugItemBase } from "./item-base";
+import { DebugGroupType, ICaseData } from "../debug-types";
 const { ccclass,property, executeInEditMode } = _decorator
 
 enum eDebugItemComps  { 
     DebugItemBase = 'DebugItemBase',
     DebugItemDefault = 'DebugItemDefault',
     DebugItemStorage = 'DebugItemStorage',
-    DebugItemHttp = 'DebugItemHttp'
+    DebugItemHttp = 'DebugItemHttp',
+    DebugItemMemory = 'DebugItemMemory',
 }
 
 @ccclass('DebugPrefabsCfg')
 export class DebugPrefabsCfg { 
-    @property(CCString) group: string = ''
+
+    @property({type:Enum(DebugGroupType)}) group: string = ''
     @property({ type: Enum(eDebugItemComps) }) caseItemCtr: eDebugItemComps = eDebugItemComps.DebugItemBase;
     
     @property(Prefab) caseItem: Prefab = null;
@@ -32,16 +34,14 @@ export class DebugPrefabsCfg {
 
 
 @ccclass('DebugView')
-@executeInEditMode
+// @executeInEditMode
 export class DebugView extends Unit {
-
 
     @property(Prefab) casePrefab: Prefab = null;
     @property(Prefab) ContainerPrefab: Prefab = null;
 
     @property(Node) TabParent: Node = null; // 页签更节点
     @property(Node) ContainerParent: Node = null;
-
 
     @property(DebugPrefabsCfg) prefabCfg: DebugPrefabsCfg[] = []  // 增加增加 group, 并且增加对应的 container 和 caseItem 的 prefab 定义；如果没有设置，则使用默认的 ContainerPrefab 和 casePrefab；
 
@@ -86,8 +86,16 @@ export class DebugView extends Unit {
                 })
             }
 
+            if (groupId == DebugGroupType.Memory) { 
+                log('标记断点')
+            }
             // 创建 每个组 对应的测试用例；
             mGroup.forEach((debugItem, key) => { 
+                
+                if (groupId == DebugGroupType.Memory) { 
+                    log('标记断点')
+                }
+
                 let debugCfg = tea.debug.getDebugPrefab(groupId) 
                 let casePrefab = debugCfg?.caseItem || this.casePrefab
                 let node = instantiate(casePrefab)

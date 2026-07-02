@@ -8,25 +8,28 @@ import { _decorator, Button, Color, Label, Sprite, v3 } from "cc";
 import { seek } from "../../meta/method";
 import { DebugContainer } from "./container";
 import { DebugItemBase } from "./item-base";
-import { ICaseData } from "../debug-types";
+import { ICaseData, ICaseDataMemory } from "../debug-types";
 
 const { ccclass, property } = _decorator;
 
 
 // 定制 DebugItem界面；如果没有设置，则使用默认界面；
-@ccclass('DebugItemStorage')
-export class DebugItemStorage extends DebugItemBase { 
+@ccclass('DebugItemMemory')
+export class DebugItemMemory extends DebugItemBase { 
 
+    caseData: ICaseDataMemory
     @seek(Label) TxtName: Label = null
+
 
     protected start(): void {
         this.node.on(Button.EventType.CLICK, this.tap, this)
     }
 
-    public initData(caseData: ICaseData, container?: DebugContainer): void { 
+    public initData(caseData: ICaseDataMemory, container?: DebugContainer): void { 
         super.initData(caseData, container)
         this.node.position  = v3(20, 0, 0)
-        this.TxtName.string = caseData.name+'       '
+        this.TxtName.string = caseData.name + '       '
+        
     }
 
     handleTap(tap:boolean) { 

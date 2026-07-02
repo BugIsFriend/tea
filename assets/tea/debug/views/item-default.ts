@@ -6,11 +6,11 @@
 * */
 
 import { _decorator, Button, Color, Label, Layout, Node, Sprite, } from "cc";
-import { ICaseData } from "../debug";
 const { ccclass} = _decorator
 import { seek } from "../../meta/method";
 import { DebugContainer } from "./container";
 import { DebugItemBase } from "./item-base";
+import { ICaseData } from "../debug-types";
 
 
 @ccclass('DebugItemDefault')

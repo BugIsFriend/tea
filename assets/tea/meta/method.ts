@@ -10,20 +10,15 @@ import { emmiter } from '../emitter'
 
 export type MixType = Node | Component
 
-
-// type ParamTypeObj<T> = { type: T[] }
-
-// export type ParamTypeComp<T extends Component> = T | ParamTypeObj<T>
-// export type ParamType<T extends MixType> = T | ParamTypeObj<T>
-
 function initDecoratorKey(obj: any) {
     if (!obj.__decoratorkey__) obj.__decoratorkey__ = {}
 }
 
 /**
- * 
- * @param url 获取 以属性名为名的节点， 并且该节点是 url 指定节点的子节点；
- *            若 url 为空，则该节点是当前节点的子节点
+ * 获取当前组件所在的 Node(或 Child Node) 以 key为 属性名的 Node 或 Node的组件； 如果 parentUrl 不为空，则在 parentUrl 节点下查找； 否则在当前节点下查找；
+ * @param tType 
+ * @param parentUrl 
+ * @returns
  */
 export function seek(tType: any = Node, parentUrl:string = '') {
     return function (target, key) {
@@ -37,16 +32,69 @@ export function seek(tType: any = Node, parentUrl:string = '') {
         const get = function () {
             initDecoratorKey(this)
             if (!!this.__decoratorkey__[mapKey]) return this.__decoratorkey__[mapKey]
-            //@ts-ignore
-
             if (!!parentUrl && parentUrl.endsWith('/')) { 
                 parentUrl = parentUrl.slice(0, parentUrl.length -1)
             }
+            let tarNode:Node = null
+            if (this.node.name == key) {
+                tarNode = this.node
+            } else { 
+                let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
+                tarNode = parent.getChildByName(key)
+            }
 
-            let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
-            let tarNode = parent.getChildByName(key)
+            if (!tarNode) { 
+                console.warn(`未找到属${key}性对应的目标 Node`)
+            }
 
             this.__decoratorkey__[mapKey] = js.isChildClassOf(tType,Node) ? tarNode : tarNode?.getComponent(tType)
+
+            if (!this.__decoratorkey__[mapKey]) console.warn(`未找到属${key}性对应的目标`)
+            return this.__decoratorkey__[mapKey]
+        }
+        return Object.defineProperty(target, key, { set: set, get: get })
+    }
+}
+
+/**
+ * 获取一个以 key 属性为名的节点，挂载不同的组件；
+ * @param tType 
+ * @param parentUrl 
+ * @returns
+ */ 
+export function seekt(typeTupe:any[], parentUrl: string = '') { 
+    return function (target, key) {
+        const mapKey = '_##_' + key
+
+        const set = function (value) {
+            initDecoratorKey(this)
+            this.__decoratorkey__[mapKey] = value
+        }
+        const get = function () {
+            initDecoratorKey(this)
+            if (!!this.__decoratorkey__[mapKey]) return this.__decoratorkey__[mapKey]
+            if (!!parentUrl && parentUrl.endsWith('/')) { 
+                parentUrl = parentUrl.slice(0, parentUrl.length -1)
+            }
+            let tarNode:Node = null
+            if (this.node.name == key) {
+                tarNode = this.node
+            } else { 
+                let parent: Node = !parentUrl ? this.node : this.node.getChildByName(parentUrl)
+                tarNode = parent.getChildByName(key)
+            }
+
+            if (!tarNode) { 
+                console.warn(`未找到属${key}性对应的目标 Node`)
+            }
+
+            let comps = []
+            typeTupe.forEach(tType => { 
+                let comp = tarNode?.getComponent(tType)
+                if (comp) comps.push(comp)
+            })
+
+            this.__decoratorkey__[mapKey] = comps
 
             if (!this.__decoratorkey__[mapKey]) console.warn(`未找到属${key}性对应的目标`)
             return this.__decoratorkey__[mapKey]

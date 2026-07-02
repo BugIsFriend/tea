@@ -48,7 +48,8 @@ export class Background extends Unit {
     addBgNode(load = false) {
         // 添加默认背景颜色
         let _nodename ='#bgNode'
-        let bgNode = this.node.getChildByName(_nodename)
+        let bgNode = this.node.getChildByName(_nodename) || this.node.getChildByName('BgNode')
+        
         
         if (!bgNode) {
             // 添加背景节点

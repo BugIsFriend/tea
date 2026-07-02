@@ -4,6 +4,7 @@ import { storage } from '../tea/storage'
 import { publish, seek, seeks, subscribe } from '../tea/meta/method'
 import { EDITOR } from 'cc/env'
 import { UIAnimate } from '../tea/ui/ui-types'
+import { DebugGroupType, ICaseData, ICaseDataMemory } from '../tea/debug/debug-types'
 const { ccclass,  executeInEditMode } = _decorator
 
 @ccclass('TestCode')
@@ -105,7 +106,7 @@ export class TestCode extends Component {
     }
 
 
-    debugViewTest() { 
+    debugViewTest() {
 
         tea.debug.addCase({ name: 'test', tapCb: (data) => {
                 log('debug_case '+data.name)
@@ -119,6 +120,20 @@ export class TestCode extends Component {
                 return data.name +(click++)
             }
         })
+
+
+        let memeyDebugData: ICaseDataMemory = {
+            group: DebugGroupType.Memory,
+            name: 'test-group-case',
+            getData: () => { return { aa: 123, bb: 'test', expire: dayjs().add(1, 'day').valueOf() } },
+            setData: (data) => { log('setData', data) },
+            tapCb: (data) => {
+                log('debug_case '+data.name)
+                return data.name
+            }
+        }
+        memeyDebugData
+        tea.debug.addCaseByMemory(memeyDebugData)
     }
 
 

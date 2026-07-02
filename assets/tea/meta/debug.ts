@@ -4,7 +4,8 @@
 * @Modified by:   myerse.lee   
 * @Modified time: 2026-02-26 16:44:06   * */
 
-import { __debug, ICaseData } from "../debug/debug"
+import { __debug } from "../debug/debug"
+import { ICaseData } from "../debug/debug-types"
 
 /**
  * 普通测试用例； 用于测试一个功能的多个方面；每个方面可以有不同的测试数据； 通过 group 来区分不同的方面；
@@ -35,6 +36,6 @@ export function debug_case( param: ICaseData) {
  * @param flow_id 
  * @param group 
  */
-export function debug_flow_case(param:ICaseData) { 
+export function debug_flow_case(param:ICaseData) {
 
 }

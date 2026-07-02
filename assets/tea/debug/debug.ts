@@ -12,36 +12,7 @@ import { gain, keys } from "../tools";
 import { instantiate, Prefab, find, input, Input, macro, isValid, _decorator, EventKeyboard, UITransform, KeyCode, } from "cc";
 import { DebugView } from "./views/debug-view";
 import { storage } from "../storage";
-
-export enum DebugGroupType {
-    Default = 'Default',    // 默认
-    Storage = 'Storage',    // 本地存储
-    Http = 'Http',          // Http请求
-    Memory = 'Memory',       // 内存对象
-    Socket = 'Socket'      // 网络消息
-}
-
-type KeyType = number | string
-type DebugDatas = Map<KeyType, ICaseData>
-type TDebugPrefab = { container: Prefab, caseItem: Prefab,  containerComp?:any, caseItemComp?:any }
-
-export enum ECase { 
-    TabItem = 0,   // 页签
-    DebugItem = 1, // 测试用例
-}
-
-export interface ICaseData { 
-    name: string,                               // 显示名字；
-    id?: KeyType,                               // 用户可指定 ID； 没有指定ID 时，会自动生成，指定ID 和 自动生成id 可能会冲突
-    group?: DebugGroupType,                     // 当前属于那一组； 没有放在 'Default' 组中
-    flow_id?:  KeyType,                         // 如果存在 flow_id 则，优先存储在流 id 中；流可用以组织测试用例的执行流程；
-    tapCb?: (duebugData: ICaseData) => string   // 点击回调： 返回值会显示在界面上；如果没有返回值，则显示 name
-    data?: any,                                 // 用户自定数据
-}
-
-export interface IFlowCaseData extends ICaseData { 
-    flow_id:  KeyType
-}
+import { DebugDatas, DebugGroupType, ICaseData, TDebugPrefab,KeyType, ICaseDataMemory} from "./debug-types";
 
 @singleton
 export class Debug { 
@@ -67,31 +38,36 @@ export class Debug {
         return this._caseId++
     }
 
+
+    public addCaseByMemory(debug_case: ICaseDataMemory) {
+        this.addCase(debug_case)
+    }
+
     /**
      * 增加一个测试用例；
      * @param debug_case 
      */
-    public addCase(debug_case: ICaseData) { 
- 
+    public addCase(debug_case: ICaseData) {
+
         if (!debug_case.id) debug_case.id =  this.caseId
 
         debug_case.group ??= DebugGroupType.Default
 
         let mGroup = this._gData.get(debug_case.group)
-        if (!mGroup) { 
+        if (!mGroup) {
             mGroup = new Map<KeyType, ICaseData>()
             this._gData.set(debug_case.group,mGroup)
         }
-        
+
         if (debug_case.flow_id) {
             let flow_group = this._mFlowGroups.get(debug_case.flow_id)
-            if (!flow_group) { 
+            if (!flow_group) {
                 flow_group =  new Array<ICaseData>()
                 this._mFlowGroups.set(debug_case.flow_id, flow_group)
             }
             flow_group.push(debug_case)
             _.orderBy(flow_group,['group'], ['asc'])
-        } else {   
+        } else {
             mGroup.set(debug_case.id , debug_case)
         }
     }
@@ -136,11 +112,15 @@ export class Debug {
         }
     }
 
-    public data(): Map<DebugGroupType,DebugDatas> { 
+    public data(): Map<DebugGroupType,DebugDatas> {
         return this._gData
     }
 
-    public clearData() { 
+    public removeCase(groupId: DebugGroupType, id: KeyType) {
+        this._gData.get(groupId)?.delete(id)
+    }
+
+    public clearData() {
         this._gData.forEach((value, key) =>  value.clear())
         this._mFlowGroups.clear()
     }

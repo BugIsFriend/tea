@@ -5,10 +5,10 @@
 * @Modified time: 2026-06-03 10:46:33   
 * */
 import { _decorator, Button, Color, Label, Sprite, v3 } from "cc";
-import { ICaseData } from "../debug";
 import { seek } from "../../meta/method";
 import { DebugContainer } from "./container";
 import { DebugItemBase } from "./item-base";
+import { ICaseData } from "../debug-types";
 
 const { ccclass, property } = _decorator;
 
