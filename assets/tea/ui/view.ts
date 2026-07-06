@@ -4,11 +4,9 @@
 * @Modified by:   myerse.lee   
 * @Modified time: 2026-04-01 18:46:45   * */
 
-import { ui } from './ui'
-import { Background } from './background'
-
 
 import { Unit } from '../unit'
+import { Background } from './background'
 import { LoadComponent } from '../component/load'
 import { _decorator, Enum, EventHandler, Node, Prefab, instantiate } from 'cc'
 import { BackgroudParam, NumberAnimateMap, UIAnimate } from './ui-types'
@@ -142,11 +140,12 @@ export class View extends Unit {
         }
     }
 
+   
     /**
      * 触发关闭: 给关闭 btn 使用
      */
-    triggerClose() {
-        ui.close(this)
+    tapCloseBtn() {
+        tea.ui.close(this)
     }
 
     appendShowedCb(func: Function) {

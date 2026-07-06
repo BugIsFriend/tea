@@ -136,23 +136,29 @@ export class Emitter {
     }
 
     /**
-     * @param target:{id?: string; context?: object}  删除指定监听器
+     * 
+     * @param idOrContext 
+     * @param context? 
+     * @returns 
      */
-    public off(target: { id?: string; context?: object }) {
+    public off(idOrContext: string | object, context?:object) {
+
+        if(!!idOrContext) return 
 
         _.remove(this.msgOnce, (item) => {
-            return item.context == target.context || item.id == target.id
+            return item.context == idOrContext || item.id == idOrContext
         })
-        
-        if (!!target?.id && !!target.context) {
-            // 删除摸个对象摸个事件
-            let tarHandlers = this.msgMap.get(target.id) || []
-            //
-            _.remove(tarHandlers, (emmitees) => emmitees.context == target.context)
-        } else if (!!target.context) {
 
+        if (typeof idOrContext == 'string') {
+            if (!context) {
+                this.msgMap.set(idOrContext, [])
+            } else {
+                let tarHandlers = this.msgMap.get(idOrContext) || []
+                _.remove(tarHandlers, (emmitees) => emmitees.context == context)
+            }
+        } else if(typeof idOrContext == 'object'){ 
             for (const [key, handlers] of this.msgMap) {
-                _.remove(handlers || [], (item) => item.context == target.context)
+                _.remove(handlers || [], (item) => item.context == idOrContext)
             }
         }
     }
