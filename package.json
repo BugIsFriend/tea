@@ -4,5 +4,12 @@
   "type": "module",
   "creator": {
     "version": "3.8.8"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
