@@ -5,7 +5,8 @@ import { LoDashStatic } from './lodash/index'
 // 声明全局变量
 declare global {
     // 声明全局变量
-    var tea: Tea
+    const std: never;
+    const tea: Tea
     const _: LoDashStatic
     var dayjs: (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean) => dayjs.Dayjs
 

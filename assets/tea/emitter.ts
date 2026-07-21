@@ -5,7 +5,7 @@
 * @Modified time: 2026-06-03 10:47:56   
 * */
 
-import { warn, error, isValid, director } from 'cc'
+import { warn, error, isValid, director, Component } from 'cc'
 import { singleton } from './meta/class'
 
 export interface IEmitter {
@@ -70,16 +70,16 @@ export class Emitter {
      * @param dt: 延迟时间间隔
      * @returns emit: (id:string, param)=> {timer: any }
      */
-    public delay(dt: number): { emit: (id: string, ...param: any) => { timer: any } } {
+    public delay<T extends Node | Component>(dt: number, context?: T): { emit: (id: string, ...param: any) => { timer: any } } {
         return {
             emit: function (id: string, ...param: any) {
-                let timer = null
-                new Promise((resolve, reject) => {
-                    timer = setTimeout(() => {   // 待优化 改成 引擎类的定时器
-                        resolve(true)
-                        emmiter.emit(id, ...param)
-                    }, dt * 1000)
-                })
+                let timer = setTimeout(() => {   // 待优化 改成 引擎类的定时器
+                    if (!context || isValid(context)) {
+                        tea.emitter.emit(id, ...param)
+                    } else {
+                        clearTimeout(timer)
+                    }
+                }, dt * 1000)
                 return { timer }
             }
         }
