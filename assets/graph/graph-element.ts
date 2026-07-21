@@ -42,8 +42,8 @@ export class NavGraphNode extends GraphNode {
 @ccclass('GraphEdge')
 export class GraphEdge { 
 
-    @property(CCInteger) from:number = invalid_node_idx
-    @property(CCInteger) to: number = invalid_node_idx
+    @property(CCInteger) _from:number = invalid_node_idx
+    @property(CCInteger) _to: number = invalid_node_idx
     
     @property(CCFloat) cost: number = 1
 
@@ -53,20 +53,20 @@ export class GraphEdge {
         this.cost = cost?cost:this.cost
     }
 
-    public get From() : number {
+    public get from() : number {
         return this.from
     }
 
-    public set From(from : number) {
+    public set from(from : number) {
         this.from = from;
     }
 
-    public get To() : number {
-        return this.to
+    public get to() : number {
+        return this._to
     }
 
-    public set To(to : number) {
-        this.to = to;
+    public set to(to : number) {
+        this._to = to;
     }
     
     public get Cost() : number {

@@ -5,7 +5,7 @@
 * @Modified time: 2026-06-03 10:48:13   
 * */
 
-import { Component, _decorator, Node, js } from "cc";
+import { Component, _decorator, js } from "cc";
 import { emmiter } from "./emitter";
 import { unlinkProperty } from "./meta/method";
 import { gain } from "./tools";
@@ -28,7 +28,9 @@ export class Unit extends Component implements IUnit {
      * 组将被创建出来后，做一些初始化工作；
      * @param creator 
      */
-    public init(data?: any): void { }
+    public init(data?: any): void { 
+        this._data = data
+    }
 
     public getData<T>():T{ 
         return this._data
@@ -45,8 +47,7 @@ export class Unit extends Component implements IUnit {
             //@ts-ignore
             comp = gain(this.node, compClass)
             //@ts-ignore
-            js.isChildClassOf(comp.constructor, Unit) && comp?.init(data)
-            
+            js.isChildClassOf(comp.constructor, Unit) && comp?.init(data)   
         }
         return comp
     }

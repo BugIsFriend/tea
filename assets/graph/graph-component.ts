@@ -70,9 +70,9 @@ export class GraphComponent extends Component {
         if (!this.isDigraph) {
             let rEdges = this.edgesVec[idx]
             for (let i = 0; i < rEdges.length; i++) {
-                const toIdx = rEdges[i].To;
+                const toIdx = rEdges[i].to;
                 for (let j = 0; j < this.edgesVec[toIdx].length; j++) {
-                    if (this.edgesVec[toIdx][j].To == idx) {
+                    if (this.edgesVec[toIdx][j].to == idx) {
                         this.edgesVec[toIdx].splice(j, 1)
                         break;
                     }
@@ -85,13 +85,13 @@ export class GraphComponent extends Component {
     }
 
     public addEdge<E extends GraphEdge>(edge: E) {
-        if (!this.nodes[edge.From].isInvalid() && !this.nodes[edge.To].isInvalid()) { 
+        if (!this.nodes[edge.from].isInvalid() && !this.nodes[edge.to].isInvalid()) { 
             if (this.isUniqueEdge(edge)) { 
                 this.edgesVec[edge.from].push(edge)
             }
 
             if (!this.bGigraph) { 
-                let nEdge = new GraphEdge(edge.to, edge.From);
+                let nEdge = new GraphEdge(edge.to, edge.from);
                 this.edgesVec[nEdge.to].push(nEdge);
             }
         }
@@ -143,7 +143,7 @@ export class GraphComponent extends Component {
         if (this.isNodePresent(from) && this.isNodePresent(to)) { 
             let edges = this.edgesVec[from]
             for (let i = 0; i < edges.length; i++) {
-                if (edges[i].To == to) return true;
+                if (edges[i].to == to) return true;
             }
         }
         return false;
@@ -153,16 +153,16 @@ export class GraphComponent extends Component {
     public cullInvalidEdges() { 
         for (let i = 0; i < this.edgesVec.length; i++) {
             _.remove(this.edgesVec[i], (edge) => { 
-                return this.nodes[edge.From].isInvalid() || this.nodes[edge.To].isInvalid()
+                return this.nodes[edge.from].isInvalid() || this.nodes[edge.to].isInvalid()
             })
         }
     }
 
     public isUniqueEdge<E extends GraphEdge>(edge: E) { 
-        let edges = this.edgesVec[edge.From]
+        let edges = this.edgesVec[edge.from]
         for (let i = 0; i < edges.length; i++) {
             const tempEdge = edges[i];
-            if (edge.To == tempEdge.To) { 
+            if (edge.to == tempEdge.to) { 
                 return false;
             }
         }

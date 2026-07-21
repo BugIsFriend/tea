@@ -1,44 +1,48 @@
 
 
-export namespace std { 
 
+namespace std { 
     export class stack<T> { 
 
-        private elements: Array<T>;
+        private list: Array<T> = [];
         
-        constructor(element?: T[]) { 
-            this.elements = [];
-            if (element && element.length != 0) {
-                this.push(...element)
-            }
+        constructor(items?: T|Array<T>) { 
+            if (!items) return;
+            this.push(items)
         }
 
-        public push(...element:T[]) { 
-            this.elements.push(...element)
+        public push(items?: T|Array<T>) { 
+            if (Array.isArray(items)) items.forEach(item => this.list.push(item))
+            else this.list.push(items)
         }
 
         public size():number { 
-          return this.elements.length
+          return this.list.length
         }
 
         public top(): T { 
-            return this.elements[this.topIdx()]
+            return this.list[this.topIdx()]
         }
 
         public pop(): T{ 
-            if (this.empty()) throw new Error("stack is null")
+            if (this.empty()) { 
+                console.warn(' the stack is  empty !')
+                return
+            }
             let top = this.top()
-            this.elements.splice(this.topIdx(), 1)
+            this.list.splice(this.topIdx(), 1)
             return top;
         }
 
         public empty():boolean { 
-            return this.elements.length  <= 0
+            return this.list.length  <= 0
         }
 
         protected topIdx():number {
-            return this.elements.length -1
+            return this.list.length -1
         }
 
     }
 }
+
+export { }

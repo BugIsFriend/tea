@@ -1,5 +1,6 @@
 
-import { std } from "../std/stack";
+// import {} from "../std/stack";
+// import {  } from "../std/queue";
 import { GraphComponent } from "./graph-component";
 import { GraphEdge } from "./graph-element";
 import { _decorator } from "cc";
@@ -11,10 +12,6 @@ enum GNodeState {
     unvisited,
     no_parent_assigned
 }
-
-
-
-
 abstract class  SearchAglo {
     
     graph: GraphComponent
@@ -29,7 +26,6 @@ abstract class  SearchAglo {
 
     spanningTree: Array<GraphEdge> = []
     
-
     public found() { return this._found }
 
 
@@ -54,14 +50,12 @@ abstract class  SearchAglo {
         this.visited = new Array<number>(graph.numNodes()).fill(GNodeState.visited)
         this.route = new Array<number>(graph.numNodes()).fill(GNodeState.no_parent_assigned)
     }
-
 }
 
 // 深度优先算法
 @ccclass  
 class GraphSearchDFS extends SearchAglo { 
     
-
     constructor(graph: GraphComponent, sIdx: number, tIdx: number = -1) { 
         super( graph, sIdx, tIdx )
     }
@@ -70,16 +64,15 @@ class GraphSearchDFS extends SearchAglo {
         
         // 从 起点 到 起点 的哑边，没有作用；
         let dummy_edge: GraphEdge = new GraphEdge(this.sIdx, this.sIdx, 0);
-
-        let stack: std.stack<GraphEdge> = new std.stack<GraphEdge>([dummy_edge])
+    
+        let stack: std.stack<GraphEdge> = new std.stack<GraphEdge>(dummy_edge)
         
         while (!stack.empty()) {
-            const next = stack.top();
-            stack.top();
-            this.route[next.To] = next.From;
+            const next = stack.pop();
+            this.route[next.to] = next.from;
             
-            this.visited[next.To] = GNodeState.visited
-            if (next.To == this.tIdx) { 
+            this.visited[next.to] = GNodeState.visited
+            if (next.to == this.tIdx) { 
                 return true;
             }
 
@@ -89,7 +82,7 @@ class GraphSearchDFS extends SearchAglo {
 
             let edges = this.graph.getEdges(next.from)
             for (const edge of edges) {
-                if (this.visited[edge.To] == GNodeState.unvisited) { 
+                if (this.visited[edge.to] == GNodeState.unvisited) { 
                     stack.push(edge)
                 }
             }
@@ -106,5 +99,29 @@ class GraphSearchDFS extends SearchAglo {
 // 广度优先算法；
 @ccclass
 class GraphSearchBFS extends SearchAglo { 
+    search() { 
+        let dummy_edge = new GraphEdge(this.sIdx, this.sIdx, 0);
+        let queue: std.queue<GraphEdge> = new std.queue(dummy_edge)
+        
+        this.visited[dummy_edge.to] = GNodeState.visited
+        
+        while (!queue.empty()) {
+            let edge = queue.denqueue()
 
+            this.route[edge.to] = edge.from
+
+
+            if (this.tIdx == edge.to) return
+
+            let edges = this.graph.getEdges(edge.from);
+
+            for (let i = 0; i < edges.length; i++) {
+                const edge = edges[i];
+                if (this.visited[edge.to] == GNodeState.unvisited) { 
+                    queue.enqueue(edge)
+                    this.visited[edge.to] = GNodeState.visited
+                }
+            }
+        }
+    }
 }
