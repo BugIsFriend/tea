@@ -1,16 +1,14 @@
-
-// import {} from "../std/stack";
-// import {  } from "../std/queue";
 import { GraphComponent } from "./graph-component";
 import { GraphEdge } from "./graph-element";
 import { _decorator } from "cc";
 
+
 const {ccclass} = _decorator
 
 enum GNodeState { 
-    visited,
-    unvisited,
-    no_parent_assigned
+    visited = -1,
+    unvisited = -2,
+    no_parent_assigned = -3
 }
 abstract class  SearchAglo {
     
@@ -57,15 +55,16 @@ abstract class  SearchAglo {
 class GraphSearchDFS extends SearchAglo { 
     
     constructor(graph: GraphComponent, sIdx: number, tIdx: number = -1) { 
-        super( graph, sIdx, tIdx )
+        super(graph, sIdx, tIdx)
+        this._found = this.search()
     }
 
     public search() { 
         
         // 从 起点 到 起点 的哑边，没有作用；
         let dummy_edge: GraphEdge = new GraphEdge(this.sIdx, this.sIdx, 0);
-    
-        let stack: std.stack<GraphEdge> = new std.stack<GraphEdge>(dummy_edge)
+
+        let stack = new std.stack<GraphEdge>(dummy_edge)
         
         while (!stack.empty()) {
             const next = stack.pop();
@@ -87,7 +86,7 @@ class GraphSearchDFS extends SearchAglo {
                 }
             }
         }
-        return true
+        return false
     }
 
     public getSearchTree() { 
@@ -95,13 +94,18 @@ class GraphSearchDFS extends SearchAglo {
     }
 }
 
-
 // 广度优先算法；
 @ccclass
 class GraphSearchBFS extends SearchAglo { 
+
+    constructor(graph: GraphComponent, sIdx: number, tIdx: number = -1) { 
+        super(graph, sIdx, tIdx)
+        this._found = this.search()
+    }
+
     search() { 
         let dummy_edge = new GraphEdge(this.sIdx, this.sIdx, 0);
-        let queue: std.queue<GraphEdge> = new std.queue(dummy_edge)
+        let queue = new std.queue(dummy_edge)
         
         this.visited[dummy_edge.to] = GNodeState.visited
         
@@ -110,8 +114,7 @@ class GraphSearchBFS extends SearchAglo {
 
             this.route[edge.to] = edge.from
 
-
-            if (this.tIdx == edge.to) return
+            if (this.tIdx == edge.to) return true
 
             let edges = this.graph.getEdges(edge.from);
 
@@ -123,5 +126,6 @@ class GraphSearchBFS extends SearchAglo {
                 }
             }
         }
+        return false
     }
 }

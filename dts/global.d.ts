@@ -1,39 +1,12 @@
 import { Tea } from '../assets/tea/tea'
 import * as dayjs from './dayjs/dayjs'
 import { LoDashStatic } from './lodash/index'
+import { stdInterface } from "./std";
+
 
 // 声明全局变量
 declare global {
-    // 声明全局变量
-
-    namespace gizmo { 
-        export function swap<T>(arr: T[], i: number, j: number): void
-    }
-    namespace std {
-
-        export class queue<T> {
-            constructor(items?: object|Array<T>);
-            private list: T[];
-            protected sink(idx: number): void;
-            protected swim(idx: number): void;
-            public size(): number;
-            public empty(): boolean;
-            public enqueue(item: T): void;
-            public denqueue(): T;
-            public top(): T;
-        }
-        export class stack<T> {
-            constructor(items?: object|Array<T>);
-            private list: T[];
-            public push(...items: T[]): void;
-            public size(): number;
-            public top(): T;
-            public pop(): T;
-            public empty(): boolean;
-            protected topIdx(): number;
-        }
-    }
-
+    const std:stdInterface
     const tea: Tea
     const _: LoDashStatic
     var dayjs: (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean) => dayjs.Dayjs

@@ -2,7 +2,7 @@
   "ver": "4.0.24",
   "importer": "javascript",
   "imported": true,
-  "uuid": "cb876bc7-9f0f-4ed3-ace0-8b76110a4692",
+  "uuid": "e57e9a3b-4988-4c91-90eb-638830f251dc",
   "files": [
     ".js"
   ],
@@ -12,6 +12,7 @@
     "loadPluginInWeb": true,
     "loadPluginInNative": true,
     "loadPluginInMiniGame": true,
-    "isPlugin": true
+    "isPlugin": true,
+    "executionScope": "enclosed"
   }
 }

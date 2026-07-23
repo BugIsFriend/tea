@@ -30,6 +30,12 @@ export class TestCode extends Component {
         if (!EDITOR) {
             tea.init().then(() => this.uiTest())
         }
+
+
+        let q = new std.queue<number>()
+        q.enqueue(2)
+        q.enqueue(1)
+        q.enqueue(200)
     }
 
     uiTest() {

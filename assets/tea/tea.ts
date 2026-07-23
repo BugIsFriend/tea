@@ -13,11 +13,6 @@ import { ui } from './ui/ui'
 import { __debug } from './debug/debug'
 import { emmiter } from './emitter'
 import { gain } from './tools'
-
-/**
- *  框架层代码
- */
-
 @singleton
 export class Tea {
    
@@ -94,5 +89,5 @@ export class Tea {
     }
 }
 
-window.tea = new Tea()
+window['tea'] = new Tea()
 

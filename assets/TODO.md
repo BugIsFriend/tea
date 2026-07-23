@@ -4,15 +4,16 @@
 
    1. debug 实时修改某个对象某个属性的值；用于测试；
    2. mock 模块， scoket_mock
-   3. 存在错误或者警告，常驻显示在左上角； 方便修改问题；
-   4. 优化弹出动画表现；
+   3. 优化弹出动画表现；
 
-   5. http_mock mock 假数据  添加debug 支持实时mock 假数据；   [Done]
-   6. debug storage 模块针对时间进行格式化显示，方便阅读和修改    [Done]
-   7. debug参照 zyb 设计思路                                 [Done]
-   8. Dialog;     [Done]
-   9. Tip         [Done]
-   10. TipBox     [Done]
+   4. http_mock mock 假数据  添加debug 支持实时mock 假数据；   [Done]
+   5. debug storage 模块针对时间进行格式化显示，方便阅读和修改    [Done]
+   6. debug参照 zyb 设计思路                                 [Done]
+   7. Dialog;     [Done]
+   8. Tip         [Done]
+   9. TipBox     [Done]
+
+   10. 存在错误或者警告，常驻显示在左上角； 方便修改问题；[depressed]
 
 ### component:组件模块，可以单独使用，尽量少的依赖
 
