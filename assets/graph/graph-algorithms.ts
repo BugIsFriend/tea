@@ -129,3 +129,58 @@ class GraphSearchBFS extends SearchAglo {
         return false
     }
 }
+
+/**
+ * 从源头节点到目标节点的路径有很多种，选择一条最有路径
+ */
+@ccclass
+class GraphSearchDijstra extends SearchAglo { 
+
+    private costToThisNode: Array<number>       //保存从源点到 当前给定索引的节点的最优消耗
+
+    private searchFrontier: Array<GraphEdge>    //记录更替，从源点到 当前索引节点最优消耗的边
+    private shortestPathTree: Array<GraphEdge>  //记录已经是在SPT(最短生成树)中的边
+    
+    public constructor(graph: GraphComponent, sIdx: number, tIdx: number = -1) { 
+        super(graph, sIdx, tIdx)
+        this.costToThisNode = new Array<number>(this.graph.numNodes()).fill(0)
+        this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
+        this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
+    }
+
+    public search() {
+        let pq = new std.queue<{ idx: number, cost: number }>(null, { priority: 'min', compareKey: 'cost' })
+        pq.enqueue({ idx: this.sIdx, cost: 0 })
+        while (!pq.empty()) {
+            let {idx} = pq.denqueue();  
+            this.shortestPathTree[idx] = this.searchFrontier[idx]
+            if (idx == this.tIdx) return;
+            
+            let edges = this.graph.getEdges(idx);
+            for (let i = 0; i < edges.length; i++) {
+                const edge = edges[i];
+
+                let newCost = this.costToThisNode[edge.from] + edge.to;
+
+                if (this.searchFrontier[edge.to] == null) {
+                    this.costToThisNode[edge.to] = edge.cost
+                    pq.enqueue({ idx: edge.to, cost: edge.cost })
+                    this.searchFrontier[edge.to] = edge
+                } else if (newCost < this.costToThisNode[edge.to] && this.shortestPathTree[edge.to] == null) { 
+                    this.costToThisNode[edge.to] = newCost
+                    pq.replaceItem({ idx: edge.to, cost: newCost }, (newItem, oldItem) => newItem.idx == oldItem.idx)
+                    this.searchFrontier[edge.to] = edge
+                }
+            }
+        }
+    }
+
+    public getCostToTarget():number{ 
+        return this.getCostToNode(this.tIdx)
+    }
+
+    public getCostToNode(nIdx: number) { 
+        return this.costToThisNode[nIdx]
+    }
+
+}

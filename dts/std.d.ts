@@ -6,6 +6,13 @@ interface stdInterface {
 }
 
 declare namespace std {
+        /**
+         * 随机获取一个数，平局分布
+         * @param start
+         * @param end
+         * @param float
+         * @returns
+         */
         function random(start?: number, end?: number, float?: boolean): number;
         function swap<T>(arr: Array<T>, i: number, j: number): void;
         class stack<T> {
@@ -35,6 +42,12 @@ declare namespace std {
             protected swim(idx: number): void;
             size(): number;
             empty(): boolean;
+            /**
+             * 从后向前比较队列中每个元素，比较两个元素，如果相同替换两个元素
+             * @param item
+             * @param equalFunc
+             */
+            replaceItem(item: T, equalFunc: (newItem: T, qItem: T) => boolean): void;
             private _enqueue;
             enqueue(items?: T | Array<T>): void;
             denqueue(): T;

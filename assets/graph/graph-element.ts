@@ -45,12 +45,12 @@ export class GraphEdge {
     @property(CCInteger) _from:number = invalid_node_idx
     @property(CCInteger) _to: number = invalid_node_idx
     
-    @property(CCFloat) cost: number = 1
+    @property(CCFloat) _cost: number = 1
 
     constructor(from: number, to: number, cost?:number) { 
         this.from = from;
         this.to = to;
-        this.cost = cost?cost:this.cost
+        this._cost = cost?cost:this._cost
     }
 
     public get from() : number {
@@ -69,12 +69,12 @@ export class GraphEdge {
         this._to = to;
     }
     
-    public get Cost() : number {
-        return this.cost
+    public get cost() : number {
+        return this._cost
     }
 
-    public set Cost(cost : number) {
-        this.cost = cost;
+    public set cost(cost : number) {
+        this._cost = cost;
     }
     
     public equalTo(from: number, to: number) { 

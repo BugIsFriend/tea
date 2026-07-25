@@ -251,7 +251,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Plane",
+    "_name": "NavigationMap",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
