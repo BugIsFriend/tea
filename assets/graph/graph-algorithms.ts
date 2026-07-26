@@ -1,6 +1,8 @@
+import { min } from "../../dts/lodash";
 import { GraphComponent } from "./graph-component";
 import { GraphEdge } from "./graph-element";
 import { _decorator } from "cc";
+import { Heuristic } from "./heuristic";
 
 
 const {ccclass} = _decorator
@@ -25,7 +27,6 @@ abstract class  SearchAglo {
     spanningTree: Array<GraphEdge> = []
     
     public found() { return this._found }
-
 
     public getPathToTarget() { 
         let path = []
@@ -110,7 +111,7 @@ class GraphSearchBFS extends SearchAglo {
         this.visited[dummy_edge.to] = GNodeState.visited
         
         while (!queue.empty()) {
-            let edge = queue.denqueue()
+            let edge = queue.dequeue()
 
             this.route[edge.to] = edge.from
 
@@ -152,7 +153,7 @@ class GraphSearchDijstra extends SearchAglo {
         let pq = new std.queue<{ idx: number, cost: number }>(null, { priority: 'min', compareKey: 'cost' })
         pq.enqueue({ idx: this.sIdx, cost: 0 })
         while (!pq.empty()) {
-            let {idx} = pq.denqueue();  
+            let {idx} = pq.dequeue();  
             this.shortestPathTree[idx] = this.searchFrontier[idx]
             if (idx == this.tIdx) return;
             
@@ -175,12 +176,73 @@ class GraphSearchDijstra extends SearchAglo {
         }
     }
 
+    public getSPT() { 
+        return this.shortestPathTree
+    }
+
     public getCostToTarget():number{ 
         return this.getCostToNode(this.tIdx)
     }
 
     public getCostToNode(nIdx: number) { 
         return this.costToThisNode[nIdx]
+    }
+    
+    public getPathToTarget() { 
+        let path = []
+        if (!this.found || this.tIdx < 0) return 
+
+        let preIdx = this.tIdx
+        path.unshift(preIdx)
+
+        while (preIdx != this.sIdx && this.shortestPathTree[preIdx] != null) {
+            preIdx = this.shortestPathTree[preIdx].from
+            path.unshift(preIdx) 
+        }
+        return path
+    }
+}
+
+@ccclass
+class GraphSearchAStart extends SearchAglo { 
+
+    private searchFrontier: Array<GraphEdge>    //记录更替，从源点到 当前索引节点最优消耗的边
+    private shortestPathTree: Array<GraphEdge>  //记录已经是在SPT(最短生成树)中的边
+
+    private gCost: Array<number>   // 开始节点，到指定节点的 边的消耗
+    private fCost: Array<number>   // 开始节点，到指定节点的 总消耗(启发因子消耗 + 边的下号)
+
+    public HeuristicCalculator:(graph:GraphComponent, nd1:number, nd2:number)=>number = Heuristic.EuclidCalculate
+
+    public search() { 
+        let pq = new std.queue<{ idx: number, cost: number }>(null, { priority: 'min', compareKey: 'idx' })
+        pq.enqueue({ idx: this.sIdx, cost: 0 });
+        while (!pq.empty()) {
+            let nextClosestNode = pq.dequeue().idx
+            this.shortestPathTree[nextClosestNode] = this.searchFrontier[nextClosestNode]
+            if (nextClosestNode == this.sIdx) return 
+            
+            let edges = this.graph.getEdges(nextClosestNode)
+            for (let i = 0; i < edges.length; i++) {
+                const edge = edges[i];
+                let to = edge.to
+                
+                let hCost =  this.HeuristicCalculator(this.graph, this.tIdx, to) //就按目标点，到当前点的 启发消耗
+                let gCost = this.gCost[nextClosestNode] + edge.cost  //就按目标点，到当前点的消耗
+
+                if (!this.searchFrontier[to]) {
+                    this.fCost[to] = hCost + gCost
+                    this.gCost[to] = gCost
+                    pq.enqueue({ idx:to, cost: this.fCost[to] })
+                    this.searchFrontier[to] = edge
+                } else if ( (this.fCost[to] > hCost + gCost) && !this.shortestPathTree[to]) { 
+                    this.fCost[to] = hCost + gCost
+                    this.gCost[to] = gCost
+                    pq.replaceItem({ idx: to, cost: this.fCost[to]}, (newItem,oldItem)=>newItem.idx == oldItem.idx)
+                    this.searchFrontier[to] = edge
+                }
+            }
+        }
     }
 
 }
