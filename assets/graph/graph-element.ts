@@ -23,16 +23,8 @@ export class GraphNode {
     public isInvalid() { 
         return this.idx == invalid_node_idx
     }
-}
-
-
-@ccclass('NavGraphNode')
-export class NavGraphNode extends GraphNode {
-
-    @property({ type: Vec2 }) vec2: Vec2 = new Vec2();
 
     data: object = null;
-
     getData<T>(): T { 
         //@ts-ignore
         return this.data
