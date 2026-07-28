@@ -1,10 +1,11 @@
 import { _decorator, CCBoolean, Component, log, Node, TextAsset,JsonAsset, instantiate, v3, Vec3, IVec3Like } from 'cc';
 import { GraphEdge, GraphNode, invalid_node_idx } from './graph-element';
+import { EDITOR, PREVIEW } from 'cc/env';
 const { ccclass, property, executeInEditMode } = _decorator;
 
 
 @ccclass('GraphComponent')
-// @executeInEditMode
+@executeInEditMode
 export class GraphComponent extends Component {
     
     nodes: Array<GraphNode> = [];           // 组成图的所有节点；
@@ -15,12 +16,17 @@ export class GraphComponent extends Component {
     @property(CCBoolean) bGigraph;          // 是否为有向图；
     @property(JsonAsset) assetInfo: JsonAsset = null   // node 和 Edge 文本信息；   
 
+    @property(Node) ballParent:Node =null
     @property(Node) ball:Node = null
     
 
     protected start(): void {
         log(`graph start`)
-        this.load(this.assetInfo.json as any)
+        this.clear()
+        this.loadNodes(this.assetInfo.json as any)
+        if (PREVIEW) { 
+            this.loadEdges(this.assetInfo.json as any)
+        }
         log(`graph  numOfNodes: ${this.numNodes()},  numOfEdges: ${this.numEdges()}`)
     }
 
@@ -190,8 +196,9 @@ export class GraphComponent extends Component {
     }
 
     // 根据 JSON数据 构造 graph
-    public load(gData: { size: number, nodes: Array<{ idx: number, data: { position: IVec3Like } }>, edges:Array<{from:number,to:number,cost?:number}> }) {
+    public loadNodes(gData: { size: number, nodes: Array<{ idx: number, data: { position: IVec3Like } }>, edges:Array<{from:number,to:number,cost?:number}> }) {
         
+        this.ballParent.removeAllChildren()
         let { nodes, edges, size } = gData;
         
         for (let n = 0; n < nodes.length; ++n)
@@ -201,8 +208,7 @@ export class GraphComponent extends Component {
             if (node.isInvalid())
             {
                 this.addNode(node)
-            }else
-            {
+            }else{
                 this.nodes.push(node)
                 this.edgesVec.push([])
                 ++this.nextNodeIndex;
@@ -211,18 +217,22 @@ export class GraphComponent extends Component {
             let { position } = node.getData<{ position: IVec3Like }>()
             
             let ball = instantiate(this.ball)
-            ball.setParent(this.node.parent)
+            ball.setParent(this.ballParent)
             let s = this.node.scale
             ball.position = v3((position.x/(size-1)-0.5)*s.x*10, 0, ((position.y/(size-1)-0.5)*s.z*10))
             ball.active = true
         }
+        return true;
+    }
 
+    loadEdges(gData: { size: number, nodes: Array<{ idx: number, data: { position: IVec3Like } }>, edges: Array<{ from: number, to: number, cost?: number }> }) { 
+        
+        let { nodes, edges, size } = gData;
         for (let i = 0; i < edges.length; i++) {
             const {from,to,cost} = edges[i];
             let edge = new GraphEdge(from, to, cost)
             this.addEdge(edge)
         }
-        return true;
     }
 
 

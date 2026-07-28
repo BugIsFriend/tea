@@ -12,7 +12,8 @@ enum GNodeState {
     unvisited = -2,
     no_parent_assigned = -3
 }
-abstract class  SearchAglo {
+@ccclass  
+abstract class SearchAglo {
     
     graph: GraphComponent
     
@@ -137,6 +138,8 @@ class GraphSearchBFS extends SearchAglo {
 @ccclass
 class GraphSearchDijstra extends SearchAglo { 
 
+    _found: boolean = false
+
     private costToThisNode: Array<number>       //保存从源点到 当前给定索引的节点的最优消耗
 
     private searchFrontier: Array<GraphEdge>    //记录更替，从源点到 当前索引节点最优消耗的边
@@ -147,6 +150,7 @@ class GraphSearchDijstra extends SearchAglo {
         this.costToThisNode = new Array<number>(this.graph.numNodes()).fill(0)
         this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
         this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
+        this._found = this.search()
     }
 
     public search() {
@@ -155,7 +159,7 @@ class GraphSearchDijstra extends SearchAglo {
         while (!pq.empty()) {
             let {idx} = pq.dequeue();  
             this.shortestPathTree[idx] = this.searchFrontier[idx]
-            if (idx == this.tIdx) return;
+            if (idx == this.tIdx) return true;
             
             let edges = this.graph.getEdges(idx);
             for (let i = 0; i < edges.length; i++) {
@@ -174,6 +178,7 @@ class GraphSearchDijstra extends SearchAglo {
                 }
             }
         }
+        return false
     }
 
     public getSPT() { 
@@ -206,6 +211,8 @@ class GraphSearchDijstra extends SearchAglo {
 @ccclass
 class GraphSearchAStart extends SearchAglo { 
 
+    _found: boolean = false
+
     private searchFrontier: Array<GraphEdge>    //记录更替，从源点到 当前索引节点最优消耗的边
     private shortestPathTree: Array<GraphEdge>  //记录已经是在SPT(最短生成树)中的边
 
@@ -220,7 +227,7 @@ class GraphSearchAStart extends SearchAglo {
         while (!pq.empty()) {
             let nextClosestNode = pq.dequeue().idx
             this.shortestPathTree[nextClosestNode] = this.searchFrontier[nextClosestNode]
-            if (nextClosestNode == this.sIdx) return 
+            if (nextClosestNode == this.sIdx) return true;
             
             let edges = this.graph.getEdges(nextClosestNode)
             for (let i = 0; i < edges.length; i++) {
@@ -243,6 +250,7 @@ class GraphSearchAStart extends SearchAglo {
                 }
             }
         }
+        return false
     }
 
 }
