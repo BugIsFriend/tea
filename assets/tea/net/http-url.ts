@@ -5,10 +5,18 @@
 * @Modified time: 2026-04-01 18:45:32   
 * * */
 
-import { _decorator, EventHandler,Enum, CCFloat, CCInteger, CCString, CCBoolean, js } from "cc";
+import { _decorator, EventHandler,Enum, CCFloat, CCInteger, js } from "cc";
 import { PREVIEW } from "cc/env";
 const { ccclass, property } = _decorator;
 
+export enum ResponseType {
+    DEFAULT = "",
+    ARRAYBUFFER = "arraybuffer",
+    BLOB = "blob",
+    DOCUMENT = "document",
+    JSON = "json",
+    TEXT = "text"
+}
 
 export enum HttpMethod {
     GET = 'GET',
@@ -19,6 +27,8 @@ export enum HttpMethod {
 
 @ccclass('HttpURL')
 export class HttpURL {
+
+    @property({type: Enum(ResponseType)}) responseType: ResponseType = ResponseType.JSON
 
     @property({type: Enum(HttpMethod)}) method: HttpMethod = HttpMethod.GET
 
@@ -128,7 +138,10 @@ export class HttpURL {
         return { path: this.path, params: this.params }
     }
 
-    // TODO 设置对象；
+    public setResponseType(responseType: ResponseType) {
+        this.responseType = responseType;
+    }
+
     public setParams(params: object) {
         for (const key in params) {
             const value = params[key];

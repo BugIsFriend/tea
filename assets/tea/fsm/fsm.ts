@@ -9,9 +9,7 @@ import { State } from './state'
 import { _decorator, Component, Node, CCString, warn, Enum, CCClass } from 'cc'
 const { ccclass, property, executeInEditMode, executionOrder } = _decorator
 
-/**
- * TODO:   1.  添加全局状态；
- */
+
 @ccclass('StateMachine')
 // @executeInEditMode()
 @executionOrder(3)

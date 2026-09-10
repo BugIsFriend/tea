@@ -1,4 +1,4 @@
-import { _decorator, CCBoolean, Component, log, Node, TextAsset,JsonAsset, instantiate, v3, Vec3, IVec3Like } from 'cc';
+import { _decorator, CCBoolean, Component, log, Node,JsonAsset, instantiate, v3, Vec3, IVec3Like } from 'cc';
 import { GraphEdge, GraphNode, invalid_node_idx } from './graph-element';
 import { EDITOR, PREVIEW } from 'cc/env';
 const { ccclass, property, executeInEditMode } = _decorator;
