@@ -102,3 +102,12 @@ export function shuffle<T>(arr: T[]):T[]{
     }
     return arr
 }
+
+export function isNullableOrUndefined(value: any): boolean {
+    return value === null || value === undefined;
+}
+
+export function isEmptyObject(obj: object): boolean {
+    if (isNullableOrUndefined(obj) || typeof obj !== 'object') return false
+    return Object.keys(obj).length == 0
+}

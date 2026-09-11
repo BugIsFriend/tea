@@ -169,7 +169,6 @@ export class PickerView extends Unit {
                 if (Math.abs(this._speed) < this._minimumSpeed) { 
                     this.stopImmediately()
                 }
-
             }
         }
         this._stime = -1

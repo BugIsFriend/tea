@@ -6,9 +6,20 @@
 * * */
 
 import { Unit } from "../unit";
-import { _decorator, log, Node } from "cc";
+import { _decorator, isValid, log, Node } from "cc";
 import { HttpMethod, HttpURL } from "./http-url";
+import { isNullableOrUndefined } from "../tools";
 const { ccclass, property } = _decorator;
+
+
+
+enum eHttpState { 
+    OPENED = 1,             // 连接已建立，但尚未发送请求
+    HEADERS_RECEIVED = 2,   // 请求已发送，正在接收响应头
+    LOADING = 3,            // 正在接收响应体（数据）
+    DONE = 4                // 响应已完成，数据接收完毕
+
+}
 
 export interface IResponseData { 
     errNo: number,
@@ -45,7 +56,7 @@ export class HttpComponent extends Unit {
                 cb?.(err, response.data)
             }
         }
-        return HttpComponent.request(url, { block }).then(_cb, _cb)
+        return HttpComponent.request(url, { block, node: this.node  }).then(_cb, _cb)
     }
 
     public post(url: HttpURL, cb?: (err: Error | null, data: any) => void, block?: boolean) {
@@ -63,7 +74,7 @@ export class HttpComponent extends Unit {
                 cb?.(err, response.data)
             }
         }
-        return HttpComponent.request(url, { block }).then(_cb, _cb)
+        return HttpComponent.request(url, { block, node: this.node }).then(_cb, _cb)
     }
 
     public stopRequest(url: HttpURL) {
@@ -94,20 +105,27 @@ export class HttpComponent extends Unit {
                 xhr.open(url.method, url.getURL(), true)
                 xhr.responseType = url.responseType as XMLHttpRequestResponseType
                 xhr.onreadystatechange = () => {
+
+
                     if (xhr.readyState === 4) {
-                        if (xhr.status >= 200 && xhr.status < 300) {
+                        if ((!isNullableOrUndefined(xhr.status) || isValid(option.node) ) && xhr.status >= 200 && xhr.status < 300) {
                             url.eventHandler?.emit([xhr.response])
                             resolve(xhr.response)
                         } else {
-                            log(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`)
+                            if (option.node && !isValid(option.node)) {
+                                log(`HTTP ${url.method} request to ${url.getURL()} failed, because the node is destroyed`)
+                            } else { 
+                                log(`HTTP ${url.method} request to ${url.getURL()} failed with status ${xhr.status}`)
+                            }
                             reject(xhr.response)
                         }
                     }
-                    
+
                     if (option.block) {
                         // todo: 关闭loading组件显示
                     }
                 }
+
                 if (url.method === 'POST' && url.postdata != null) {
                     xhr.setRequestHeader('Content-Type','application/json')
                     xhr.send(JSON.stringify(url.postdata))
