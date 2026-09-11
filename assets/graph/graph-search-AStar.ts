@@ -1,15 +1,19 @@
 
 import { GraphComponent } from "./graph-component";
 import { GraphEdge } from "./graph-element";
-import { _decorator, CCInteger } from "cc";
+import { _decorator, CCInteger, Color, MeshRenderer } from "cc";
 import { Heuristic } from "./heuristic";
 import { GraphSearch ,GNodeState} from "./graph-search";
+import { DEV } from "cc/env";
 
 const {ccclass,property} = _decorator
 
 
 @ccclass('GraphSearchAStart')
 export class GraphSearchAStart extends GraphSearch { 
+
+    @property({type:CCInteger, tooltip: "起始节点索引", override: true}) sIdx: number = -1    
+    @property({type:CCInteger, tooltip: "目标节点索引", override: true}) tIdx: number = -1
 
     _found: boolean = false
 
@@ -24,7 +28,7 @@ export class GraphSearchAStart extends GraphSearch {
 
     protected start(): void {
         if (this.doSearch) { 
-            this.search()
+            this.searchPath(this.sIdx, this.tIdx)
         }
     }
 
@@ -38,7 +42,7 @@ export class GraphSearchAStart extends GraphSearch {
         while (!pq.empty()) {
             let nextClosestNode = pq.dequeue().idx
             this.shortestPathTree[nextClosestNode] = this.searchFrontier[nextClosestNode]
-            if (nextClosestNode == this.sIdx) return true;
+            if (nextClosestNode == this.tIdx) return true;
             
             let edges = this.graph.getEdges(nextClosestNode)
             for (let i = 0; i < edges.length; i++) {
@@ -62,6 +66,54 @@ export class GraphSearchAStart extends GraphSearch {
             }
         }
         return false
+    }
+
+    searchPath(sIdx: number = -1, tIdx: number = -1) { 
+
+        this.sIdx = sIdx
+        this.tIdx = tIdx
+
+        if(this.sIdx < 0 || this.tIdx < 0) {
+            console.log(`请设置起始节点索引和目标节点索引`)
+            return
+        }
+
+        this.gCost = new Array<number>(this.graph.numNodes()).fill(0)
+        this.fCost = new Array<number>(this.graph.numNodes()).fill(0)
+        this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
+        this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
+
+        this.search()
+
+        if (DEV) { 
+
+            let pathIdx = this.getPathToTarget()
+            console.log(`A* search path: ${pathIdx.join('->')}`)
+
+            let pathNodes = this.graph.getRenderNodes(pathIdx)
+            for (let i = 0; i < pathNodes.length; i++) {
+                pathNodes[i].getComponent(MeshRenderer).material.setProperty('mainColor', Color.RED.clone())
+            }
+        }
+    }
+
+    
+    public getPathToTarget() { 
+        let path = []
+        if (!this.found || this.tIdx < 0) return 
+
+        let preIdx = this.tIdx
+        path.unshift(preIdx)
+
+        while (preIdx != this.sIdx && this.shortestPathTree[preIdx] != null) {
+            preIdx = this.shortestPathTree[preIdx].from
+            path.unshift(preIdx) 
+        }
+        return path
+    }
+
+    public tapSearchBtn() {
+        this.searchPath(this.sIdx, this.tIdx)
     }
 
 }

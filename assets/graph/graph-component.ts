@@ -4,12 +4,14 @@ import { EDITOR, PREVIEW } from 'cc/env';
 const { ccclass, property, executeInEditMode } = _decorator;
 
 
+
+// 仅构造图的节点和边， 不进行搜索
 @ccclass('GraphComponent')
 @executeInEditMode
 export class GraphComponent extends Component {
     
-    nodes: Array<GraphNode> = [];           // 组成图的所有节点；
-    edgesVec: Array<Array<GraphEdge>> = [];    // 组成
+    nodes: Array<GraphNode> = [];               // 组成图的所有节点；
+    edgesVec: Array<Array<GraphEdge>> = [];     // 组成
 
     nextNodeIndex: number = 0;
 
@@ -24,10 +26,10 @@ export class GraphComponent extends Component {
         log(`graph start`)
         this.clear()
         this.loadNodes(this.assetInfo.json as any)
-        if (PREVIEW) { 
+        if (!EDITOR) { 
             this.loadEdges(this.assetInfo.json as any)
         }
-        log(`graph  numOfNodes: ${this.numNodes()},  numOfEdges: ${this.numEdges()}`)
+        console.log(`graph  numOfNodes: ${this.numNodes()},  numOfEdges: ${this.numEdges()}`)
     }
 
     /**
@@ -121,7 +123,6 @@ export class GraphComponent extends Component {
             }
         }
 
-        
         for (let i = 0; i < this.edgesVec[from].length; i++) {
             const edges = this.edgesVec[from];
             _.remove(edges, (edge) => edge.equalTo(from,to))
@@ -218,6 +219,7 @@ export class GraphComponent extends Component {
             
             let ball = instantiate(this.ball)
             ball.setParent(this.ballParent)
+            ball.name = `ball_${node.idx}`
             let s = this.node.scale
             ball.position = v3((position.x/(size-1)-0.5)*s.x*10, 0, ((position.y/(size-1)-0.5)*s.z*10))
             ball.active = true
@@ -228,6 +230,7 @@ export class GraphComponent extends Component {
     loadEdges(gData: { size: number, nodes: Array<{ idx: number, data: { position: IVec3Like } }>, edges: Array<{ from: number, to: number, cost?: number }> }) { 
         
         let { nodes, edges, size } = gData;
+        console.log(`numOfEdges:    ${edges.length}`)
         for (let i = 0; i < edges.length; i++) {
             const {from,to,cost} = edges[i];
             let edge = new GraphEdge(from, to, cost)
@@ -236,10 +239,33 @@ export class GraphComponent extends Component {
     }
 
 
+    getRenderNodes(idxs: number[]): Node[] {
+        let nodes: Node[] = []
+        for (let i = 0; i < idxs.length; i++) {
+            const node = this.ballParent.getChildByName(`ball_${idxs[i]}`)
+            if (node) { 
+                nodes.push(node)
+            }
+        }
+        return nodes
+    }
+
+    getNodePositions(idxs: number[]): IVec3Like[] { 
+        let positions: IVec3Like[] = []
+        for (let i = 0; i < idxs.length; i++) {
+            const node = this.nodes[idxs[i]]
+            if (node) {
+                positions.push(node.getData<{ position: IVec3Like }>().position)
+            }
+        }
+        return positions
+    }
+
     public clear() { 
         this.nextNodeIndex = 0;
         this.nodes = [];
         this.edgesVec = []
     }
+
 }
 

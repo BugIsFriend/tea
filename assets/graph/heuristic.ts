@@ -8,14 +8,9 @@ export class Heuristic {
 
     // 欧几里距离启发因子；
     static EuclidCalculate(graph:GraphComponent, nd1:number, nd2:number) { 
-
         //@ts-ignore
-        let pos1:Vec3 = graph.getNode(nd1).position
-        //@ts-ignore
-        let pos2: Vec3 = graph.getNode(nd2).position
-        
+        let [pos1, pos2] = graph.getRenderNodes([nd1, nd2]).map((node: any) => node.position)
         return Vec3.distance(pos1,pos2)
-
     }
 
     // 曼哈顿距离启发因子计算

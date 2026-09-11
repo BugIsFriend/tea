@@ -15,8 +15,8 @@ export enum GNodeState {
 @ccclass
 @requireComponent(GraphComponent)
 export abstract class GraphSearch extends Unit {
-    @property(CCInteger) sIdx: number
-    @property(CCInteger) tIdx: number = -1
+    @property({type:CCInteger, tooltip: "起始节点索引"}) sIdx: number      
+    @property({type:CCInteger, tooltip: "目标节点索引"}) tIdx: number = -1
 
     @property(CCBoolean) doSearch: boolean = false
     

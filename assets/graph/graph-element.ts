@@ -39,18 +39,18 @@ export class GraphEdge {
     
     @property(CCFloat) _cost: number = 1
 
-    constructor(from: number, to: number, cost?:number) { 
+    constructor(from: number, to: number, cost?: number) { 
         this.from = from;
         this.to = to;
         this._cost = cost?cost:this._cost
     }
 
     public get from() : number {
-        return this.from
+        return this._from
     }
 
     public set from(from : number) {
-        this.from = from;
+        this._from = from;
     }
 
     public get to() : number {

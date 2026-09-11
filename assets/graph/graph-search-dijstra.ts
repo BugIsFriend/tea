@@ -16,14 +16,14 @@ class GraphSearchDijstra extends GraphSearch {
 
     _found: boolean = false
 
-    private costToThisNode: Array<number>       //保存从源点到 当前给定索引的节点的最优消耗
+    private gCost: Array<number>       //保存从源点到 当前给定索引的节点的最优消耗
 
     private searchFrontier: Array<GraphEdge>    //记录更替，从源点到 当前索引节点最优消耗的边
     private shortestPathTree: Array<GraphEdge>  //记录已经是在SPT(最短生成树)中的边
     
     public initSearch() { 
         super.initSearch()
-        this.costToThisNode = new Array<number>(this.graph.numNodes()).fill(0)
+        this.gCost = new Array<number>(this.graph.numNodes()).fill(0)
         this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
         this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
         this._found = this.search()
@@ -41,14 +41,14 @@ class GraphSearchDijstra extends GraphSearch {
             for (let i = 0; i < edges.length; i++) {
                 const edge = edges[i];
 
-                let newCost = this.costToThisNode[edge.from] + edge.to;
+                let newCost = this.gCost[edge.from] + edge.to;
 
                 if (this.searchFrontier[edge.to] == null) {
-                    this.costToThisNode[edge.to] = edge.cost
+                    this.gCost[edge.to] = edge.cost
                     pq.enqueue({ idx: edge.to, cost: edge.cost })
                     this.searchFrontier[edge.to] = edge
-                } else if (newCost < this.costToThisNode[edge.to] && this.shortestPathTree[edge.to] == null) { 
-                    this.costToThisNode[edge.to] = newCost
+                } else if (newCost < this.gCost[edge.to] && this.shortestPathTree[edge.to] == null) { 
+                    this.gCost[edge.to] = newCost
                     pq.replaceItem({ idx: edge.to, cost: newCost }, (newItem, oldItem) => newItem.idx == oldItem.idx)
                     this.searchFrontier[edge.to] = edge
                 }
@@ -66,7 +66,7 @@ class GraphSearchDijstra extends GraphSearch {
     }
 
     public getCostToNode(nIdx: number) { 
-        return this.costToThisNode[nIdx]
+        return this.gCost[nIdx]
     }
     
     public getPathToTarget() { 
