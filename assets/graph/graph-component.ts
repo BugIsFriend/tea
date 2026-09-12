@@ -1,6 +1,7 @@
-import { _decorator, CCBoolean, Component, log, Node,JsonAsset, instantiate, v3, Vec3, IVec3Like } from 'cc';
+import { _decorator, CCBoolean, Component, log, Node,JsonAsset, instantiate, v3, Vec3, IVec3Like, Color, MeshRenderer, EditBox, Label, isValid } from 'cc';
 import { GraphEdge, GraphNode, invalid_node_idx } from './graph-element';
-import { EDITOR, PREVIEW } from 'cc/env';
+import { DEV, EDITOR, PREVIEW } from 'cc/env';
+import { GraphSearchAStart } from './graph-search-AStar';
 const { ccclass, property, executeInEditMode } = _decorator;
 
 
@@ -19,7 +20,12 @@ export class GraphComponent extends Component {
     @property(JsonAsset) assetInfo: JsonAsset = null   // node 和 Edge 文本信息；   
 
     @property(Node) ballParent:Node =null
-    @property(Node) ball:Node = null
+    @property(Node) ball: Node = null
+    
+    // 输入节点，显示搜索结果
+    @property(EditBox) sIdxEditBox: EditBox = null
+    @property(EditBox) tIdxEditBox: EditBox = null
+    @property(Label) Path: Label = null
     
 
     protected start(): void {
@@ -238,7 +244,6 @@ export class GraphComponent extends Component {
         }
     }
 
-
     getRenderNodes(idxs: number[]): Node[] {
         let nodes: Node[] = []
         for (let i = 0; i < idxs.length; i++) {
@@ -265,6 +270,33 @@ export class GraphComponent extends Component {
         this.nextNodeIndex = 0;
         this.nodes = [];
         this.edgesVec = []
+    }
+
+    _pathNodes: Node[]
+    public tapSearchBtn() {
+        let starSearch = this.getComponent(GraphSearchAStart)
+        starSearch.resetSearch()
+        if (this._pathNodes && this._pathNodes.length > 0) {
+            for (let i = 0; i < this._pathNodes.length; i++) {
+                let color = new Color('#33FF00')
+                this._pathNodes[i].getComponent(MeshRenderer).material.setProperty('mainColor',color)
+            }
+        }
+
+        if (this.sIdxEditBox.string == "" || this.tIdxEditBox.string == "") return;
+
+        let [sIdx, tIdx] = [parseInt(this.sIdxEditBox.string), parseInt(this.tIdxEditBox.string)]
+        starSearch.searchPath(sIdx, tIdx)
+
+        let pathIdxs = starSearch.getPathToTarget()
+        if (DEV && isValid(this.ball) && pathIdxs && pathIdxs.length > 0) { 
+            let pathIdxs = starSearch.getPathToTarget()
+            console.log(`A* search path: ${pathIdxs.join('->')}`)
+            this._pathNodes = this.getRenderNodes(pathIdxs)
+            for (let i = 0; i < this._pathNodes.length; i++) {
+                this._pathNodes[i].getComponent(MeshRenderer).material.setProperty('mainColor',Color.RED.clone())
+            }
+        }
     }
 
 }

@@ -8,7 +8,6 @@ import { DEV } from "cc/env";
 
 const {ccclass,property} = _decorator
 
-
 @ccclass('GraphSearchAStart')
 export class GraphSearchAStart extends GraphSearch { 
 
@@ -24,16 +23,13 @@ export class GraphSearchAStart extends GraphSearch {
     private fCost: Array<number>   // 开始节点，到指定节点的 总消耗(启发因子消耗 + 边的下号)
 
     public HeuristicCalculator: (graph: GraphComponent, nd1: number, nd2: number) => number = Heuristic.EuclidCalculate
-    
-
-    protected start(): void {
-        if (this.doSearch) { 
-            this.searchPath(this.sIdx, this.tIdx)
-        }
-    }
 
     public initSearch(): void {
         super.initSearch()
+        this.gCost = new Array<number>(this.graph.numNodes()).fill(0)
+        this.fCost = new Array<number>(this.graph.numNodes()).fill(0)
+        this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
+        this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
     }
 
     public search() { 
@@ -77,26 +73,15 @@ export class GraphSearchAStart extends GraphSearch {
             console.log(`请设置起始节点索引和目标节点索引`)
             return
         }
+        this.search()
+    }
 
+    resetSearch() { 
         this.gCost = new Array<number>(this.graph.numNodes()).fill(0)
         this.fCost = new Array<number>(this.graph.numNodes()).fill(0)
         this.searchFrontier = new Array<GraphEdge>(this.graph.numNodes())
         this.shortestPathTree = new Array<GraphEdge>(this.graph.numNodes())
-
-        this.search()
-
-        if (DEV) { 
-
-            let pathIdx = this.getPathToTarget()
-            console.log(`A* search path: ${pathIdx.join('->')}`)
-
-            let pathNodes = this.graph.getRenderNodes(pathIdx)
-            for (let i = 0; i < pathNodes.length; i++) {
-                pathNodes[i].getComponent(MeshRenderer).material.setProperty('mainColor', Color.RED.clone())
-            }
-        }
     }
-
     
     public getPathToTarget() { 
         let path = []
@@ -111,9 +96,4 @@ export class GraphSearchAStart extends GraphSearch {
         }
         return path
     }
-
-    public tapSearchBtn() {
-        this.searchPath(this.sIdx, this.tIdx)
-    }
-
 }
