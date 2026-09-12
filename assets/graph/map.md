@@ -25,6 +25,8 @@
         "cost": 1
     }
 
+## 每条边消耗的计算 to 节点 position 减去 from 节点 position 的模
+
 ## 每个方格只和周边8个方格有边
 
 ## 制作出的地图文件以 json 文件格式保存到 /Users/myerselee/work_space/git_hub/tea/assets/graph/map.json 文件中

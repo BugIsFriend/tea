@@ -56,7 +56,9 @@ export class GraphSearchAStart extends GraphSearch {
                 } else if ( (this.fCost[to] > hCost + gCost) && !this.shortestPathTree[to]) { 
                     this.fCost[to] = hCost + gCost
                     this.gCost[to] = gCost
-                    pq.replaceItem({ idx: to, cost: this.fCost[to]}, (newItem,oldItem)=>newItem.idx == oldItem.idx)
+                    pq.replaceItem({ idx: to, cost: this.fCost[to] }, (newItem, oldItem) => { 
+                       return newItem.idx == oldItem.idx
+                    })
                     this.searchFrontier[to] = edge
                 }
             }
@@ -69,10 +71,16 @@ export class GraphSearchAStart extends GraphSearch {
         this.sIdx = sIdx
         this.tIdx = tIdx
 
-        if(this.sIdx < 0 || this.tIdx < 0) {
+        if((this.sIdx < 0 || this.tIdx < 0) ) {
             console.log(`请设置起始节点索引和目标节点索引`)
             return
         }
+
+        if (this.sIdx >= this.graph.numNodes() || this.tIdx >= this.graph.numNodes()) {
+            console.log(`起始节点索引或目标节点索引超出范围`)
+            return
+        }
+
         this.search()
     }
 

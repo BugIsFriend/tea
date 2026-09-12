@@ -267,16 +267,8 @@ export class GraphComponent extends Component {
         return positions
     }
 
-    public clear() { 
-        this.nextNodeIndex = 0;
-        this.nodes = [];
-        this.edgesVec = []
-    }
-
     _pathNodes: Node[]
     public tapSearchBtn() {
-        let starSearch = this.getComponent(GraphSearchAStart)
-        starSearch.resetSearch()
         if (this._pathNodes && this._pathNodes.length > 0) {
             for (let i = 0; i < this._pathNodes.length; i++) {
                 let color = new Color('#33FF00')
@@ -287,6 +279,19 @@ export class GraphComponent extends Component {
         if (this.sIdxEditBox.string == "" || this.tIdxEditBox.string == "") return;
 
         let [sIdx, tIdx] = [parseInt(this.sIdxEditBox.string), parseInt(this.tIdxEditBox.string)]
+
+        if((sIdx < 0 || tIdx < 0) ) {
+            console.log(`请设置起始节点索引和目标节点索引`)
+            return
+        }
+
+        if (sIdx >= this.numNodes() || tIdx >= this.numNodes()) {
+            console.log(`起始节点索引或目标节点索引超出范围`)
+            return
+        }
+
+        let starSearch = this.getComponent(GraphSearchAStart)
+        starSearch.resetSearch()
         starSearch.searchPath(sIdx, tIdx)
 
         let pathIdxs = starSearch.getPathToTarget()
@@ -298,6 +303,12 @@ export class GraphComponent extends Component {
                 this._pathNodes[i].getComponent(MeshRenderer).material.setProperty('mainColor',Color.RED.clone())
             }
         }
+    }
+
+    public clear() { 
+        this.nextNodeIndex = 0;
+        this.nodes = [];
+        this.edgesVec = []
     }
 
 }
