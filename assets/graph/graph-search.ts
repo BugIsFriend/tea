@@ -53,7 +53,6 @@ export abstract class GraphSearch extends Unit {
         return path
     }
 
-
     initSearch() { 
         this.visited = new Array<number>(this.graph.numNodes()).fill(GNodeState.visited)
         this.route = new Array<number>(this.graph.numNodes()).fill(GNodeState.no_parent_assigned)

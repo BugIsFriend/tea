@@ -207,7 +207,8 @@ export class GraphComponent extends Component {
         
         this.ballParent.removeAllChildren()
         let { nodes, edges, size } = gData;
-        
+        let rowSize = size - 1;
+
         for (let n = 0; n < nodes.length; ++n)
         {
             let node = new GraphNode(nodes[n].idx);
@@ -227,7 +228,7 @@ export class GraphComponent extends Component {
             ball.setParent(this.ballParent)
             ball.name = `ball_${node.idx}`
             let s = this.node.scale
-            ball.position = v3((position.x/(size-1)-0.5)*s.x*10, 0, ((position.y/(size-1)-0.5)*s.z*10))
+            ball.position = v3((position.x/rowSize-0.5)*s.x*10, 0, ((0.5-position.y/rowSize)*s.z*10))
             ball.active = true
         }
         return true;
